@@ -1,5 +1,5 @@
 # Serverless
-Predmet: Sistemska administracija\
+Predmet: Sistemska administracija
 1. Projektna naloga:\
 Naložen Dockerfile uporabljen za demonstracijo,\
 naložena dokumentacija naloge,\
