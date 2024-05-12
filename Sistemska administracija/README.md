@@ -1,4 +1,10 @@
 # Serverless
-Digitalni dvojček - projektni praktikum\
-Člani ekipe: Jan Namestnik, Nejc Cekuta, Metod Golob
+Predmet: Sistemska administracija\
+1. Projektna naloga:\
+Naložen Dockerfile uporabljen za demonstracijo,\
+naložena dokumentacija naloge,\
+Uporabljena verzija docker-ja: 24.0.5\
+Verzija Ubuntu: 22.04.1
+
+   
 
