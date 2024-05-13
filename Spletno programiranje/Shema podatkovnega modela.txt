@@ -1,6 +1,6 @@
 // USER
 {
-  "_id": ObjectId("user_id"),
+  "_id": ObjectId("987654321"),
   "username": "joze",
   "password": "joze123",
   "email": "joze.plavec@gmail.com",
@@ -14,24 +14,24 @@
 
 // EVENT
 {
-  "_id": ObjectId("event_id"),
+  "_id": ObjectId("543216789"),
   "name": "Big Foot Mama & Mi2",
   "venue": "Študentski klub Sevnica",
   "date": "2024-18-05",
   "address": "Prvomajska ulica 15 8290 Sevnica",
   "start_time": "19:00",
   "end_time": "22:00",
-  "description": "Example Description",
+  "description": "VEJŽDE ŽUR 2024, kjer bodo nastopili Big foot Mama in Mi2",
   "contact": "info@eventim.si",
-  "latitude": "Example Latitude",
-  "longitude": "Example Longitude",
-  "categoryID": ObjectId("category_id")
+  "latitude": "46.01429",
+  "longitude": "15.30342",
+  "categoryID": ObjectId("123456789")
 }
 
 
 // CATEGORY
 {
-  "_id": ObjectId("category_id"),
+  "_id": ObjectId("123456789"),
   "name": "rock"
 }
 
@@ -39,8 +39,8 @@
 // REVIEW
 {
   "_id": ObjectId("review_id"),
-  "eventID": ObjectId("event_id"),
-  "userID": ObjectId("user_id"),
+  "eventID": ObjectId("543216789"),
+  "userID": ObjectId("987654321"),
   "rating": 5,
   "comment": "Zelo dober koncert"
 }
