@@ -1,3 +1,2 @@
-# Serverless
-Digitalni dvojček - projektni praktikum\
-Člani ekipe: Jan Namestnik, Nejc Cekuta, Metod Golob
+Spletno programiranje <br />
+Verzija mongoose: mongoose@6.9.0
