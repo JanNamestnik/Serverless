@@ -65,7 +65,39 @@ module.exports = {
     },
     
 
-
+    filterEvents: function (req, res) {
+        const categoryName = req.query.category;
+    
+        // Find the category document based on the provided name
+        CategoryModel.findOne({ name: categoryName }, function (err, category) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting category.',
+                    error: err
+                });
+            }
+    
+            if (!category) {
+                return res.status(404).json({
+                    message: 'Category not found.'
+                });
+            }
+    
+            // Find all events that match the category ObjectId
+            EventModel.find({ category: category._id }, function (err, events) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting events.',
+                        error: err
+                    });
+                }
+    
+                // Pass the events data to the view
+                res.render('event/list', { events: events });
+            });
+        });
+    },
+    
 
 
 

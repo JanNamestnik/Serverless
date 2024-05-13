@@ -20,6 +20,7 @@ function requireLogin(req, res, next){
 router.get('/', eventController.list);
 router.get('/add', eventController.add);
 router.get('/list', eventController.listAll);
+router.get('/filter', eventController.filterEvents);
 
 
 
