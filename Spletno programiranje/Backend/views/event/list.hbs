@@ -32,6 +32,36 @@
     <button type="submit">Filter</button>
 </form>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const geospatialForm = document.getElementById('geospatialForm');
+    const getCurrentLocationButton = document.getElementById('getCurrentLocation');
+
+    // Add click event listener to the button
+    getCurrentLocationButton.addEventListener('click', function() {
+        // Check if geolocation is supported by the browser
+        if ("geolocation" in navigator) {
+            // Request the user's current position
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Update the values of the longitude and latitude input fields
+                document.getElementById('longitude').value = position.coords.longitude;
+                document.getElementById('latitude').value = position.coords.latitude;
+            }, function(error) {
+                // Handle errors
+                console.error('Error getting current position:', error.message);
+                alert('Error getting current position: ' + error.message);
+            });
+        } else {
+            // Geolocation is not supported
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+});
+</script>
+
+
+
+
 {{#each events}}
     <div class="event">
         <h2><a href="/events/showEvent/{{id}}">link</a></h2>
