@@ -1,0 +1,46 @@
+// USER
+{
+  "_id": ObjectId("user_id"),
+  "username": "joze",
+  "password": "joze123",
+  "email": "joze.plavec@gmail.com",
+  "favoriteEvents": [
+    ObjectId("event_id_1"),
+    ObjectId("event_id_2"),
+    ObjectId("event_id_3")
+  ]
+}
+
+
+// EVENT
+{
+  "_id": ObjectId("event_id"),
+  "name": "Big Foot Mama & Mi2",
+  "venue": "Študentski klub Sevnica",
+  "date": "2024-18-05",
+  "address": "Prvomajska ulica 15 8290 Sevnica",
+  "start_time": "19:00",
+  "end_time": "22:00",
+  "description": "Example Description",
+  "contact": "info@eventim.si",
+  "latitude": "Example Latitude",
+  "longitude": "Example Longitude",
+  "categoryID": ObjectId("category_id")
+}
+
+
+// CATEGORY
+{
+  "_id": ObjectId("category_id"),
+  "name": "rock"
+}
+
+
+// REVIEW
+{
+  "_id": ObjectId("review_id"),
+  "eventID": ObjectId("event_id"),
+  "userID": ObjectId("user_id"),
+  "rating": 5,
+  "comment": "Zelo dober koncert"
+}
