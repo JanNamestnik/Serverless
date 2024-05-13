@@ -2,8 +2,9 @@
 
 <!-- Filter form -->
 <form action="/events/filter" method="get">
-    <label for="category">Kategorija:</label>
+    <label for="category">Category:</label>
     <select name="category" id="category">
+        <option value="">All</option>
         <option value="concert">concert</option>
         <option value="festival">festival</option>
         <option value="sports">sports</option>
@@ -13,6 +14,13 @@
         <option value="conference">conference</option>
         <option value="other">other</option>
     </select>
+
+    <!-- Input fields for date range -->
+    <label for="fromDate">From date:</label>
+    <input type="date" id="fromDate" name="fromDate">
+    <label for="toDate">To date:</label>
+    <input type="date" id="toDate" name="toDate">
+
     <button type="submit">Filter</button>
 </form>
 
