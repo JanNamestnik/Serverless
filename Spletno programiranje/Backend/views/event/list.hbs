@@ -32,6 +32,27 @@
     <button type="submit">Filter</button>
 </form>
 
+<!--Geospatial form-->
+<form id="geospatialForm" action="/events/geospatialFilter" method="get">
+
+    <h2>Geospatial Filtering</h2>
+    
+    <!-- Input fields for longitude and latitude -->
+    <label for="longitude">Longitude:</label>
+    <input type="number" id="longitude" name="longitude" placeholder="Longitude" step="0.000001" required>
+
+    <label for="latitude">Latitude:</label>
+    <input type="number" id="latitude" name="latitude" placeholder="Latitude" step="0.000001" required>
+
+    <label for="distance">Distance (in meters):</label>
+    <input type="number" id="distance" name="distance" placeholder="Distance" required>
+
+    <!-- Button to get user's current location -->
+    <button type="button" id="getCurrentLocation">Get My Location</button>
+
+    <button type="submit">Filter</button>
+</form>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const geospatialForm = document.getElementById('geospatialForm');
