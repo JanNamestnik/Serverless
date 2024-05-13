@@ -10,16 +10,28 @@ var eventSchema = new Schema({
 	'endTime' : String,
 	'description' : String,
 	'contact' : String,
-	'latitude' : Number,
-	'longitude' : Number,
 	'category' : {
 	 	type: Schema.Types.ObjectId,
 	 	ref: 'category'
 	},
 	'eventImage' : String,
 	'price' : Number,
-	'attendees': [{type: Schema.Types.ObjectId, ref: 'user'}]
+	'attendees': [{type: Schema.Types.ObjectId, ref: 'user'}],
+
+	'location': {
+        type: {
+            type: String,
+            enum: ['Point'],
+			required: true
+        },
+        coordinates: {
+            type: [Number],
+			required: true
+        }
+    },
 
 });
+
+eventSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('event', eventSchema);

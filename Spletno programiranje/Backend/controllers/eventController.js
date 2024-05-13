@@ -157,6 +157,37 @@ module.exports = {
             });
         }
     },
+
+
+    geospatialFilter: function (req, res) {
+        const longitude = parseFloat(req.query.longitude);
+        const latitude = parseFloat(req.query.latitude);
+        const distance = parseFloat(req.query.distance);
+        
+        // Perform geospatial query to find events near the specified coordinates
+        EventModel.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [longitude, latitude]
+                    },
+                    $maxDistance: distance
+                }
+            }
+        }, function (err, events) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting events.',
+                    error: err
+                });
+            }
+    
+            // Pass the events data to the view
+            res.render('event/list', { events: events });
+        });
+    },    
+    
     
     
     
@@ -252,13 +283,13 @@ module.exports = {
         try {
             // Find the category with the specified name
             const category = await CategoryModel.findOne({ name: req.body.category });
-
+    
             // If the category doesn't exist, return an error
             if (!category) {
                 return res.status(400).json({ message: 'Category not found' });
             }
-
-            // Create the event with the found category
+    
+            // Create the event with the found category and location coordinates
             const event = new EventModel({
                 name: req.body.name,
                 venue: req.body.venue,
@@ -268,17 +299,19 @@ module.exports = {
                 endTime: req.body.endTime,
                 description: req.body.description,
                 contact: req.body.contact,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
+                location: {
+                    type: 'Point',
+                    coordinates: [parseFloat(req.body.longitude), parseFloat(req.body.latitude)]
+                },
                 category: category._id,
                 eventImage: "/images/" + req.file.filename,
                 price: req.body.price,
                 attendees: []
             });
-
+    
             // Save the event to the database
             const savedEvent = await event.save();
-
+    
             // Respond with the created event
             res.status(201).json(savedEvent);
         } catch (error) {
@@ -287,6 +320,7 @@ module.exports = {
             res.status(500).json({ message: 'Error when creating event', error: error });
         }
     },
+    
 
     /**
      * eventController.update()
@@ -316,8 +350,6 @@ module.exports = {
 			event.endTime = req.body.endTime ? req.body.endTime : event.endTime;
 			event.description = req.body.description ? req.body.description : event.description;
 			event.contact = req.body.contact ? req.body.contact : event.contact;
-			event.latitude = req.body.latitude ? req.body.latitude : event.latitude;
-			event.longitude = req.body.longitude ? req.body.longitude : event.longitude;
 			event.category = req.body.category ? req.body.category : event.category;
             event.eventImage = req.body.eventImage ? req.body.eventImage : event.eventImage;
             event.price = req.body.price ? req.body.price : event.price;
