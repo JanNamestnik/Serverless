@@ -69,11 +69,13 @@ module.exports = {
         const categoryName = req.query.category;
         const fromDate = req.query.fromDate;
         const toDate = req.query.toDate;
-        const favourite = req.query.favourite === 'on';
-    
+        const favourite = req.query.favourite === 'on'; // Convert the string to boolean
+        const minPrice = req.query.minPrice;
+        const maxPrice = req.query.maxPrice;
+        
         // Initialize the filter object
         let filter = {};
-    
+        
         // Check if a category is provided
         if (categoryName) {
             // Find the category document based on the provided name
@@ -100,6 +102,12 @@ module.exports = {
                     filter.date = { $gte: new Date(fromDate), $lte: new Date(toDate) };
                 }
     
+                // Check if price range is provided
+                if (minPrice && maxPrice) {
+                    // Apply price range filtering logic
+                    filter.price = { $gte: minPrice, $lte: maxPrice };
+                }
+    
                 // Find all events that match the filter
                 EventModel.find(filter, function (err, events) {
                     if (err) {
@@ -120,9 +128,13 @@ module.exports = {
                 });
             });
         } else {
-            // No category selected, filter only by date range if provided
+            // No category selected, filter only by date range and/or price range if provided
             if (fromDate && toDate) {
                 filter.date = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+            }
+    
+            if (minPrice && maxPrice) {
+                filter.price = { $gte: minPrice, $lte: maxPrice };
             }
     
             // Find all events that match the filter
@@ -145,6 +157,7 @@ module.exports = {
             });
         }
     },
+    
     
     
     attend: function (req, res) {
