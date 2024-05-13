@@ -10,7 +10,10 @@
         <p>{{event.contact}}</p>
         <p>{{event.category}}</p>
         <p>{{event.latitude}}, {{event.longitude}}</p>
+        <p>{{event.attendees.length}}</p>
     </div>
+
+    <a href="/events/showEvent/attend/{{event._id}}" class="attend-btn">Attend</a>
 
 <h2>Reviews:</h2>
 <hr>

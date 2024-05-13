@@ -29,6 +29,10 @@ router.get('/filter', eventController.filterEvents);
  */
 router.get('/:id', eventController.show);
 router.get('/showEvent/:id', eventController.showEvent);
+router.get('/showEvent/attend/:id', eventController.attend);
+router.get('/showEvent/leave/:id', eventController.leave);
+
+
 
 /*
  * POST
@@ -39,7 +43,6 @@ router.post('/', requireLogin, upload.single('image'), eventController.create);
  * PUT
  */
 router.put('/:id', eventController.update);
-
 /*
  * DELETE
  */

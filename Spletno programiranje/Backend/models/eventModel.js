@@ -17,7 +17,8 @@ var eventSchema = new Schema({
 	 	ref: 'category'
 	},
 	'eventImage' : String,
-	'price' : Number
+	'price' : Number,
+	'attendees': [{type: Schema.Types.ObjectId, ref: 'user'}]
 
 });
 

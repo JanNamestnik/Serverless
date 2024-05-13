@@ -69,6 +69,7 @@ module.exports = {
         const categoryName = req.query.category;
         const fromDate = req.query.fromDate;
         const toDate = req.query.toDate;
+        const favourite = req.query.favourite === 'on';
     
         // Initialize the filter object
         let filter = {};
@@ -108,6 +109,12 @@ module.exports = {
                         });
                     }
     
+                    // Filter events based on the favourite parameter
+                    if (favourite) {
+                        // Sort events by the number of attendees in descending order
+                        events.sort((a, b) => b.attendees.length - a.attendees.length);
+                    }
+    
                     // Pass the events data to the view
                     res.render('event/list', { events: events });
                 });
@@ -127,12 +134,54 @@ module.exports = {
                     });
                 }
     
+                // Filter events based on the favourite parameter
+                if (favourite) {
+                    // Sort events by the number of attendees in descending order
+                    events.sort((a, b) => b.attendees.length - a.attendees.length);
+                }
+    
                 // Pass the events data to the view
                 res.render('event/list', { events: events });
             });
         }
     },
     
+    
+    attend: function (req, res) {
+        var userId = req.session.userId; // Get the user ID from the session
+        var id = req.params.id;
+    
+        // Update the event document to add the current user to the attendees array
+        EventModel.findByIdAndUpdate(id, { $addToSet: { attendees: userId }, $inc: { attendeesCount: 1 } }, { new: true }, function (err, event) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when attending event',
+                    error: err
+                });
+            }
+    
+            return res.json(event);
+            //res.redirect('/events/showEvent/' + id);
+        });
+    },
+    
+
+    leave: function (req, res) {
+        var userId = req.session.userId; // Get the user ID from the session
+        var id = req.params.id;
+    
+        // Update the event document to remove the current user from the attendees array
+        EventModel.findByIdAndUpdate(id, { $pull: { attendees: userId }, $inc: { attendeesCount: -1 } }, { new: true }, function (err, event) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when leaving event',
+                    error: err
+                });
+            }
+    
+            return res.json(event);
+        });
+    },
     
 
 
@@ -210,7 +259,8 @@ module.exports = {
                 longitude: req.body.longitude,
                 category: category._id,
                 eventImage: "/images/" + req.file.filename,
-                price: req.body.price
+                price: req.body.price,
+                attendees: []
             });
 
             // Save the event to the database
@@ -258,6 +308,7 @@ module.exports = {
 			event.category = req.body.category ? req.body.category : event.category;
             event.eventImage = req.body.eventImage ? req.body.eventImage : event.eventImage;
             event.price = req.body.price ? req.body.price : event.price;
+            event.attendees = req.body.attendees ? req.body.attendees : event.attendees;
 			
             event.save(function (err, event) {
                 if (err) {
