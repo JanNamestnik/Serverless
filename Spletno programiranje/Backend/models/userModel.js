@@ -6,7 +6,8 @@ var userSchema = new Schema({
 	'username' : String,
 	'email' : String,
 	'password' : String,
-	'profileImage' : String
+	'profileImage' : String,
+	'favorites' : [{type: Schema.Types.ObjectId, ref: 'event'}]
 });
 
 userSchema.statics.authenticate = function(username, password, callback){

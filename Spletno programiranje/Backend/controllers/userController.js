@@ -132,7 +132,8 @@ module.exports = {
 			username : req.body.username,
 			email : req.body.email,
 			password : req.body.password,
-			profileImage : req.body.profileImage
+			profileImage : req.body.profileImage,
+            favorites : []
         });
 
         user.save(function (err, user) {
@@ -171,6 +172,7 @@ module.exports = {
 			user.email = req.body.email ? req.body.email : user.email;
 			user.password = req.body.password ? req.body.password : user.password;
 			user.profileImage = req.body.profileImage ? req.body.profileImage : user.profileImage;
+            user.favorites = req.body.favorites ? req.body.favorites : user.favorites;
 			
             user.save(function (err, user) {
                 if (err) {
