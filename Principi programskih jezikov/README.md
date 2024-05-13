@@ -1,4 +1,2 @@
 # Serverless
-Digitalni dvojček - projektni praktikum\
-Člani ekipe: Jan Namestnik, Nejc Cekuta, Metod Golob
-
+Gradle version scraper: 21 Oracle OpenJDK version 21.0.2
