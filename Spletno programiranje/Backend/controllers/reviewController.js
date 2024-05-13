@@ -53,8 +53,8 @@ module.exports = {
     create: function (req, res) {
         var review = new ReviewModel({
 			eventId : req.body.eventId,
-			userId : req.body.userId,
-			created : req.body.created,
+			userId : req.session.userId,
+			created : new Date(),
 			rating : req.body.rating,
 			content : req.body.content
         });

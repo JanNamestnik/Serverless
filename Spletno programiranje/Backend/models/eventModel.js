@@ -17,11 +17,7 @@ var eventSchema = new Schema({
 	 	ref: 'category'
 	},
 	'eventImage' : String,
-	'price' : Number,
-	'reviews' : [{
-		type: Schema.Types.ObjectId,
-		ref: 'review'
-	}]
+	'price' : Number
 
 });
 

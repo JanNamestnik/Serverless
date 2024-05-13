@@ -40,6 +40,7 @@ module.exports = {
                     err.status = 401;
                     return next(err);
                 } else {
+                    //return res.render('user/profile', {username: user.username, email: user.email, profileImage: user.profileImage});
                     res.json(user); 
                 }
             }

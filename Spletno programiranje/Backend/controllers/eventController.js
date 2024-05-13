@@ -1,5 +1,8 @@
 var EventModel = require('../models/eventModel.js');
 var CategoryModel = require('../models/categoryModel.js');
+var ReviewsModel = require('../models/reviewModel.js');
+var UserModel = require('../models/userModel.js');
+const { show } = require('./userController.js');
 
 /**
  * eventController.js
@@ -26,7 +29,41 @@ module.exports = {
     },
 
 
-
+    showEvent: function (req, res) {
+        var id = req.params.id;
+    
+        // Find the event with the given ID
+        EventModel.findOne({ _id: id }, function (err, event) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting event.',
+                    error: err
+                });
+            }
+    
+            if (!event) {
+                return res.status(404).json({
+                    message: 'No such event'
+                });
+            }
+    
+            // Find all reviews associated with the current event
+            ReviewsModel.find({ eventId: id })
+                .populate('userId')
+                .exec(function (err, reviews) {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when getting reviews.',
+                            error: err
+                        });
+                    }
+    
+                    // Pass the event and reviews data to the view
+                    res.render('event/showEvent', { event: event, reviews: reviews });
+                });
+        });
+    },
+    
 
 
 
@@ -105,8 +142,7 @@ module.exports = {
                 longitude: req.body.longitude,
                 category: category._id,
                 eventImage: "/images/" + req.file.filename,
-                price: req.body.price,
-                reviews: []
+                price: req.body.price
             });
 
             // Save the event to the database
@@ -154,7 +190,6 @@ module.exports = {
 			event.category = req.body.category ? req.body.category : event.category;
             event.eventImage = req.body.eventImage ? req.body.eventImage : event.eventImage;
             event.price = req.body.price ? req.body.price : event.price;
-            event.reviews = req.body.reviews ? req.body.reviews : event.reviews;
 			
             event.save(function (err, event) {
                 if (err) {

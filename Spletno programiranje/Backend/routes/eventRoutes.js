@@ -27,6 +27,7 @@ router.get('/list', eventController.listAll);
  * GET
  */
 router.get('/:id', eventController.show);
+router.get('/showEvent/:id', eventController.showEvent);
 
 /*
  * POST

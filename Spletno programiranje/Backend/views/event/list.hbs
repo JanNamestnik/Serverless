@@ -1,6 +1,7 @@
 <h1>Vsi dogodki</h1>
 {{#each events}}
     <div class="event">
+        <h2><a href="/events/showEvent/{{id}}">link</a></h2>
         <img src="{{eventImage}}" alt="{{name}}" width="200">
         <h2>{{name}}</h2>
         <p>{{date}}</p>
@@ -11,5 +12,6 @@
         <p>{{contact}}</p>
         <p>{{category}}</p>
         <p>{{latitude}}, {{longitude}}</p>
+        <hr>
     </div>
 {{/each}}
