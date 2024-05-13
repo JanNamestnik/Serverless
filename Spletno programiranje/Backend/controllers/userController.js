@@ -70,7 +70,7 @@ module.exports = {
             });
         }
     
-        var imagePath = '/images/' + profileImage.filename;
+        var imagePath = '/userImages/' + profileImage.filename;
     
         UserModel.findByIdAndUpdate(userId, { profileImage: imagePath }, { new: true }, function (err, user) {
             if (err) {

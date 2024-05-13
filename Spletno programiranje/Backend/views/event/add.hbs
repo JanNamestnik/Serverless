@@ -1,0 +1,28 @@
+<a href="/events" class="accept-btn">Nazaj na dogodke</a>
+
+<h1>Objavi dogodek</h1>
+<form action="/events" method="post" enctype="multipart/form-data">
+    <input type="text" name="name" placeholder="Ime dogodka" required>
+    <input type="text" name="venue" placeholder="Lokacija" required>
+    <input type="date" name="date" required>
+    <input type="text" name="address" placeholder="Naslov" required>
+    <input type="time" name="startTime" required>
+    <input type="time" name="endTime" required>
+    <textarea name="description" placeholder="Opis dogodka" required></textarea>
+    <input type="text" name="contact" placeholder="Kontakt" required>
+    <input type="file" name="image">
+    <select name="category" required>
+        <option value="concert">Concert</option>
+        <option value="festival">Festival</option>
+        <option value="sports">Sport</option>
+        <option value="community event">Community event</option>
+        <option value="educational event">Educational event</option>
+        <option value="performance">Performance</option>
+        <option value="conference">Conference</option>
+        <option value="other">Other</option>
+    </select>
+    <input type="number" name="latitude" placeholder="Zemljepisna širina" step="0.000001" required>
+    <input type="number" name="longitude" placeholder="Zemljepisna dolžina" step="0.000001" required>
+    <input type="number" name="price" placeholder="Vnesi ceno" required>
+    <button type="submit" class="submit-btn">Objavi</button>
+</form>

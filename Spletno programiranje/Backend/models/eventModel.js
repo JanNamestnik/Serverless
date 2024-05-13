@@ -15,7 +15,10 @@ var eventSchema = new Schema({
 	'category' : {
 	 	type: Schema.Types.ObjectId,
 	 	ref: 'category'
-	}
+	},
+	'eventImage' : String,
+	'price' : Number
+
 });
 
 module.exports = mongoose.model('event', eventSchema);

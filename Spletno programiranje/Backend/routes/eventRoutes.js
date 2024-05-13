@@ -1,11 +1,27 @@
 var express = require('express');
 var router = express.Router();
 var eventController = require('../controllers/eventController.js');
+var multer = require('multer');
+var upload = multer({dest: 'public/images/'});
+
+function requireLogin(req, res, next){
+    if(req.session && req.session.userId){
+        return next();
+    } else {
+        var err = new Error('You must be logged in to view this page.');
+        err.status = 401;
+        return next(err);
+    }
+}
 
 /*
  * GET
  */
 router.get('/', eventController.list);
+router.get('/add', eventController.add);
+router.get('/list', eventController.listAll);
+
+
 
 /*
  * GET
@@ -15,7 +31,7 @@ router.get('/:id', eventController.show);
 /*
  * POST
  */
-router.post('/', eventController.create);
+router.post('/', requireLogin, upload.single('image'), eventController.create);
 
 /*
  * PUT

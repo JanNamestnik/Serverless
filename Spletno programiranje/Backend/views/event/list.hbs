@@ -1,0 +1,15 @@
+<h1>Vsi dogodki</h1>
+{{#each events}}
+    <div class="event">
+        <img src="{{eventImage}}" alt="{{name}}" width="200">
+        <h2>{{name}}</h2>
+        <p>{{date}}</p>
+        <p>{{venue}}</p>
+        <p>{{address}}</p>
+        <p>{{startTime}} - {{endTime}}</p>
+        <p>{{description}}</p>
+        <p>{{contact}}</p>
+        <p>{{category}}</p>
+        <p>{{latitude}}, {{longitude}}</p>
+    </div>
+{{/each}}

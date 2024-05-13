@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var userController = require('../controllers/userController.js');
 var multer = require('multer');
-var upload = multer({ dest: 'public/images/' });
+var upload = multer({ dest: 'public/userImages/' });
 
 function requireLogin(req, res, next){
     if(req.session && req.session.userId){
