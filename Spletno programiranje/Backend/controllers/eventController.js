@@ -105,7 +105,8 @@ module.exports = {
                 longitude: req.body.longitude,
                 category: category._id,
                 eventImage: "/images/" + req.file.filename,
-                price: req.body.price
+                price: req.body.price,
+                reviews: []
             });
 
             // Save the event to the database
@@ -153,6 +154,7 @@ module.exports = {
 			event.category = req.body.category ? req.body.category : event.category;
             event.eventImage = req.body.eventImage ? req.body.eventImage : event.eventImage;
             event.price = req.body.price ? req.body.price : event.price;
+            event.reviews = req.body.reviews ? req.body.reviews : event.reviews;
 			
             event.save(function (err, event) {
                 if (err) {
