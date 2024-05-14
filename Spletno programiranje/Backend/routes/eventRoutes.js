@@ -20,6 +20,8 @@ function requireLogin(req, res, next){
 router.get('/', eventController.list);
 router.get('/add', eventController.add);
 router.get('/list', eventController.listAll);
+router.get('/filter', eventController.filterEvents);
+router.get('/geospatialFilter', eventController.geospatialFilter);
 
 
 
@@ -27,6 +29,11 @@ router.get('/list', eventController.listAll);
  * GET
  */
 router.get('/:id', eventController.show);
+router.get('/showEvent/:id', eventController.showEvent);
+router.get('/showEvent/attend/:id', eventController.attend);
+router.get('/showEvent/leave/:id', eventController.leave);
+router.get('/showEvent/addFavorite/:id', eventController.addFavorite);
+router.get('/showEvent/removeFavorite/:id', eventController.removeFavorite);
 
 /*
  * POST
@@ -37,7 +44,6 @@ router.post('/', requireLogin, upload.single('image'), eventController.create);
  * PUT
  */
 router.put('/:id', eventController.update);
-
 /*
  * DELETE
  */

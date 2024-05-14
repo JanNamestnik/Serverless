@@ -40,6 +40,7 @@ module.exports = {
                     err.status = 401;
                     return next(err);
                 } else {
+                    //return res.render('user/profile', {username: user.username, email: user.email, profileImage: user.profileImage});
                     res.json(user); 
                 }
             }
@@ -82,6 +83,36 @@ module.exports = {
             res.redirect('/users/profile');
         });
     },
+
+
+    myFavorites: function (req, res, next) {
+        var userId = req.session.userId; // Get the user ID from the session
+
+        // Find the user document based on the user ID
+        UserModel.findById(userId)
+            .populate('favorites') // Populate the favorites field to get the details of favorite events
+            .exec(function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when finding user',
+                        error: err
+                    });
+                }
+
+                if (!user) {
+                    return res.status(404).json({
+                        message: 'User not found'
+                    });
+                }
+
+                // Extract favorite events from the user document
+                var favoriteEvents = user.favorites;
+
+                // Respond with the favorite events
+                res.json(favoriteEvents);
+            });
+    },
+
     
     // -----------------------------------------------------------------------------------------------------
     /**

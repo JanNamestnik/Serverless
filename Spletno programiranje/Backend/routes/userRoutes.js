@@ -22,6 +22,7 @@ router.get('/login', userController.showLogin);
 router.get('/register', userController.showRegister);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
+router.get('/myFavorites', userController.myFavorites);
 
 /*
  * GET
