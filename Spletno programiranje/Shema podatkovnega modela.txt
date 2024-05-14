@@ -4,6 +4,7 @@
   "username": "joze",
   "password": "joze123",
   "email": "joze.plavec@gmail.com",
+  "profileImage": "/userImages/1b229aa14a35b2fe3d7bc1c6916bfa52"
   "favoriteEvents": [
     ObjectId("event_id_1"),
     ObjectId("event_id_2"),
@@ -23,16 +24,22 @@
   "end_time": "22:00",
   "description": "VEJŽDE ŽUR 2024, kjer bodo nastopili Big foot Mama in Mi2",
   "contact": "info@eventim.si",
-  "latitude": "46.01429",
-  "longitude": "15.30342",
-  "categoryID": ObjectId("123456789")
+  "eventImage": "/images/1b229aa14a35b2fe3d7bc1c6916bfa52"
+  "location": Object,
+      type: "Point"
+      coordinates: Array
+          0: "15.303423"
+          1: "46.014293"
+  "categoryID": ObjectId("123456789"),
+  "price": 12 €,
+  "attendees":  ObjectId("543216789"), ObjectId("543216789")...
 }
 
 
 // CATEGORY
 {
   "_id": ObjectId("123456789"),
-  "name": "rock"
+  "name": "concert"
 }
 
 
@@ -41,6 +48,7 @@
   "_id": ObjectId("review_id"),
   "eventID": ObjectId("543216789"),
   "userID": ObjectId("987654321"),
+  "created": 2024-05-13T19:31:51.256+00:00
   "rating": 5,
-  "comment": "Zelo dober koncert"
+  "content": "Zelo dober koncert"
 }
