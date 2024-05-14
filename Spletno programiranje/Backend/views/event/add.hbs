@@ -4,10 +4,10 @@
 <form action="/events" method="post" enctype="multipart/form-data">
     <input type="text" name="name" placeholder="Ime dogodka" required>
     <input type="text" name="venue" placeholder="Lokacija" required>
-    <input type="date" name="date" required>
+    <input type="date" name="date_start" placeholder="date start" required>
+    <input type="date" name="date_end" placeholder="date end" required>
     <input type="text" name="address" placeholder="Naslov" required>
-    <input type="time" name="startTime" required>
-    <input type="time" name="endTime" required>
+    <input type="time" name="startTime">
     <textarea name="description" placeholder="Opis dogodka" required></textarea>
     <input type="text" name="contact" placeholder="Kontakt" required>
     <input type="file" name="image">
@@ -19,6 +19,7 @@
         <option value="educational event">Educational event</option>
         <option value="performance">Performance</option>
         <option value="conference">Conference</option>
+        <option value="exhibition">Exhibition</option>
         <option value="other">Other</option>
     </select>
     <input type="number" name="latitude" placeholder="Zemljepisna širina" step="0.000001" required>
