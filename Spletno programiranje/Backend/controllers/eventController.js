@@ -99,7 +99,7 @@ module.exports = {
                 // Check if date range is provided
                 if (fromDate && toDate) {
                     // Apply date range filtering logic
-                    filter.date = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+                    filter.date_start = { $gte: new Date(fromDate), $lte: new Date(toDate) };
                 }
     
                 // Check if price range is provided
@@ -130,7 +130,7 @@ module.exports = {
         } else {
             // No category selected, filter only by date range and/or price range if provided
             if (fromDate && toDate) {
-                filter.date = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+                filter.date_start = { $gte: new Date(fromDate), $lte: new Date(toDate) };
             }
     
             if (minPrice && maxPrice) {
@@ -321,10 +321,10 @@ module.exports = {
             const event = new EventModel({
                 name: req.body.name,
                 venue: req.body.venue,
-                date: req.body.date,
+                date_start: req.body.date_start,
+                date_end: req.body.date_end,
                 address: req.body.address,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
+                startTime: req.body.startTime ? req.body.startTime : '00:00',
                 description: req.body.description,
                 contact: req.body.contact,
                 location: {
@@ -372,10 +372,10 @@ module.exports = {
 
             event.name = req.body.name ? req.body.name : event.name;
 			event.venue = req.body.venue ? req.body.venue : event.venue;
-			event.date = req.body.date ? req.body.date : event.date;
+            event.date_start = req.body.date_start ? req.body.date_start : event.date_start;
+            event.date_end = req.body.date_end ? req.body.date_end : event.date_end;
 			event.address = req.body.address ? req.body.address : event.address;
 			event.startTime = req.body.startTime ? req.body.startTime : event.startTime;
-			event.endTime = req.body.endTime ? req.body.endTime : event.endTime;
 			event.description = req.body.description ? req.body.description : event.description;
 			event.contact = req.body.contact ? req.body.contact : event.contact;
 			event.category = req.body.category ? req.body.category : event.category;

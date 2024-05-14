@@ -4,10 +4,10 @@ var Schema   = mongoose.Schema;
 var eventSchema = new Schema({
 	'name' : String,
 	'venue' : String,
-	'date' : Date,
 	'address' : String,
 	'startTime' : String,
-	'endTime' : String,
+	'date_start' : Date,
+	'date_end' : Date,
 	'description' : String,
 	'contact' : String,
 	'category' : {
