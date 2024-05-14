@@ -228,9 +228,37 @@ module.exports = {
     },
     
 
+    addFavorite: function (req, res) {
+        var userId = req.session.userId;
+        var eventId = req.params.id;
 
+        UserModel.findByIdAndUpdate(userId, { $addToSet: { favorites: eventId } }, { new: true }, function (err, user) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when adding favorite event',
+                    error: err
+                });
+            }
 
+            return res.json(user);
+        });
+    },
 
+    removeFavorite: function (req, res) {
+        var userId = req.session.userId;
+        var eventId = req.params.id;
+        
+        UserModel.findByIdAndUpdate(userId, { $pull: { favorites: eventId } }, { new: true }, function (err, user) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when removing favorite event',
+                    error: err
+                });
+            }
+
+            return res.json(user);
+        });
+    },
 
 
 

@@ -14,7 +14,14 @@
         <p>{{event.price}} €</p>
     </div>
 
+    <p>Attend event: </p>
     <a href="/events/showEvent/attend/{{event._id}}" class="attend-btn">Attend</a>
+    <a href="/events/showEvent/unattend/{{event._id}}" class="unattend-btn">Unattend</a>
+
+    <p>Make it favorite event: </p>
+    <a href="/events/showEvent/addFavorite/{{event._id}}" class="attend-btn">Add to favourite</a>
+    <a href="/events/showEvent/removeFavorite/{{event._id}}" class="unattend-btn">Remove from favourite</a>
+
 
 <h2>Reviews:</h2>
 <hr>

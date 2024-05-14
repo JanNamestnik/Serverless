@@ -32,8 +32,8 @@ router.get('/:id', eventController.show);
 router.get('/showEvent/:id', eventController.showEvent);
 router.get('/showEvent/attend/:id', eventController.attend);
 router.get('/showEvent/leave/:id', eventController.leave);
-
-
+router.get('/showEvent/addFavorite/:id', eventController.addFavorite);
+router.get('/showEvent/removeFavorite/:id', eventController.removeFavorite);
 
 /*
  * POST
