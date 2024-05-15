@@ -1,4 +1,6 @@
 var UserModel = require('../models/userModel.js');
+const { generateToken } = require('../public/javascripts/authenticateJWT');
+
 
 /**
  * userController.js
@@ -23,11 +25,16 @@ module.exports = {
                 return next(err);
             } else {
                 req.session.userId = user._id;
-                //return res.redirect('profile');
-                return res.status(201).json(user);
+                // Generate JWT token
+                const token = generateToken(user.username, req.body.password);
+
+                res.cookie('token', token, { httpOnly: true });
+
+                return res.status(201).json({ user, token });
             }
         });
     },
+    
 
     profile: function (req, res, next) {
         UserModel.findById(req.session.userId)

@@ -23,11 +23,12 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+
 // session
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
 app.use(session({
-    secret: 'work hard',
+    secret: 'Serverless*2024',
     resave: true,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoDB })

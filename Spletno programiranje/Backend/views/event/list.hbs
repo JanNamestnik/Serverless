@@ -12,6 +12,7 @@
         <option value="educational event">educational event</option>
         <option value="performance">performance</option>
         <option value="conference">conference</option>
+        <option value="exhibition">exhibition</option>
         <option value="other">other</option>
     </select>
 
@@ -88,10 +89,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <h2><a href="/events/showEvent/{{id}}">link</a></h2>
         <img src="{{eventImage}}" alt="{{name}}" width="200">
         <h2>{{name}}</h2>
-        <p>{{date}}</p>
+        <p>{{date_start}}</p>
+        <p>{{date_end}}</p>
         <p>{{venue}}</p>
         <p>{{address}}</p>
-        <p>{{startTime}} - {{endTime}}</p>
+        <p>{{startTime}}</p>
         <p>{{description}}</p>
         <p>{{contact}}</p>
         <p>{{category}}</p>
