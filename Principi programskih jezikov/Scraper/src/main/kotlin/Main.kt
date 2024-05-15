@@ -8,7 +8,7 @@ import it.skrape.selects.DocElement
 import it.skrape.selects.html5.*
 import it.skrape.selects.text
 
-fun dateSeparator(elements: List<List<DocElement>>): Triple<String?, String?, String?> {
+fun dateSeparatorVisitMaribor(elements: List<List<DocElement>>): Triple<String?, String?, String?> {
     val datePattern =  """(\d{1,2}\.\s\d{1,2}\.\s\d{4})""".toRegex()
     val timePattern = """(\d{1,2}:\d{2})""".toRegex()
 
@@ -24,9 +24,21 @@ fun dateSeparator(elements: List<List<DocElement>>): Triple<String?, String?, St
     return Triple(firstDate, secondDate, startTime)
 }
 
+fun dateSeparatorEntrio(dateString: String): Pair<String?, String?> {
+    val datePattern = """(\d{1,2}\.\d{1,2}\.\d{4})""".toRegex()
+    val timePattern = """(\d{1,2}:\d{2})""".toRegex()
+
+    val dateMatchResult = datePattern.find(dateString)
+    val timeMatchResult = timePattern.find(dateString)
+
+    val date = dateMatchResult?.value
+    val startTime = timeMatchResult?.value
+
+    return Pair(date, startTime)
+}
+
 fun getEvent(s: String?) {
     if (s == null) return
-    val siteHref = s
     skrape(BrowserFetcher) {
         request {
             url = s
@@ -34,69 +46,119 @@ fun getEvent(s: String?) {
 
         response {
             htmlDocument {
-                println("\n========== Event ==========")
-                println("Name: ${h2 { withClass = "heading__title"; findFirst { text } }}")
+                println("\n========== Event Visit Maribor ==========")
+                val eventName = h2 { withClass = "heading__title"; findFirst { text } }
+                println("Name: $eventName")
                 val address = i { withClass = "fa-map-marker-alt"; findFirst { siblings } }
                 println("Address: ${address.text}")
                 try {
                     val date = i { withClass = "fa-calendar-alt"; findFirst { siblings } }
-                    var (firstDate, secondDate, startTime) = dateSeparator(listOf(date))
+                    var (firstDate, secondDate, startTime) = dateSeparatorVisitMaribor(listOf(date))
                     // V primeru, da je dogodek enodnevni, je drugi datum enak prvemu
                     if (secondDate == null) {
                         secondDate = firstDate
                     }
-                    if(startTime == null){
+                    if (startTime == null) {
                         startTime = "When the venue opens"
                     }
                     println("Start Time: $startTime")
                     println("Start Date: $firstDate")
                     println("Finish Date: $secondDate")
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     println("Date: Not available")
                 }
-                val description = div { withClass = "paragraph-emphasis"; findFirst { p {  findFirst{text} } } }
+                val description = div { withClass = "paragraph-emphasis"; findFirst { p { findFirst { text } } } }
                 println("Description: $description")
-                try{
+                try {
                     val contact = i { withClass = "fa-user"; findFirst { siblings } }
                     println("Contact: ${contact.text}")
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     println("Contact: Not available")
                 }
-                try{
+                try {
                     val category = i { withClass = "fa-star"; findFirst { siblings } }
                     println("Category: ${category.text}")
 
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     println("Category: Not available")
                 }
-                val eventImage = picture {img { findFirst { attributes["data-src"] } }}
-                val fullImageUrl = "https://www.visitmaribor.si" + eventImage
+                val eventImage = picture { img { findFirst { attributes["data-src"] } } }
+                val fullImageUrl = "https://www.visitmaribor.si$eventImage"
                 println("Image url: $fullImageUrl")
-                println("Site url: $siteHref")
+                println("Site url: $s")
             }
         }
     }
 }
 
-    fun main() {
-        skrape(BrowserFetcher) {
-            request {
-                url = "https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/"
+fun getEventEntrio(s: String?) {
+    if (s == null) return
+    skrape(BrowserFetcher) {
+        request {
+            url = s
+        }
+        response {
+            htmlDocument {
+                println("\n========== Entrio Events ==========")
+                val eventName = h1 { withClass = "event-header__title"; findFirst { text } }
+                println("Name: $eventName")
+                val address = a { withClass = "event-header__location"; findFirst { text } }
+                println("Location: $address")
+                try {
+                    val date = p { withClass = "event-header__time"; findFirst { text } }
+                    var (startDate, startTime) = dateSeparatorEntrio(date)
+
+                    if (startTime == null) {
+                        startTime = "When the venue opens"
+                    }
+                    println("Start Time: $startTime")
+                    println("Start Date: $startDate")
+                } catch (e: Exception) {
+                    println("Date: Not available")
+                }
+                val description = div { withClass = "event-description__content"; findThird { text } }
+                println("Description: $description")
+
+                try {
+                    val eventImage = img {
+                        withClass = "event-banner"
+                        findFirst { attributes["src"] }
+                    } ?: img {
+                        withClass = "event-header__img"
+                        findFirst { attributes["src"] }
+                    }
+                    println("Image url: $eventImage")
+                } catch (e: Exception) {
+                    println("Image: Not available")
+                }
+
+
+                val contact = a { withClass = "contact-organizer__action"; findFirst { text } }
+                println("Contact: $contact")
+
             }
+        }
+    }
+}
 
-            response {
-                println("http status code: ${status { code }}")
-                println("http status message: ${status { message }}")
+fun main() {
+    skrape(BrowserFetcher) {
+        request {
+            url = "https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/"
+        }
 
-                htmlDocument {
-                    a {
-                        withClass = "catalogue-item"
+        response {
+            println("http status code: ${status { code }}")
+            println("http status message: ${status { message }}")
 
-                        findAll {
-                            forEach {
-                                if (it.attributes["href"] != null) {
-                                    getEvent(it.attributes["href"])
-                                }
+            htmlDocument {
+                a {
+                    withClass = "catalogue-item"
+
+                    findAll {
+                        forEach {
+                            if (it.attributes["href"] != null) {
+                                getEvent(it.attributes["href"])
                             }
                         }
                     }
@@ -104,3 +166,29 @@ fun getEvent(s: String?) {
             }
         }
     }
+    skrape(BrowserFetcher) {
+        request {
+            url = "https://www.entrio.si/events?s=&sort=-1&ci%5B%5D=102"
+        }
+        response {
+            println("http status code: ${status { code }}")
+            println("http status message: ${status { message }}")
+
+            htmlDocument {
+                a {
+                    withClass = "event-card__action"
+                    findAll {
+                        forEach {
+                            if (it.attributes["href"] != null) {
+                                getEventEntrio(it.attributes["href"])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
