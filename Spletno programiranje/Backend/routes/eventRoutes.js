@@ -2,17 +2,23 @@ var express = require('express');
 var router = express.Router();
 var eventController = require('../controllers/eventController.js');
 var multer = require('multer');
-var upload = multer({dest: 'public/images/'});
+var upload = multer({ dest: 'public/images/' });
 
-function requireLogin(req, res, next){
-    if(req.session && req.session.userId){
+const { verifyToken } = require('../public/javascripts/authenticateJWT');
+
+// Middleware for verifying JWT token on all routes except list, filter
+router.use((req, res, next) => {
+    if (req.path === '/list' || req.path === '/filter' || req.path === '/geospatialFilter') {
+        // Skip authentication for list routes
         return next();
-    } else {
-        var err = new Error('You must be logged in to view this page.');
-        err.status = 401;
-        return next(err);
     }
-}
+    verifyToken(req, res, (err) => {
+        if (err) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+        }
+        next();
+    });
+});
 
 /*
  * GET
@@ -22,8 +28,6 @@ router.get('/add', eventController.add);
 router.get('/list', eventController.listAll);
 router.get('/filter', eventController.filterEvents);
 router.get('/geospatialFilter', eventController.geospatialFilter);
-
-
 
 /*
  * GET
@@ -38,12 +42,13 @@ router.get('/showEvent/removeFavorite/:id', eventController.removeFavorite);
 /*
  * POST
  */
-router.post('/', requireLogin, upload.single('image'), eventController.create);
+router.post('/', upload.single('image'), eventController.create);
 
 /*
  * PUT
  */
 router.put('/:id', eventController.update);
+
 /*
  * DELETE
  */

@@ -4,15 +4,21 @@ var userController = require('../controllers/userController.js');
 var multer = require('multer');
 var upload = multer({ dest: 'public/userImages/' });
 
-function requireLogin(req, res, next){
-    if(req.session && req.session.userId){
+const { verifyToken } = require('../public/javascripts/authenticateJWT');
+
+// Middleware for verifying JWT token on all routes except login and register
+router.use((req, res, next) => {
+    if (req.path === '/login' || req.path === '/register') {
+        // Skip authentication for login and register routes
         return next();
-    } else {
-        var err = new Error('You must be logged in to view this page.');
-        err.status = 401;
-        return next(err);
     }
-}
+    verifyToken(req, res, (err) => {
+        if (err) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+        }
+        next();
+    });
+});
 
 /*
  * GET
@@ -34,7 +40,7 @@ router.get('/:id', userController.show);
  */
 router.post('/', userController.create);
 router.post('/login', userController.login);
-router.post('/profile/update', requireLogin, upload.single('profileImage'), userController.updatePicture);
+router.post('/profile/update', upload.single('profileImage'), userController.updatePicture);
 
 /*
  * PUT
