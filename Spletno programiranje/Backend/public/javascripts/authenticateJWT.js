@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // Secret key for JWT
-const secretKey = 'mykey'; // Change this to a strong and secure key
+const secretKey = 'Serverless*2024'; // Change this to a strong and secure key
 
 // Middleware to generate JWT token
 function generateToken(username, password) {
