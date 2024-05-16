@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var reviewController = require('../controllers/reviewController.js');
 
+const { verifyToken } = require('../public/javascripts/authenticateJWT');
+
 /*
  * GET
  */
@@ -15,16 +17,16 @@ router.get('/:id', reviewController.show);
 /*
  * POST
  */
-router.post('/', reviewController.create);
+router.post('/', verifyToken, reviewController.create);
 
 /*
  * PUT
  */
-router.put('/:id', reviewController.update);
+router.put('/:id', verifyToken, reviewController.update);
 
 /*
  * DELETE
  */
-router.delete('/:id', reviewController.remove);
+router.delete('/:id', verifyToken, reviewController.remove);
 
 module.exports = router;
