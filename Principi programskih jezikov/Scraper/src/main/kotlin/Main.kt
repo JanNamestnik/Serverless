@@ -131,10 +131,12 @@ fun getEventEntrio(s: String?) {
                 } catch (e: Exception) {
                     println("Image: Not available")
                 }
-
-
-                val contact = a { withClass = "contact-organizer__action"; findFirst { text } }
-                println("Contact: $contact")
+                try {
+                    val contact = a { withClass = "contact-organizer__action"; findFirst { text } }
+                    println("Contact: $contact")
+                }catch(e:Exception){
+                    println("Contact: Not available")
+                }
 
             }
         }
@@ -142,6 +144,8 @@ fun getEventEntrio(s: String?) {
 }
 
 fun main() {
+    val maxEvents = 20 // Najvecje stevilo pridobljenih dogodkov iz vira, zaradi optimizacije
+
     skrape(BrowserFetcher) {
         request {
             url = "https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/"
@@ -156,9 +160,12 @@ fun main() {
                     withClass = "catalogue-item"
 
                     findAll {
+                        var count = 0 // Initialize counter
                         forEach {
+                            if (count >= maxEvents) return@forEach // Gremo ven iz zanke, ko dosežemo maxEvents
                             if (it.attributes["href"] != null) {
                                 getEvent(it.attributes["href"])
+                                count++
                             }
                         }
                     }
