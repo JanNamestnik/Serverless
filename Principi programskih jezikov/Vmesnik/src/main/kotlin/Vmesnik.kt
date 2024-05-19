@@ -42,10 +42,56 @@ fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
+        SidebarButton(
+            icon = Icons.Default.Person,
+            label = "Add event",
+            isSelected = selectedScreen == "Add event",
+            onClick = { onScreenSelected("Add event") }
+        )
+        SidebarButton(
+            icon = Icons.Default.List,
+            label = "Events",
+            isSelected = selectedScreen == "Events",
+            onClick = { onScreenSelected("Events") }
+        )
+        SidebarButton(
+            icon = Icons.Default.Share,
+            label = "Scraper",
+            isSelected = selectedScreen == "Scraper",
+            onClick = { onScreenSelected("Scraper") }
+        )
+        SidebarButton(
+            icon = Icons.Default.Build,
+            label = "Generator",
+            isSelected = selectedScreen == "Generator",
+            onClick = { onScreenSelected("Generator") }
+        )
+        Spacer(modifier = Modifier.weight(1f)) // da je zadnji gumb na dnu
+        SidebarButton(
+            icon = Icons.Default.Info,
+            label = "About",
+            isSelected = selectedScreen == "About",
+            onClick = { onScreenSelected("About") }
+        )
     }
 }
 
+@Composable
+fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = icon, contentDescription = label)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(label)
+        }
+    }
+}
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
