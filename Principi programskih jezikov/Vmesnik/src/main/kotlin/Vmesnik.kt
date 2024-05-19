@@ -2,8 +2,10 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -96,24 +98,29 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
 
 @Composable
 fun ContentArea(selectedScreen: String) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(12.dp)
-        .border(
-            border = BorderStroke(1.dp, Color.LightGray),
-            shape = RoundedCornerShape(12.dp),
-        )
-        .padding(12.dp),
-        contentAlignment = Alignment.Center) {
-        when (selectedScreen) {
-            "Add event" -> AddEventScreen()
-            "Events" -> EventsScreen()
-            "Scraper" -> ScraperScreen()
-            "Generator" -> GeneratorScreen()
-            "About" -> AboutScreen()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)
+            .border(
+                border = BorderStroke(1.dp, Color.LightGray),
+                shape = RoundedCornerShape(12.dp),
+            )
+            .padding(12.dp),
+        contentAlignment = Alignment.TopStart
+    ) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            when (selectedScreen) {
+                "Add event" -> AddEventScreen()
+                "Events" -> EventsScreen()
+                "Scraper" -> ScraperScreen()
+                "Generator" -> GeneratorScreen()
+                "About" -> AboutScreen()
+            }
         }
     }
 }
+
 
 @Composable
 fun AddEventScreen() {
@@ -137,8 +144,48 @@ fun GeneratorScreen() {
 
 @Composable
 fun AboutScreen() {
-    Text("About screen")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Compose Database Admin", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "This application serves as a database manager, allowing users to enter and display data from events table. Additionally, it acts as an advanced data parser, facilitating the insertion of parsed web data into the database."
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Key Features:",
+            style = MaterialTheme.typography.h6
+        )
+        Text("- Add and manage events in the database")
+        Text("- Display and edit events")
+        Text("- Scrape data from the web and insert it into the database")
+        Text("- Generate fictional data for testing purposes")
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Technologies Used:",
+            style = MaterialTheme.typography.h6
+        )
+        Text("Kotlin, Jetpack Compose, Compose for Desktop")
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Group name:",
+            style = MaterialTheme.typography.h6
+        )
+        Text("Serverless")
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Members:",
+            style = MaterialTheme.typography.h6
+        )
+        Text("Jan Namestnik, Nejc Cekuta, Metod Golob")
+    }
 }
+
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
