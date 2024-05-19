@@ -34,7 +34,20 @@ data class Event(
 @Preview
 fun App() {
     var selectedScreen by remember { mutableStateOf("Add event") }
-    var events by remember { mutableStateOf(listOf<Event>()) }
+    var events by remember { mutableStateOf(listOf(
+        Event(
+            name = "Lampijončki",
+            address = "Študentski kampus gosposvetska",
+            startTime = "10:00 AM",
+            dateStart = "2024-05-30",
+            dateEnd = "2024-05-31",
+            description = "Nastopili bodo: modrijani, smetnaki...",
+            contact = "info@gmail.com",
+            category = "festival",
+            longitude = "46.562828",
+            latitude = "15.626822"
+        )
+    )) }
 
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -308,7 +321,8 @@ fun EventsScreen(events: List<Event>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Events", style = MaterialTheme.typography.h4)
         Spacer(modifier = Modifier.height(16.dp))
