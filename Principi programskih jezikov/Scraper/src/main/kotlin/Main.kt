@@ -47,10 +47,18 @@ fun getEvent(s: String?) {
         response {
             htmlDocument {
                 println("\n========== Event Visit Maribor ==========")
-                val eventName = h2 { withClass = "heading__title"; findFirst { text } }
-                println("Name: $eventName")
-                val address = i { withClass = "fa-map-marker-alt"; findFirst { siblings } }
-                println("Address: ${address.text}")
+                try{
+                    val eventName = h2 { withClass = "heading__title"; findFirst { text } }
+                    println("Name: $eventName")
+                }catch (e:Exception){
+                    println("Name: Not available")
+                }
+                try {
+                    val address = i { withClass = "fa-map-marker-alt"; findFirst { siblings } }
+                    println("Address: ${address.text}")
+                }catch (e:Exception){
+                    println("Address: Not available")
+                }
                 try {
                     val date = i { withClass = "fa-calendar-alt"; findFirst { siblings } }
                     var (firstDate, secondDate, startTime) = dateSeparatorVisitMaribor(listOf(date))
@@ -59,7 +67,7 @@ fun getEvent(s: String?) {
                         secondDate = firstDate
                     }
                     if (startTime == null) {
-                        startTime = "When the venue opens"
+                        startTime = "When the venue opens" // v primeru, da ni navedenega casa
                     }
                     println("Start Time: $startTime")
                     println("Start Date: $firstDate")
@@ -67,8 +75,12 @@ fun getEvent(s: String?) {
                 } catch (e: Exception) {
                     println("Date: Not available")
                 }
-                val description = div { withClass = "paragraph-emphasis"; findFirst { p { findFirst { text } } } }
-                println("Description: $description")
+                try {
+                    val description = div { withClass = "paragraph-emphasis"; findFirst { p { findFirst { text } } } }
+                    println("Description: $description")
+                }catch (e:Exception){
+                    println("Description: Not available")
+                }
                 try {
                     val contact = i { withClass = "fa-user"; findFirst { siblings } }
                     println("Contact: ${contact.text}")
@@ -82,10 +94,14 @@ fun getEvent(s: String?) {
                 } catch (e: Exception) {
                     println("Category: Not available")
                 }
-                val eventImage = picture { img { findFirst { attributes["data-src"] } } }
-                val fullImageUrl = "https://www.visitmaribor.si$eventImage"
-                println("Image url: $fullImageUrl")
-                println("Site url: $s")
+                try {
+                    val eventImage = picture { img { findFirst { attributes["data-src"] } } }
+                    val fullImageUrl = "https://www.visitmaribor.si$eventImage"
+                    println("Image url: $fullImageUrl")
+                    println("Site url: $s")
+                }catch (e: Exception) {
+                    println("Image: Not available")
+                }
             }
         }
     }
@@ -100,10 +116,18 @@ fun getEventEntrio(s: String?) {
         response {
             htmlDocument {
                 println("\n========== Entrio Events ==========")
-                val eventName = h1 { withClass = "event-header__title"; findFirst { text } }
-                println("Name: $eventName")
-                val address = a { withClass = "event-header__location"; findFirst { text } }
-                println("Location: $address")
+                try {
+                    val eventName = h1 { withClass = "event-header__title"; findFirst { text } }
+                    println("Name: $eventName")
+                }catch (e:Exception){
+                    println("Name: Not available")
+                }
+                try {
+                    val address = a { withClass = "event-header__location"; findFirst { text } }
+                    println("Location: $address")
+                }catch (e:Exception){
+                    println("Address: Not available")
+                }
                 try {
                     val date = p { withClass = "event-header__time"; findFirst { text } }
                     var (startDate, startTime) = dateSeparatorEntrio(date)
@@ -116,9 +140,12 @@ fun getEventEntrio(s: String?) {
                 } catch (e: Exception) {
                     println("Date: Not available")
                 }
-                val description = div { withClass = "event-description__content"; findThird { text } }
-                println("Description: $description")
-
+                try{
+                    val description = div { withClass = "event-description__content"; findThird { text } }
+                    println("Description: $description")
+                }catch (e:Exception) {
+                    println("Description: Not available")
+                }
                 try {
                     val eventImage = img {
                         withClass = "event-banner"
@@ -131,10 +158,12 @@ fun getEventEntrio(s: String?) {
                 } catch (e: Exception) {
                     println("Image: Not available")
                 }
-
-
-                val contact = a { withClass = "contact-organizer__action"; findFirst { text } }
-                println("Contact: $contact")
+                try {
+                    val contact = a { withClass = "contact-organizer__action"; findFirst { text } }
+                    println("Contact: $contact")
+                }catch(e:Exception){
+                    println("Contact: Not available")
+                }
 
             }
         }
@@ -142,6 +171,8 @@ fun getEventEntrio(s: String?) {
 }
 
 fun main() {
+    val maxEvents = 20 // Najvecje stevilo pridobljenih dogodkov iz vira, zaradi optimizacije
+
     skrape(BrowserFetcher) {
         request {
             url = "https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/"
@@ -156,9 +187,12 @@ fun main() {
                     withClass = "catalogue-item"
 
                     findAll {
+                        var count = 0 // Initialize counter
                         forEach {
+                            if (count >= maxEvents) return@forEach // Gremo ven iz zanke, ko dosežemo maxEvents
                             if (it.attributes["href"] != null) {
                                 getEvent(it.attributes["href"])
+                                count++
                             }
                         }
                     }
