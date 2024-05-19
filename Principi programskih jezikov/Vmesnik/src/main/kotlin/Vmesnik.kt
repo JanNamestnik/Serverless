@@ -262,6 +262,39 @@ fun AddEventScreen() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
+        // Save Button
+        Button(
+            onClick = {
+                // Create the event and pass it to the onAddEvent lambda
+                val event = Event(
+                    name = name,
+                    address = address,
+                    startTime = startTime,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    description = description,
+                    contact = contact,
+                    category = selectedCategory,
+                    longitude = longitude,
+                    latitude = latitude
+                )
+                //onAddEvent(event)
+                // Clear the input fields
+                name = ""
+                address = ""
+                startTime = ""
+                dateStart = ""
+                dateEnd = ""
+                description = ""
+                contact = ""
+                selectedCategory = ""
+                longitude = ""
+                latitude = ""
+            },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Add Event")
+        }
     }
 }
 
