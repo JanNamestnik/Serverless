@@ -2,7 +2,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -340,7 +339,7 @@ fun AboutScreen() {
         )
         Text("- Add and manage events in the database")
         Text("- Display and edit events")
-        Text("- Scrape data from the web and insert it into the database")
+        Text("- Scrape data from the visitmaribor.si and insert it into the database")
         Text("- Generate fictional data for testing purposes")
         Spacer(modifier = Modifier.height(16.dp))
         Text(
