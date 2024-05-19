@@ -34,14 +34,18 @@ data class Event(
 @Preview
 fun App() {
     var selectedScreen by remember { mutableStateOf("Add event") }
+    var events by remember { mutableStateOf(listOf<Event>()) }
 
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
-            ContentArea(selectedScreen)
+            ContentArea(selectedScreen, events) { newEvent ->
+                events = events + newEvent
+            }
         }
     }
 }
+
 
 @Composable
 fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
@@ -109,7 +113,7 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
 }
 
 @Composable
-fun ContentArea(selectedScreen: String) {
+fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -123,8 +127,8 @@ fun ContentArea(selectedScreen: String) {
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             when (selectedScreen) {
-                "Add event" -> AddEventScreen()
-                "Events" -> EventsScreen()
+                "Add event" -> AddEventScreen(onAddEvent)
+                "Events" -> EventsScreen(events)
                 "Scraper" -> ScraperScreen()
                 "Generator" -> GeneratorScreen()
                 "About" -> AboutScreen()
@@ -134,7 +138,7 @@ fun ContentArea(selectedScreen: String) {
 }
 
 @Composable
-fun AddEventScreen() {
+fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     var name by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var startTime by remember { mutableStateOf("") }
@@ -278,7 +282,7 @@ fun AddEventScreen() {
                     longitude = longitude,
                     latitude = latitude
                 )
-                //onAddEvent(event)
+                onAddEvent(event)
                 // Clear the input fields
                 name = ""
                 address = ""
@@ -298,10 +302,12 @@ fun AddEventScreen() {
     }
 }
 
+
 @Composable
-fun EventsScreen() {
-    Text("People screen")
+fun EventsScreen(events: List<Event>) {
+    Text("Events screen")
 }
+
 
 @Composable
 fun ScraperScreen() {
