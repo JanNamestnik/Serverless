@@ -17,6 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
+data class Event(
+    val name: String,
+    val address: String,
+    val startTime: String,
+    val dateStart: String,
+    val dateEnd: String,
+    val description: String,
+    val contact: String,
+    val category: String,
+    val longitude: String,
+    val latitude: String
+)
+
 @Composable
 @Preview
 fun App() {
