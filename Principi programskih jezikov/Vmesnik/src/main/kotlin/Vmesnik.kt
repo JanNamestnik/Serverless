@@ -24,6 +24,7 @@ fun App() {
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
+            ContentArea(selectedScreen)
         }
     }
 }
@@ -91,6 +92,52 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
             Text(label)
         }
     }
+}
+
+@Composable
+fun ContentArea(selectedScreen: String) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(12.dp)
+        .border(
+            border = BorderStroke(1.dp, Color.LightGray),
+            shape = RoundedCornerShape(12.dp),
+        )
+        .padding(12.dp),
+        contentAlignment = Alignment.Center) {
+        when (selectedScreen) {
+            "Add event" -> AddEventScreen()
+            "Events" -> EventsScreen()
+            "Scraper" -> ScraperScreen()
+            "Generator" -> GeneratorScreen()
+            "About" -> AboutScreen()
+        }
+    }
+}
+
+@Composable
+fun AddEventScreen() {
+    Text("Add person screen")
+}
+
+@Composable
+fun EventsScreen() {
+    Text("People screen")
+}
+
+@Composable
+fun ScraperScreen() {
+    Text("Scraper screen")
+}
+
+@Composable
+fun GeneratorScreen() {
+    Text("Generator screen")
+}
+
+@Composable
+fun AboutScreen() {
+    Text("About screen")
 }
 
 fun main() = application {
