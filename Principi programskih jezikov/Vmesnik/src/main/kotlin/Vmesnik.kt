@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
+
 data class Event(
     val name: String,
     val address: String,
@@ -61,7 +62,7 @@ fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         SidebarButton(
-            icon = Icons.Default.Person,
+            icon = Icons.Default.Add,
             label = "Add event",
             isSelected = selectedScreen == "Add event",
             onClick = { onScreenSelected("Add event") }
@@ -304,9 +305,42 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
 
 @Composable
 fun EventsScreen(events: List<Event>) {
-    Text("Events screen")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text("Events", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        events.forEach { event ->
+            EventCard(event)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
 }
 
+@Composable
+fun EventCard(event: Event) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(event.name, style = MaterialTheme.typography.h6)
+            Text("Address: ${event.address}")
+            Text("Start Time: ${event.startTime}")
+            Text("Start Date: ${event.dateStart}")
+            Text("End Date: ${event.dateEnd}")
+            Text("Description: ${event.description}")
+            Text("Contact: ${event.contact}")
+            Text("Category: ${event.category}")
+            Text("Location: ${event.latitude}, ${event.longitude}")
+        }
+    }
+}
 
 @Composable
 fun ScraperScreen() {
