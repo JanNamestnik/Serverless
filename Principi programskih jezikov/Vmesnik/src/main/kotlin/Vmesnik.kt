@@ -1,11 +1,9 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -121,10 +120,136 @@ fun ContentArea(selectedScreen: String) {
     }
 }
 
-
 @Composable
 fun AddEventScreen() {
-    Text("Add person screen")
+    var name by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var startTime by remember { mutableStateOf("") }
+    var dateStart by remember { mutableStateOf("") }
+    var dateEnd by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var contact by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
+    var latitude by remember { mutableStateOf("") }
+
+    val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Add Event", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Name
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Address
+        OutlinedTextField(
+            value = address,
+            onValueChange = { address = it },
+            label = { Text("Address") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Start Time
+        OutlinedTextField(
+            value = startTime,
+            onValueChange = { startTime = it },
+            label = { Text("Start Time") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Date Start
+        OutlinedTextField(
+            value = dateStart,
+            onValueChange = { dateStart = it },
+            label = { Text("Date Start") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // Date End
+        OutlinedTextField(
+            value = dateEnd,
+            onValueChange = { dateEnd = it },
+            label = { Text("Date End") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // Description
+        OutlinedTextField(
+            value = description,
+            onValueChange = { description = it },
+            label = { Text("Description") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Contact
+        OutlinedTextField(
+            value = contact,
+            onValueChange = { contact = it },
+            label = { Text("Contact") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Category Dropdown
+        var expanded by remember { mutableStateOf(false) }
+        Box {
+            OutlinedTextField(
+                value = selectedCategory,
+                onValueChange = { },
+                readOnly = true,
+                label = { Text("Category") },
+                trailingIcon = {
+                    Icon(Icons.Default.ArrowDropDown, null, Modifier.clickable { expanded = true })
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(onClick = {
+                        selectedCategory = category
+                        expanded = false
+                    }) {
+                        Text(category)
+                    }
+                }
+            }
+        }
+
+        // Longitude
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = { longitude = it },
+            label = { Text("Longitude") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // Latitude
+        OutlinedTextField(
+            value = latitude,
+            onValueChange = { latitude = it },
+            label = { Text("Latitude") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+    }
 }
 
 @Composable
