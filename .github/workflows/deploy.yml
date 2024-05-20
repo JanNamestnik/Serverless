@@ -26,11 +26,11 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v4
         with:
-          context: ./backend 
-          file: ./backend/Dockerfile  
+          context: ./Spletno programiranje/Backend 
+          file: ./Spletno programiranje/Backend/Dockerfile  
           push: true
-          tags: serverless24/app:tagname  
-          
+          tags: serverless24/app:tagname 
+
   notify:
     runs-on: ubuntu-latest
     needs: build-and-push
