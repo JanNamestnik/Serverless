@@ -1,0 +1,105 @@
+<h1>Vsi dogodki</h1>
+
+<!-- Filter form -->
+<form action="/events/filter" method="get">
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+        <option value="">All</option>
+        <option value="concert">concert</option>
+        <option value="festival">festival</option>
+        <option value="sports">sports</option>
+        <option value="community event">community event</option>
+        <option value="educational event">educational event</option>
+        <option value="performance">performance</option>
+        <option value="conference">conference</option>
+        <option value="exhibition">exhibition</option>
+        <option value="other">other</option>
+    </select>
+
+    <label for="fromDate">From date:</label>
+    <input type="date" id="fromDate" name="fromDate">
+    <label for="toDate">To date:</label>
+    <input type="date" id="toDate" name="toDate">
+
+    <label for="favourite">Most attendees:</label>
+    <input type="checkbox" id="favourite" name="favourite">
+
+    <label for="minPrice">Minimum price:</label>
+    <input type="number" id="minPrice" name="minPrice">
+
+    <label for="maxPrice">Maximum price:</label>
+    <input type="number" id="maxPrice" name="maxPrice">
+
+    <button type="submit">Filter</button>
+</form>
+
+<!--Geospatial form-->
+<form id="geospatialForm" action="/events/geospatialFilter" method="get">
+
+    <h2>Geospatial Filtering</h2>
+    
+    <!-- Input fields for longitude and latitude -->
+    <label for="longitude">Longitude:</label>
+    <input type="number" id="longitude" name="longitude" placeholder="Longitude" step="0.000001" required>
+
+    <label for="latitude">Latitude:</label>
+    <input type="number" id="latitude" name="latitude" placeholder="Latitude" step="0.000001" required>
+
+    <label for="distance">Distance (in meters):</label>
+    <input type="number" id="distance" name="distance" placeholder="Distance" required>
+
+    <!-- Button to get user's current location -->
+    <button type="button" id="getCurrentLocation">Get My Location</button>
+
+    <button type="submit">Filter</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const geospatialForm = document.getElementById('geospatialForm');
+    const getCurrentLocationButton = document.getElementById('getCurrentLocation');
+
+    // Add click event listener to the button
+    getCurrentLocationButton.addEventListener('click', function() {
+        // Check if geolocation is supported by the browser
+        if ("geolocation" in navigator) {
+            // Request the user's current position
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Update the values of the longitude and latitude input fields
+                document.getElementById('longitude').value = position.coords.longitude;
+                document.getElementById('latitude').value = position.coords.latitude;
+            }, function(error) {
+                // Handle errors
+                console.error('Error getting current position:', error.message);
+                alert('Error getting current position: ' + error.message);
+            });
+        } else {
+            // Geolocation is not supported
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+});
+</script>
+
+
+
+
+{{#each events}}
+    <div class="event">
+        <h2><a href="/events/showEvent/{{id}}">link</a></h2>
+        <img src="{{eventImage}}" alt="{{name}}" width="200">
+        <h2>{{name}}</h2>
+        <p>{{date_start}}</p>
+        <p>{{date_end}}</p>
+        <p>{{venue}}</p>
+        <p>{{address}}</p>
+        <p>{{startTime}}</p>
+        <p>{{description}}</p>
+        <p>{{contact}}</p>
+        <p>{{category}}</p>
+        <p>{{latitude}}, {{longitude}}</p>
+        <p>Attendees: {{attendees.length}}</p>
+        <p>Price: {{price}} €</p>
+        <hr>
+    </div>
+{{/each}}

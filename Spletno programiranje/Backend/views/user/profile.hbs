@@ -1,0 +1,13 @@
+<h1>Profil uporabnika</h1>
+<h3>Ime: {{username}}</h3>
+<h3>Email: {{email}}</h3>
+<h2>Slika:</h2>
+<img src="{{profileImage}}" alt="Profilna slika" style="width: 100px; height: auto;">
+<form action="/users/profile/update" method="POST" enctype="multipart/form-data" class="pictureForm">
+    <input type="file" name="profileImage" accept="image/*">
+    <button type="submit" class="submit2-btn">Shrani spremembe</button>
+</form>
+
+<hr/>
+<a type="button" href="logout" class="delete-btn">Odjava</a>
+<a href="/" class="accept-btn">Domov</a>

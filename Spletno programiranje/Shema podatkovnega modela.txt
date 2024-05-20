@@ -1,0 +1,55 @@
+// USER
+{
+  "_id": ObjectId("987654321"),
+  "username": "joze",
+  "password": "joze123",
+  "email": "joze.plavec@gmail.com",
+  "profileImage": "/userImages/1b229aa14a35b2fe3d7bc1c6916bfa52"
+  "favoriteEvents": [
+    ObjectId("event_id_1"),
+    ObjectId("event_id_2"),
+    ObjectId("event_id_3")
+  ]
+}
+
+
+// EVENT
+{
+  "_id": ObjectId('6643eb802c64b39241713746')
+  "name": "Lampijončki"
+  "venue": "Maribor"
+  "address": "Študentski kampus gosposvetska"
+  "startTime": "07:00"
+  "date_start":2024-05-30T00:00:00.000+00:00
+  "date_end": 2024-05-31T00:00:00.000+00:00
+  "description": "Nastopili bodo: modrijani, smetnaki..."
+  "contact": "info@eventim.si"
+  "category": 66423250ff14c4a754772599
+  "eventImage": "/images/807a3e3492f6a3f263a5d67fb6e2883c"
+  "price": 12
+  "attendees": Array (1)
+	0: ObjectId('6643e783109223834e1dce4a')
+  "location": Object
+	type: "Point"
+	coordinates: Array (2)
+		0: 15.626822
+		1: 46.562828
+}
+
+
+// CATEGORY
+{
+  "_id": ObjectId("123456789"),
+  "name": "concert"
+}
+
+
+// REVIEW
+{
+  "_id": ObjectId("review_id"),
+  "eventId": ObjectId("543216789"),
+  "userId": ObjectId("987654321"),
+  "created": 2024-05-13T19:31:51.256+00:00
+  "rating": 5,
+  "content": "Zelo dober koncert"
+}
