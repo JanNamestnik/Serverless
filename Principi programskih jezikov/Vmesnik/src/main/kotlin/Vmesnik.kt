@@ -1,6 +1,7 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -52,12 +54,15 @@ fun App() {
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
-            ContentArea(selectedScreen, events) { newEvent ->
+            ContentArea(selectedScreen, events, onAddEvent = { newEvent ->
                 events = events + newEvent
-            }
+            }, onUpdateEvent = { updatedEvent ->
+                events = events.map { if (it.name == updatedEvent.name) updatedEvent else it }
+            })
         }
     }
 }
+
 
 
 @Composable
@@ -126,7 +131,7 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
 }
 
 @Composable
-fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event) -> Unit) {
+fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event) -> Unit, onUpdateEvent: (Event) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +146,7 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             when (selectedScreen) {
                 "Add event" -> AddEventScreen(onAddEvent)
-                "Events" -> EventsScreen(events)
+                "Events" -> EventsScreen(events, onUpdateEvent)
                 "Scraper" -> ScraperScreen()
                 "Generator" -> GeneratorScreen()
                 "About" -> AboutScreen()
@@ -317,7 +322,7 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
 
 
 @Composable
-fun EventsScreen(events: List<Event>) {
+fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -328,32 +333,56 @@ fun EventsScreen(events: List<Event>) {
         Spacer(modifier = Modifier.height(16.dp))
 
         events.forEach { event ->
-            EventCard(event)
+            EventCard(event, onUpdateEvent)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun EventCard(event: Event) {
+fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var isEditing by remember { mutableStateOf(false) }
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded },
         elevation = 4.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(event.name, style = MaterialTheme.typography.h6)
-            Text("Address: ${event.address}")
-            Text("Start Time: ${event.startTime}")
-            Text("Start Date: ${event.dateStart}")
-            Text("End Date: ${event.dateEnd}")
-            Text("Description: ${event.description}")
-            Text("Contact: ${event.contact}")
-            Text("Category: ${event.category}")
-            Text("Location: ${event.latitude}, ${event.longitude}")
+            if (isExpanded) {
+                Text("Address: ${event.address}")
+                Text("Start Time: ${event.startTime}")
+                Text("Start Date: ${event.dateStart}")
+                Text("End Date: ${event.dateEnd}")
+                Text("Description: ${event.description}")
+                Text("Contact: ${event.contact}")
+                Text("Category: ${event.category}")
+                Text("Location: ${event.latitude}, ${event.longitude}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { isEditing = true }) {
+                    Text("Edit Event")
+                }
+            }
         }
     }
+
+    if (isEditing) {
+        EditEventDialog(event = event, onDismiss = { isEditing = false }, onSave = { updatedEvent ->
+            onUpdateEvent(updatedEvent)
+            isEditing = false
+        })
+    }
+}
+
+
+@Composable
+fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit) {
+
 }
 
 @Composable
