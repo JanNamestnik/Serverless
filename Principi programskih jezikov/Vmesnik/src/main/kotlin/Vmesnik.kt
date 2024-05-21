@@ -379,12 +379,83 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
     }
 }
 
-
 @Composable
 fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit) {
+    var name by remember { mutableStateOf(event.name) }
+    var address by remember { mutableStateOf(event.address) }
+    var startTime by remember { mutableStateOf(event.startTime) }
+    var dateStart by remember { mutableStateOf(event.dateStart) }
+    var dateEnd by remember { mutableStateOf(event.dateEnd) }
+    var description by remember { mutableStateOf(event.description) }
+    var contact by remember { mutableStateOf(event.contact) }
+    var category by remember { mutableStateOf(event.category) }
+    var longitude by remember { mutableStateOf(event.longitude) }
+    var latitude by remember { mutableStateOf(event.latitude) }
 
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Edit event",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    item { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = startTime, onValueChange = { startTime = it }, label = { Text("Start Time") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = dateStart, onValueChange = { dateStart = it }, label = { Text("Start Date") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = dateEnd, onValueChange = { dateEnd = it }, label = { Text("End Date") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = contact, onValueChange = { contact = it }, label = { Text("Contact") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = category, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = longitude, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = latitude, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) }
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = {
+                            onSave(
+                                Event(
+                                    name = name,
+                                    address = address,
+                                    startTime = startTime,
+                                    dateStart = dateStart,
+                                    dateEnd = dateEnd,
+                                    description = description,
+                                    contact = contact,
+                                    category = category,
+                                    longitude = longitude,
+                                    latitude = latitude
+                                )
+                            )
+                        }
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        },
+        modifier = Modifier.padding(20.dp)
+    )
 }
-
 @Composable
 fun ScraperScreen() {
     Text("Scraper screen")
