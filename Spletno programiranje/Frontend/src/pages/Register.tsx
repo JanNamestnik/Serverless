@@ -32,7 +32,9 @@ const Register = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        Cookies.set("token", data.token, { expires: 7, secure: true });
+        Cookies.set("token", data.token);
+        Cookies.set("user", data.user);
+
         navigate("/");
       })
       .catch((error) => {

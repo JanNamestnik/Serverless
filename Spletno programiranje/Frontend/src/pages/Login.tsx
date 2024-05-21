@@ -24,9 +24,10 @@ const Login = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
-        Cookies.set("token", data.token, { expires: 7, secure: true });
-        navigate("/");
+        Cookies.set("token", data.token);
+        Cookies.set("user", JSON.stringify(data.user));
+
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error:", error);

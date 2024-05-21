@@ -168,7 +168,7 @@ module.exports = {
    * userController.create()
    */
   create: function (req, res) {
-    const file = req.file.filename;
+    const file = req.file?.filename || "";
 
     var user = new UserModel({
       username: req.body.username,
