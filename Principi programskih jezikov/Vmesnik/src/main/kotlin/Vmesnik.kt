@@ -625,7 +625,41 @@ fun randomCoordinate(range: ClosedRange<Double>): String {
 // SCRAPER -----------------------------------------------------------------------------------------
 @Composable
 fun ScraperScreen() {
-    Text("scraper screen")
+    var events by remember { mutableStateOf(listOf<Event>()) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Scraper Screen", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            Button(onClick = {
+                isLoading = true
+                // Start fetching events
+                GlobalScope.launch {
+                    val fetchedEvents = fetchEvents()
+                    events = fetchedEvents
+                    isLoading = false
+                }
+            }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text("Fetch Events")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp)) // Add spacer to separate the button from LazyColumn
+
+        events.forEach { event ->
+            EventCard(event) {}
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
 }
 
 
