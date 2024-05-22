@@ -17,6 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import io.github.serpro69.kfaker.Faker
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 
 data class Event(
@@ -148,13 +152,16 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
                 "Add event" -> AddEventScreen(onAddEvent)
                 "Events" -> EventsScreen(events, onUpdateEvent)
                 "Scraper" -> ScraperScreen()
-                "Generator" -> GeneratorScreen()
+                "Generator" -> GeneratorScreen { newEvents ->
+                    newEvents.forEach { onAddEvent(it) }
+                }
                 "About" -> AboutScreen()
             }
         }
     }
 }
 
+// ADD EVENT --------------------------------------------------------------------------------------------------------
 @Composable
 fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     var name by remember { mutableStateOf("") }
@@ -320,7 +327,7 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     }
 }
 
-
+// EVETN SCREEEN ----------------------------------------------------------------------------------------------
 @Composable
 fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
     Column(
@@ -456,16 +463,165 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
         modifier = Modifier.padding(20.dp)
     )
 }
+
+// GENERATOR ---------------------------------------------------------------------------------------------
+@Composable
+fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
+    var numberOfEvents by remember { mutableStateOf("1") }
+    val faker = Faker()
+
+    // State for date range
+    var startDateOffset by remember { mutableStateOf("1") }
+    var endDateOffset by remember { mutableStateOf("10") }
+
+    // State for location range
+    var minLongitude by remember { mutableStateOf("-180.0") }
+    var maxLongitude by remember { mutableStateOf("180.0") }
+    var minLatitude by remember { mutableStateOf("-90.0") }
+    var maxLatitude by remember { mutableStateOf("90.0") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Generate Random Events", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input fields for specifying date range
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = startDateOffset,
+                onValueChange = { startDateOffset = it },
+                label = { Text("Start Date Offset") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = endDateOffset,
+                onValueChange = { endDateOffset = it },
+                label = { Text("End Date Offset") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input fields for specifying location range
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = minLongitude,
+                onValueChange = { minLongitude = it },
+                label = { Text("Min Longitude") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = maxLongitude,
+                onValueChange = { maxLongitude = it },
+                label = { Text("Max Longitude") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = minLatitude,
+                onValueChange = { minLatitude = it },
+                label = { Text("Min Latitude") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = maxLatitude,
+                onValueChange = { maxLatitude = it },
+                label = { Text("Max Latitude") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = numberOfEvents,
+            onValueChange = { numberOfEvents = it },
+            label = { Text("Number of Events") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(onClick = {
+            val events = (1..numberOfEvents.toInt()).map {
+                generateRandomEvent(
+                    faker,
+                    startDateOffset.toInt(),
+                    endDateOffset.toInt(),
+                    minLongitude.toDouble(),
+                    maxLongitude.toDouble(),
+                    minLatitude.toDouble(),
+                    maxLatitude.toDouble()
+                )
+            }
+            onAddEvents(events)
+        }) {
+            Text("Generate")
+        }
+    }
+}
+
+fun generateRandomEvent(
+    faker: Faker,
+    startDateOffset: Int,
+    endDateOffset: Int,
+    minLongitude: Double,
+    maxLongitude: Double,
+    minLatitude: Double,
+    maxLatitude: Double
+): Event {
+    return Event(
+        name = faker.book.title(),
+        address = faker.address.streetAddress(),
+        startTime = "${(1..12).random()}:${(0..59).random().toString().padStart(2, '0')} ${if ((0..1).random() == 0) "AM" else "PM"}",
+        dateStart = randomDate(1, startDateOffset),
+        dateEnd = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
+        description = faker.quote.mostInterestingManInTheWorld(),
+        contact = faker.internet.safeEmail(),
+        category = randomCategory(),
+        longitude = randomCoordinate(minLongitude..maxLongitude),
+        latitude = randomCoordinate(minLatitude..maxLatitude)
+    )
+}
+
+fun randomDate(startOffset: Int, endOffset: Int): String {
+    val startDate = LocalDate.now().plusDays(startOffset.toLong())
+    val endDate = startDate.plusDays(endOffset.toLong())
+    val randomDay = Random.nextLong(startDate.toEpochDay(), endDate.toEpochDay())
+    val randomDate = LocalDate.ofEpochDay(randomDay)
+    return randomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+}
+
+fun randomCategory(): String {
+    val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
+    return categories.random()
+}
+
+fun ClosedRange<Double>.random(): Double {
+    return (start + (endInclusive - start) * Math.random())
+}
+
+fun randomCoordinate(range: ClosedRange<Double>): String {
+    return range.random().toString()
+}
+
+// SCRAPER -----------------------------------------------------------------------------------------
 @Composable
 fun ScraperScreen() {
     Text("Scraper screen")
 }
 
-@Composable
-fun GeneratorScreen() {
-    Text("Generator screen")
-}
-
+// ABOUT --------------------------------------------------------------------------------------------
 @Composable
 fun AboutScreen() {
     Column(
