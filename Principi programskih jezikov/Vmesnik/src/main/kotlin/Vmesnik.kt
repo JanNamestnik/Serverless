@@ -21,20 +21,11 @@ import io.github.serpro69.kfaker.Faker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-
-data class Event(
-    val name: String,
-    val address: String,
-    val startTime: String,
-    val dateStart: String,
-    val dateEnd: String,
-    val description: String,
-    val contact: String,
-    val category: String,
-    val longitude: String,
-    val latitude: String
-)
+import scraping.fetchEvents
+import scraping.Event
 
 @Composable
 @Preview
@@ -51,7 +42,8 @@ fun App() {
             contact = "info@gmail.com",
             category = "festival",
             longitude = "46.562828",
-            latitude = "15.626822"
+            latitude = "15.626822",
+            eventImage = "https:://nekineki"
         )
     )) }
 
@@ -174,6 +166,7 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     var selectedCategory by remember { mutableStateOf("") }
     var longitude by remember { mutableStateOf("") }
     var latitude by remember { mutableStateOf("") }
+    var eventImage by remember { mutableStateOf("") }
 
     val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
 
@@ -291,6 +284,13 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
+        OutlinedTextField(
+            value = eventImage,
+            onValueChange = { eventImage = it },
+            label = { Text("eventImage") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
         // Save Button
         Button(
             onClick = {
@@ -305,7 +305,8 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
                     contact = contact,
                     category = selectedCategory,
                     longitude = longitude,
-                    latitude = latitude
+                    latitude = latitude,
+                    eventImage = eventImage
                 )
                 onAddEvent(event)
                 // Clear the input fields
@@ -319,6 +320,7 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
                 selectedCategory = ""
                 longitude = ""
                 latitude = ""
+                eventImage = ""
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -360,7 +362,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(event.name, style = MaterialTheme.typography.h6)
+            event.name?.let { Text(it, style = MaterialTheme.typography.h6) }
             if (isExpanded) {
                 Text("Address: ${event.address}")
                 Text("Start Time: ${event.startTime}")
@@ -370,6 +372,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
                 Text("Contact: ${event.contact}")
                 Text("Category: ${event.category}")
                 Text("Location: ${event.latitude}, ${event.longitude}")
+                Text("eventImage: ${event.eventImage}")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { isEditing = true }) {
                     Text("Edit Event")
@@ -398,6 +401,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     var category by remember { mutableStateOf(event.category) }
     var longitude by remember { mutableStateOf(event.longitude) }
     var latitude by remember { mutableStateOf(event.latitude) }
+    var eventImage by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -418,16 +422,17 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    item { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = startTime, onValueChange = { startTime = it }, label = { Text("Start Time") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = dateStart, onValueChange = { dateStart = it }, label = { Text("Start Date") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = dateEnd, onValueChange = { dateEnd = it }, label = { Text("End Date") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = contact, onValueChange = { contact = it }, label = { Text("Contact") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = category, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = longitude, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = latitude, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) }
+                    item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { address?.let { OutlinedTextField(value = it, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { startTime?.let { OutlinedTextField(value = it, onValueChange = { startTime = it }, label = { Text("Start Time") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { dateStart?.let { OutlinedTextField(value = it, onValueChange = { dateStart = it }, label = { Text("Start Date") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { dateEnd?.let { OutlinedTextField(value = it, onValueChange = { dateEnd = it }, label = { Text("End Date") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { description?.let { OutlinedTextField(value = it, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { contact?.let { OutlinedTextField(value = it, onValueChange = { contact = it }, label = { Text("Contact") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { category?.let { OutlinedTextField(value = it, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { longitude?.let { OutlinedTextField(value = it, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { latitude?.let { OutlinedTextField(value = it, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { OutlinedTextField(value = eventImage, onValueChange = { eventImage = it }, label = { Text("eventImage") }, modifier = Modifier.fillMaxWidth()) }
                 }
 
                 Row(
@@ -450,7 +455,8 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                     contact = contact,
                                     category = category,
                                     longitude = longitude,
-                                    latitude = latitude
+                                    latitude = latitude,
+                                    eventImage = eventImage
                                 )
                             )
                         }
@@ -590,7 +596,8 @@ fun generateRandomEvent(
         contact = faker.internet.safeEmail(),
         category = randomCategory(),
         longitude = randomCoordinate(minLongitude..maxLongitude),
-        latitude = randomCoordinate(minLatitude..maxLatitude)
+        latitude = randomCoordinate(minLatitude..maxLatitude),
+        eventImage = "https:://nekineki"
     )
 }
 
@@ -618,8 +625,9 @@ fun randomCoordinate(range: ClosedRange<Double>): String {
 // SCRAPER -----------------------------------------------------------------------------------------
 @Composable
 fun ScraperScreen() {
-    Text("Scraper screen")
+    Text("scraper screen")
 }
+
 
 // ABOUT --------------------------------------------------------------------------------------------
 @Composable
@@ -665,7 +673,6 @@ fun AboutScreen() {
         Text("Jan Namestnik, Nejc Cekuta, Metod Golob")
     }
 }
-
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
