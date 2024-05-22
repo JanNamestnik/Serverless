@@ -3,7 +3,7 @@ name: Build and Push Docker Image, Notify via Webhook
 on:
   push:
     branches:
-      - feature/TestActionsWorkflow
+      - main
 
 jobs:
   build-and-push:
