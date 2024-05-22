@@ -401,7 +401,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     var category by remember { mutableStateOf(event.category) }
     var longitude by remember { mutableStateOf(event.longitude) }
     var latitude by remember { mutableStateOf(event.latitude) }
-    var eventImage by remember { mutableStateOf("") }
+    var eventImage by remember { mutableStateOf(event.eventImage) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -432,7 +432,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                     item { category?.let { OutlinedTextField(value = it, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) } }
                     item { longitude?.let { OutlinedTextField(value = it, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) } }
                     item { latitude?.let { OutlinedTextField(value = it, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { OutlinedTextField(value = eventImage, onValueChange = { eventImage = it }, label = { Text("eventImage") }, modifier = Modifier.fillMaxWidth()) }
+                    item { eventImage?.let { OutlinedTextField(value = it, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) } }
                 }
 
                 Row(
@@ -469,6 +469,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
         modifier = Modifier.padding(20.dp)
     )
 }
+
 
 // GENERATOR ---------------------------------------------------------------------------------------------
 @Composable
