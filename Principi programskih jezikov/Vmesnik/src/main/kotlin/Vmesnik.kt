@@ -18,11 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.github.serpro69.kfaker.Faker
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.random.Random
 
 
@@ -548,7 +545,7 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        /*
+
         OutlinedTextField(
             value = numberOfEvents,
             onValueChange = { numberOfEvents = it },
@@ -572,8 +569,31 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
             onAddEvents(events)
         }) {
             Text("Generate")
-        }*/
+        }
     }
+}
+
+fun generateRandomEvent(
+    faker: Faker,
+    startDateOffset: Int,
+    endDateOffset: Int,
+    minLongitude: Double,
+    maxLongitude: Double,
+    minLatitude: Double,
+    maxLatitude: Double
+): Event {
+    return Event(
+        name = faker.book.title(),
+        address = faker.address.streetAddress(),
+        startTime = "${(1..12).random()}:${(0..59).random().toString().padStart(2, '0')} ${if ((0..1).random() == 0) "AM" else "PM"}",
+        dateStart = "randomDate(1, startDateOffset)",
+        dateEnd = "randomDate(startDateOffset + 1, startDateOffset + endDateOffset)",
+        description = faker.quote.mostInterestingManInTheWorld(),
+        contact = faker.internet.safeEmail(),
+        category = "randomCategory()",
+        longitude = "randomCoordinate(minLongitude..maxLongitude)",
+        latitude = "randomCoordinate(minLatitude..maxLatitude)"
+    )
 }
 
 
