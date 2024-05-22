@@ -95,7 +95,7 @@ fun getEvent(s: String?): Event? {
                     category = category?.text,
                     longitude = "",
                     latitude = "",
-                    eventImage = eventImage
+                    eventImage = "https://www.visitmaribor.si$eventImage"
                 )
             }
         }

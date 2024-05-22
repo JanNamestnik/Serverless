@@ -143,7 +143,9 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
             when (selectedScreen) {
                 "Add event" -> AddEventScreen(onAddEvent)
                 "Events" -> EventsScreen(events, onUpdateEvent)
-                "Scraper" -> ScraperScreen()
+                "Scraper" -> ScraperScreen { newEvents ->
+                    newEvents.forEach { onAddEvent(it) }
+                }
                 "Generator" -> GeneratorScreen { newEvents ->
                     newEvents.forEach { onAddEvent(it) }
                 }
@@ -625,7 +627,7 @@ fun randomCoordinate(range: ClosedRange<Double>): String {
 
 // SCRAPER -----------------------------------------------------------------------------------------
 @Composable
-fun ScraperScreen() {
+fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
     var events by remember { mutableStateOf(listOf<Event>()) }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -635,21 +637,24 @@ fun ScraperScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Scraper Screen", style = MaterialTheme.typography.h4)
+        Text("Scrape events", style = MaterialTheme.typography.h4)
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
-            Button(onClick = {
-                isLoading = true
-                // Start fetching events
-                GlobalScope.launch {
-                    val fetchedEvents = fetchEvents()
-                    events = fetchedEvents
-                    isLoading = false
-                }
-            }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+        } else if (events.isEmpty()) {
+            Button(
+                onClick = {
+                    isLoading = true
+                    // Start fetching events
+                    GlobalScope.launch {
+                        val fetchedEvents = fetchEvents()
+                        events = fetchedEvents
+                        isLoading = false
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
                 Text("Fetch Events")
             }
         }
@@ -660,8 +665,21 @@ fun ScraperScreen() {
             EventCard(event) {}
             Spacer(modifier = Modifier.height(8.dp))
         }
+
+        // Display "Add" button if events are fetched and not empty
+        if (events.isNotEmpty()) {
+            Button(
+                onClick = {
+                    onAddEvents(events)
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Add Events")
+            }
+        }
     }
 }
+
 
 
 // ABOUT --------------------------------------------------------------------------------------------
