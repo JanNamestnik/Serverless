@@ -586,16 +586,36 @@ fun generateRandomEvent(
         name = faker.book.title(),
         address = faker.address.streetAddress(),
         startTime = "${(1..12).random()}:${(0..59).random().toString().padStart(2, '0')} ${if ((0..1).random() == 0) "AM" else "PM"}",
-        dateStart = "randomDate(1, startDateOffset)",
-        dateEnd = "randomDate(startDateOffset + 1, startDateOffset + endDateOffset)",
+        dateStart = randomDate(1, startDateOffset),
+        dateEnd = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
         description = faker.quote.mostInterestingManInTheWorld(),
         contact = faker.internet.safeEmail(),
-        category = "randomCategory()",
-        longitude = "randomCoordinate(minLongitude..maxLongitude)",
-        latitude = "randomCoordinate(minLatitude..maxLatitude)"
+        category = randomCategory(),
+        longitude = randomCoordinate(minLongitude..maxLongitude),
+        latitude = randomCoordinate(minLatitude..maxLatitude)
     )
 }
 
+fun randomDate(startOffset: Int, endOffset: Int): String {
+    val startDate = LocalDate.now().plusDays(startOffset.toLong())
+    val endDate = startDate.plusDays(endOffset.toLong())
+    val randomDay = Random.nextLong(startDate.toEpochDay(), endDate.toEpochDay())
+    val randomDate = LocalDate.ofEpochDay(randomDay)
+    return randomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+}
+
+fun randomCategory(): String {
+    val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
+    return categories.random()
+}
+
+fun ClosedRange<Double>.random(): Double {
+    return (start + (endInclusive - start) * Math.random())
+}
+
+fun randomCoordinate(range: ClosedRange<Double>): String {
+    return range.random().toString()
+}
 
 @Composable
 fun AboutScreen() {
