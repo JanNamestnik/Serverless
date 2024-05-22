@@ -17,6 +17,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import io.github.serpro69.kfaker.Faker
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.random.Random
 
 
 data class Event(
@@ -148,7 +155,9 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
                 "Add event" -> AddEventScreen(onAddEvent)
                 "Events" -> EventsScreen(events, onUpdateEvent)
                 "Scraper" -> ScraperScreen()
-                "Generator" -> GeneratorScreen()
+                "Generator" -> GeneratorScreen { newEvents ->
+                    newEvents.forEach { onAddEvent(it) }
+                }
                 "About" -> AboutScreen()
             }
         }
@@ -462,9 +471,111 @@ fun ScraperScreen() {
 }
 
 @Composable
-fun GeneratorScreen() {
-    Text("Generator screen")
+fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
+    var numberOfEvents by remember { mutableStateOf("1") }
+    val faker = Faker()
+
+    // State for date range
+    var startDateOffset by remember { mutableStateOf("1") }
+    var endDateOffset by remember { mutableStateOf("10") }
+
+    // State for location range
+    var minLongitude by remember { mutableStateOf("-180.0") }
+    var maxLongitude by remember { mutableStateOf("180.0") }
+    var minLatitude by remember { mutableStateOf("-90.0") }
+    var maxLatitude by remember { mutableStateOf("90.0") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Generate Random Events", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input fields for specifying date range
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = startDateOffset,
+                onValueChange = { startDateOffset = it },
+                label = { Text("Start Date Offset") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = endDateOffset,
+                onValueChange = { endDateOffset = it },
+                label = { Text("End Date Offset") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input fields for specifying location range
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = minLongitude,
+                onValueChange = { minLongitude = it },
+                label = { Text("Min Longitude") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = maxLongitude,
+                onValueChange = { maxLongitude = it },
+                label = { Text("Max Longitude") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = minLatitude,
+                onValueChange = { minLatitude = it },
+                label = { Text("Min Latitude") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = maxLatitude,
+                onValueChange = { maxLatitude = it },
+                label = { Text("Max Latitude") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        /*
+        OutlinedTextField(
+            value = numberOfEvents,
+            onValueChange = { numberOfEvents = it },
+            label = { Text("Number of Events") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(onClick = {
+            val events = (1..numberOfEvents.toInt()).map {
+                generateRandomEvent(
+                    faker,
+                    startDateOffset.toInt(),
+                    endDateOffset.toInt(),
+                    minLongitude.toDouble(),
+                    maxLongitude.toDouble(),
+                    minLatitude.toDouble(),
+                    maxLatitude.toDouble()
+                )
+            }
+            onAddEvents(events)
+        }) {
+            Text("Generate")
+        }*/
+    }
 }
+
 
 @Composable
 fun AboutScreen() {
