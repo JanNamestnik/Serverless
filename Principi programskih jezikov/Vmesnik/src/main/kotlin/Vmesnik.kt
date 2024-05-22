@@ -161,6 +161,7 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
     }
 }
 
+// ADD EVENT --------------------------------------------------------------------------------------------------------
 @Composable
 fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     var name by remember { mutableStateOf("") }
@@ -326,7 +327,7 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     }
 }
 
-
+// EVETN SCREEEN ----------------------------------------------------------------------------------------------
 @Composable
 fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
     Column(
@@ -462,11 +463,8 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
         modifier = Modifier.padding(20.dp)
     )
 }
-@Composable
-fun ScraperScreen() {
-    Text("Scraper screen")
-}
 
+// GENERATOR ---------------------------------------------------------------------------------------------
 @Composable
 fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
     var numberOfEvents by remember { mutableStateOf("1") }
@@ -617,6 +615,13 @@ fun randomCoordinate(range: ClosedRange<Double>): String {
     return range.random().toString()
 }
 
+// SCRAPER -----------------------------------------------------------------------------------------
+@Composable
+fun ScraperScreen() {
+    Text("Scraper screen")
+}
+
+// ABOUT --------------------------------------------------------------------------------------------
 @Composable
 fun AboutScreen() {
     Column(
