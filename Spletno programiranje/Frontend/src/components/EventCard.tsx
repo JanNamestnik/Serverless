@@ -1,6 +1,7 @@
 import React from "react";
 
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 interface EventCardProps {
   event: MyEvent;
@@ -9,8 +10,9 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, user, setUser }: EventCardProps) => {
+  const navigate = useNavigate();
   function handleDetailsRedirect(_id: string): void {
-    throw new Error("Function not implemented.");
+    navigate("/event/" + _id);
   }
 
   const token = Cookies.get("token");

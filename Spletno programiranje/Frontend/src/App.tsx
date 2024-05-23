@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import List from "./pages/List";
+import EventDetails from "./components/EventDetails";
 function App() {
   const token = Cookies.get("token");
   console.log("token in app", token);
@@ -29,6 +30,7 @@ function App() {
           path="/list"
           element={token ? <List /> : <Navigate to="/login" />}
         />
+        <Route path="/event/:id" element={<EventDetails />} />{" "}
       </Routes>
     </div>
   );
