@@ -1,34 +1,28 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import Cookies from "js-cookie";
+import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
 function App() {
-  const [count, setCount] = useState(0);
-
+  const token = Cookies.get("token");
+  console.log("token in app", token);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 className=" text-3xl">Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="bg-gradient-to-r from-cyan-500 to-blue-500 w-screen  h-screen">
+      {token ? <Navbar /> : <></>}
+      <Routes>
+        <Route path="/" element={token ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/about" element={<div className="App"> yoo </div>} />
+        <Route
+          path="/login"
+          element={token ? <Navigate to="/" /> : <Login />}
+        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/map" element={<div className="App"> yoo </div>} />
+      </Routes>
+    </div>
   );
 }
 
