@@ -194,11 +194,11 @@ module.exports = {
   },
 
   attend: function (req, res) {
-    var userId = req.session.userId; // Get the user ID from the session
+    var userId = req.userId;
     var id = req.params.id;
 
     // Update the event document to add the current user to the attendees array
-    EventModel.findByIdAndUpdate(
+    EventModel.populate().findByIdAndUpdate(
       id,
       { $addToSet: { attendees: userId }, $inc: { attendeesCount: 1 } },
       { new: true },
@@ -211,17 +211,16 @@ module.exports = {
         }
 
         return res.json(event);
-        //res.redirect('/events/showEvent/' + id);
       }
     );
   },
 
   leave: function (req, res) {
-    var userId = req.session.userId; // Get the user ID from the session
+    var userId = req.session.userId;
     var id = req.params.id;
 
     // Update the event document to remove the current user from the attendees array
-    EventModel.findByIdAndUpdate(
+    EventModel.populate.findByIdAndUpdate(
       id,
       { $pull: { attendees: userId }, $inc: { attendeesCount: -1 } },
       { new: true },

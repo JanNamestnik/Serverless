@@ -70,12 +70,9 @@ const List = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data, events);
-
           for (const event of data) {
             setEvents((prev) => [...prev, event]);
           }
-          console.log("events", events);
         });
 
       fetch("http://localhost:3000/events/recommended", {
@@ -87,7 +84,24 @@ const List = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          setRecommendedEvent(data as MyEvent);
+          setRecommendedEvent({
+            name: data.name,
+            venue: data.venue,
+            address: data.address,
+            startTime: data.startTime,
+            date_start: data.date_start,
+            date_end: data.date_end,
+            description: data.description,
+            contact: data.contact,
+            category: data.category,
+            eventImage: data.eventImage,
+            price: data.price,
+            attendees: data.attendees,
+            location: data.location,
+            _id: data._id,
+          } as MyEvent);
+          console.log("fetch data", data);
+          console.log("set data", recommendedEvent);
         });
 
       fetch("http://localhost:3000/events/popular", {
@@ -115,6 +129,7 @@ const List = () => {
         });
     }
   }, [token]);
+  console.log(recommendedEvent, popularEvent, interestingEvent);
   return (
     <div className="flex flex-col h-screen w-screen pt-20 bg-primaryBackground">
       <div className=" grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 items-center ">

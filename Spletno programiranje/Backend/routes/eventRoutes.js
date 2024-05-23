@@ -40,12 +40,11 @@ router.get("/popular", verifyToken, eventController.showRecomended);
 /*
  * GET
  */
-
+router.post("/showEvent/attend/:id", eventController.attend);
+router.post("/showEvent/leave/:id", eventController.leave);
 router.get("/:id", eventController.show);
 
 router.get("/showEvent/:id", eventController.showEvent);
-router.get("/showEvent/attend/:id", eventController.attend);
-router.get("/showEvent/leave/:id", eventController.leave);
 
 /*
  * POST
