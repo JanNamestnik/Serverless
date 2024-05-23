@@ -329,30 +329,17 @@ module.exports = {
     });
   },
   // create a function that returns recommended events based on user categorys
-  listRecommended: function (req, res) {
-    var userId = req.body.user.userId;
-
-    UserModel.findById(userId, function (err, user) {
+  showRecomended: function (req, res) {
+    var userId = req.userId;
+    EventModel.find(function (err, events) {
       if (err) {
         return res.status(500).json({
-          message: "Error when getting user.",
+          message: "Error when getting event.",
           error: err,
         });
       }
 
-      EventModel.find(
-        { category: { $in: user.categories } },
-        function (err, events) {
-          if (err) {
-            return res.status(500).json({
-              message: "Error when getting recommended events.",
-              error: err,
-            });
-          }
-
-          return res.json(events);
-        }
-      );
+      return res.json(events[0]);
     });
   },
 

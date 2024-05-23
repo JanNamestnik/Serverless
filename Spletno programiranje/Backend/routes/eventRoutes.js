@@ -34,11 +34,15 @@ router.get("/add", eventController.add);
 router.get("/list", eventController.listAll);
 router.get("/filter", eventController.filterEvents);
 router.get("/geospatialFilter", eventController.geospatialFilter);
-
+router.get("/recommended", verifyToken, eventController.showRecomended);
+router.get("/interesting", verifyToken, eventController.showRecomended);
+router.get("/popular", verifyToken, eventController.showRecomended);
 /*
  * GET
  */
+
 router.get("/:id", eventController.show);
+
 router.get("/showEvent/:id", eventController.showEvent);
 router.get("/showEvent/attend/:id", eventController.attend);
 router.get("/showEvent/leave/:id", eventController.leave);

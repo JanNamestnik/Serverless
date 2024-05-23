@@ -46,6 +46,13 @@ const List = () => {
   );
   const token = Cookies.get("token");
   const [events, setEvents] = useState<MyEvent[]>([]);
+  const [recommendedEvent, setRecommendedEvent] = useState<MyEvent>(
+    {} as MyEvent
+  );
+  const [popularEvent, setPopularEvent] = useState<MyEvent>({} as MyEvent);
+  const [interestingEvent, setInterestingEvent] = useState<MyEvent>(
+    {} as MyEvent
+  );
   const fetched = useRef(false);
   useEffect(() => {
     if (!token) {
@@ -70,6 +77,42 @@ const List = () => {
           }
           console.log("events", events);
         });
+
+      fetch("http://localhost:3000/events/recommended", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setRecommendedEvent(data as MyEvent);
+        });
+
+      fetch("http://localhost:3000/events/popular", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setPopularEvent(data as MyEvent);
+        });
+
+      fetch("http://localhost:3000/events/interesting", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setInterestingEvent(data as MyEvent);
+        });
     }
   }, [token]);
   return (
@@ -80,8 +123,8 @@ const List = () => {
             Najbolj populrano
           </div>
           <div className="  flex flex-col items-center">
-            {events.length > 2 ? (
-              <EventCard event={events[1]} user={user} setUser={setUser} />
+            {popularEvent != ({} as MyEvent) ? (
+              <EventCard event={popularEvent} user={user} setUser={setUser} />
             ) : (
               <EventCard event={emptyEvent} user={user} setUser={setUser} />
             )}
@@ -92,8 +135,12 @@ const List = () => {
             Zanimivo Tvojim prijateljem
           </div>{" "}
           <div className="items-center flex flex-col">
-            {events.length > 2 ? (
-              <EventCard event={events[1]} user={user} setUser={setUser} />
+            {interestingEvent != ({} as MyEvent) ? (
+              <EventCard
+                event={interestingEvent}
+                user={user}
+                setUser={setUser}
+              />
             ) : (
               <EventCard event={emptyEvent} user={user} setUser={setUser} />
             )}
@@ -105,8 +152,12 @@ const List = () => {
           </div>
 
           <div className="items-center flex flex-col">
-            {events.length > 2 ? (
-              <EventCard event={events[1]} user={user} setUser={setUser} />
+            {recommendedEvent != ({} as MyEvent) ? (
+              <EventCard
+                event={recommendedEvent}
+                user={user}
+                setUser={setUser}
+              />
             ) : (
               <EventCard event={emptyEvent} user={user} setUser={setUser} />
             )}

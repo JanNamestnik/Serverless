@@ -84,7 +84,7 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
         </h5>
 
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          {event.description.substring(0, 80) + "..."}
+          {event.description?.substring(0, 80) + "..."}
         </p>
         <button
           onClick={() => handleDetailsRedirect(event._id)}
@@ -94,14 +94,14 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
         </button>
         {JSON.parse(Cookies.get("user") || "").favorites.includes(event._id) ? (
           <button
-            className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80"
+            className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
             onClick={() => handleUnfollowing()}
           >
             UnFollow
           </button>
         ) : (
           <button
-            className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80"
+            className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
             onClick={() => handleFollowing()}
           >
             Follow
