@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import List from "./pages/List";
 import EventDetails from "./components/EventDetails";
+import Map from "./pages/Map";
 function App() {
   const token = Cookies.get("token");
   console.log("token in app", token);
@@ -25,7 +26,7 @@ function App() {
           element={token ? <Navigate to="/" /> : <Register />}
         />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/map" element={<div className="App"> yoo </div>} />
+        <Route path="/map" element={<Map />} />
         <Route
           path="/list"
           element={token ? <List /> : <Navigate to="/login" />}
