@@ -1,12 +1,71 @@
 import React from "react";
 
+import Cookies from "js-cookie";
+
 interface EventCardProps {
   event: MyEvent;
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
 }
 
-const EventCard = ({ event }: EventCardProps) => {
+const EventCard = ({ event, user, setUser }: EventCardProps) => {
   function handleDetailsRedirect(_id: string): void {
     throw new Error("Function not implemented.");
+  }
+
+  const token = Cookies.get("token");
+  function handleFollowing(): void {
+    fetch("http://localhost:3000/events/showEvent/addFavorite/" + event._id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        if (data == null) return;
+        Cookies.set("user", JSON.stringify(data));
+        setUser({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          profileImage: data.profileImage,
+          favorites: data.favorites,
+          _id: data._id,
+        });
+        console.log("okej ", user);
+      });
+  }
+  function handleUnfollowing(): void {
+    fetch(
+      "http://localhost:3000/events/showEvent/removeFavorite/" + event._id,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        if (data == null) return;
+        Cookies.set("user", JSON.stringify(data));
+        setUser({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          profileImage: data.profileImage,
+          favorites: data.favorites,
+          _id: data._id,
+        });
+        console.log("okej ", user);
+      });
   }
 
   return (
@@ -31,6 +90,21 @@ const EventCard = ({ event }: EventCardProps) => {
         >
           Read more
         </button>
+        {JSON.parse(Cookies.get("user") || "").favorites.includes(event._id) ? (
+          <button
+            className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80"
+            onClick={() => handleUnfollowing()}
+          >
+            UnFollow
+          </button>
+        ) : (
+          <button
+            className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80"
+            onClick={() => handleFollowing()}
+          >
+            Follow
+          </button>
+        )}
       </div>
     </div>
   );

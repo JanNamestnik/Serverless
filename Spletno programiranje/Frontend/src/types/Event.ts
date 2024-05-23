@@ -48,3 +48,26 @@ type MyEvent = {
     coordinates: number[];
   };
 };
+
+// create a empty event object
+const emptyEvent: MyEvent = {
+  _id: "",
+  name: "",
+  venue: "",
+  address: "",
+  startTime: "",
+  date_start: new Date(),
+  date_end: new Date(),
+  description: "",
+  contact: "",
+  category: {
+    type: "",
+  },
+  eventImage: "",
+  price: 0,
+  attendees: [],
+  location: {
+    type: "",
+    coordinates: [],
+  },
+};

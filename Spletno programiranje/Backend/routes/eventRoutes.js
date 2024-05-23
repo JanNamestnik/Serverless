@@ -42,13 +42,21 @@ router.get("/:id", eventController.show);
 router.get("/showEvent/:id", eventController.showEvent);
 router.get("/showEvent/attend/:id", eventController.attend);
 router.get("/showEvent/leave/:id", eventController.leave);
-router.get("/showEvent/addFavorite/:id", eventController.addFavorite);
-router.get("/showEvent/removeFavorite/:id", eventController.removeFavorite);
 
 /*
  * POST
  */
 router.post("/", upload.single("image"), eventController.create);
+router.post(
+  "/showEvent/addFavorite/:id",
+  verifyToken,
+  eventController.addFavorite
+);
+router.post(
+  "/showEvent/removeFavorite/:id",
+  verifyToken,
+  eventController.removeFavorite
+);
 
 /*
  * PUT

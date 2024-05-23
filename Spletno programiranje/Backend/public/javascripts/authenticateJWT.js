@@ -4,10 +4,14 @@ const jwt = require("jsonwebtoken");
 const secretKey = "Serverless*2024"; // Change this to a strong and secure key
 
 // Middleware to generate JWT token
-function generateToken(username, password) {
-  return jwt.sign({ username: username, password: password }, secretKey, {
-    expiresIn: "1h",
-  }); // Token expires in 1 hour
+function generateToken(username, password, id) {
+  return jwt.sign(
+    { username: username, password: password, id: id },
+    secretKey,
+    {
+      expiresIn: "1h",
+    }
+  ); // Token expires in 1 hour
 }
 
 // Middleware to verify JWT token

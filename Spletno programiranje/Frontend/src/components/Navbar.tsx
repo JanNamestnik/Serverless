@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const avatarImage =
-    JSON.parse(Cookies.get("user")!) || ({ profileImage: "asdf" } as any);
+  const user = Cookies.get("user") || " a ";
 
+  const avatarImage = JSON.parse(user);
   function handleLogout(): void {
     Cookies.remove("user");
     Cookies.remove("token");

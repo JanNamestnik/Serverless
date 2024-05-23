@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EventCard from "../components/EventCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -9,7 +9,41 @@ import "swiper/css/free-mode";
 
 import { Pagination, Mousewheel, EffectCoverflow } from "swiper/modules";
 
+const emptyEvent: MyEvent = {
+  _id: "",
+  name: "",
+  venue: "",
+  address: "",
+  startTime: "",
+  date_start: new Date(),
+  date_end: new Date(),
+  description: "",
+  contact: "",
+  category: {
+    type: "",
+  },
+  eventImage: "",
+  price: 0,
+  attendees: [],
+  location: {
+    type: "",
+    coordinates: [],
+  },
+};
+
 const List = () => {
+  const [user, setUser] = useState<User>(
+    JSON.parse(
+      Cookies.get("user") ||
+        JSON.stringify({
+          favorites: [],
+          profileImage: "",
+          email: "",
+          password: "",
+          username: "",
+        })
+    )
+  );
   const token = Cookies.get("token");
   const [events, setEvents] = useState<MyEvent[]>([]);
   const fetched = useRef(false);
@@ -40,25 +74,43 @@ const List = () => {
   }, [token]);
   return (
     <div className="flex flex-col h-screen w-screen pt-20 bg-primaryBackground">
-      <div className=" grid grid-cols-3 grid-row-2 items-center">
-        <div className=" items-center text-center text-2xl font-extrabold p-5">
-          Najbolj populrano
+      <div className=" grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 items-center ">
+        <div>
+          <div className=" items-center text-center text-2xl font-extrabold p-5">
+            Najbolj populrano
+          </div>
+          <div className="  flex flex-col items-center">
+            {events.length > 2 ? (
+              <EventCard event={events[1]} user={user} setUser={setUser} />
+            ) : (
+              <EventCard event={emptyEvent} user={user} setUser={setUser} />
+            )}
+          </div>
         </div>
-        <div className=" items-center text-center text-2xl font-extrabold p-5">
-          Zanimivo Tvojim prijateljem
+        <div>
+          <div className=" items-center text-center text-2xl font-extrabold p-5">
+            Zanimivo Tvojim prijateljem
+          </div>{" "}
+          <div className="items-center flex flex-col">
+            {events.length > 2 ? (
+              <EventCard event={events[1]} user={user} setUser={setUser} />
+            ) : (
+              <EventCard event={emptyEvent} user={user} setUser={setUser} />
+            )}
+          </div>
         </div>
-        <div className=" items-center text-center text-2xl font-extrabold p-5">
-          Glede na tvoje prejšnnje dogodke
-        </div>
-        <div className="items-center">
-          {" "}
-          {events.length > 2 ? <EventCard event={events[1]} /> : <></>}
-        </div>
-        <div className="items-center">
-          {events.length > 2 ? <EventCard event={events[1]} /> : <></>}
-        </div>
-        <div className="items-center">
-          {events.length > 2 ? <EventCard event={events[1]} /> : <></>}
+        <div>
+          <div className=" items-center text-center text-2xl font-extrabold p-5">
+            Glede na tvoje prejšnnje dogodke
+          </div>
+
+          <div className="items-center flex flex-col">
+            {events.length > 2 ? (
+              <EventCard event={events[1]} user={user} setUser={setUser} />
+            ) : (
+              <EventCard event={emptyEvent} user={user} setUser={setUser} />
+            )}
+          </div>
         </div>
       </div>
 
@@ -69,10 +121,10 @@ const List = () => {
         <Swiper
           breakpoints={{
             320: {
-              slidesPerView: 3,
+              slidesPerView: 1,
               spaceBetween: 15,
             },
-            640: {
+            700: {
               slidesPerView: 3,
               spaceBetween: 13,
             },
@@ -92,15 +144,16 @@ const List = () => {
           }}
           className="max-w-[90%] lg:max-w-[80%] bg-primaryBackground"
         >
-          <SwiperSlide key="0"></SwiperSlide>
+          {window.innerWidth > 700 ? <SwiperSlide key="0"></SwiperSlide> : null}
+
           {events.map((event) => {
             return (
               <SwiperSlide key={event._id}>
-                <EventCard event={event} />
+                <EventCard event={event} user={user} setUser={setUser} />
               </SwiperSlide>
             );
           })}
-          <SwiperSlide key="6"></SwiperSlide>
+          {window.innerWidth > 700 ? <SwiperSlide key="6"></SwiperSlide> : null}
         </Swiper>
       </div>
     </div>

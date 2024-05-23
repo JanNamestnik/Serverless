@@ -28,7 +28,11 @@ module.exports = {
         } else {
           req.session.userId = user._id;
           // Generate JWT token
-          const token = generateToken(user.username, req.body.password);
+          const token = generateToken(
+            user.username,
+            req.body.password,
+            user._id
+          );
 
           res.cookie("token", token, { httpOnly: true });
 
