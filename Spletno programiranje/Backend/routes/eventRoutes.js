@@ -37,6 +37,8 @@ router.get("/geospatialFilter", eventController.geospatialFilter);
 router.get("/recommended", verifyToken, eventController.showRecomended);
 router.get("/interesting", verifyToken, eventController.showRecomended);
 router.get("/popular", verifyToken, eventController.showRecomended);
+
+router.get("/listattending", verifyToken, eventController.listAttending);
 /*
  * GET
  */

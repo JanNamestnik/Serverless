@@ -327,6 +327,18 @@ module.exports = {
       });
     });
   },
+  //return all the events that the user is attending, which you are getting from the token
+  listAttending: function (req, res) {
+    var userId = req.userId;
+    EventModel.find({ attendees: userId }).exec((err, events) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "An error occurred while fetching events." });
+      }
+      return res.json(events);
+    });
+  },
   // create a function that returns recommended events based on user categorys
   showRecomended: function (req, res) {
     var userId = req.userId;
