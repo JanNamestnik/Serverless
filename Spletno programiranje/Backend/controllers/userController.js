@@ -131,6 +131,7 @@ module.exports = {
   /**
    * userController.list()
    */
+
   list: function (req, res) {
     UserModel.find(function (err, users) {
       if (err) {
