@@ -305,7 +305,7 @@ module.exports = {
     });
   },
   listFavorites: function (req, res) {
-    var userId = req.body.user.userId;
+    var userId = req.userId;
 
     UserModel.findById(userId, function (err, user) {
       if (err) {
@@ -339,21 +339,97 @@ module.exports = {
       return res.json(events);
     });
   },
-  // create a function that returns recommended events based on user categorys
-  showRecomended: function (req, res) {
-    var userId = req.userId;
-    EventModel.find(function (err, events) {
+  // create a function show popular events, which will return the events with the most attendees and followers
+  showPopular: function (req, res) {
+    EventModel.find()
+      .sort({ attendeesCount: -1 })
+      .limit(5)
+      .exec((err, events) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while fetching events." });
+        }
+        return res.json(events[0]);
+      });
+  },
+  // create a function show interesting events, which will return the events with most followers
+  showInteresting: function (req, res) {
+    const userId = req.userId;
+
+    UserModel.findById(userId, (err, user) => {
       if (err) {
         return res.status(500).json({
-          message: "Error when getting event.",
-          error: err,
+          error: "An error occurred while fetching user data.",
         });
       }
 
-      return res.json(events[0]);
+      if (!user) {
+        return res.status(404).json({
+          error: "User not found.",
+        });
+      }
+
+      EventModel.aggregate([
+        { $match: { _id: { $in: user.favorites } } },
+        { $group: { _id: "$_id", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+        {
+          $lookup: {
+            from: "events",
+            localField: "_id",
+            foreignField: "_id",
+            as: "event",
+          },
+        },
+        { $unwind: "$event" },
+        { $replaceRoot: { newRoot: "$event" } },
+      ]).exec((err, results) => {
+        if (err) {
+          return res.status(500).json({
+            error: "An error occurred while fetching interesting events.",
+          });
+        }
+        return res.json(results[0]);
+      });
     });
   },
+  // create a function that returns recommended events based on user categorys
+  showRecomended: function (req, res) {
+    const userId = req.userId; // Assuming the userId is set in the request object by middleware
 
+    UserModel.findById(userId)
+      .populate("favorites")
+      .exec((err, user) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while fetching user data." });
+        }
+        if (!user) {
+          return res.status(404).json({ error: "User not found." });
+        }
+
+        const favoriteCategories = user.favorites.map(
+          (event) => event.category
+        );
+        if (favoriteCategories.length === 0) {
+          return res.json([]); // No favorite categories, return empty array
+        }
+
+        EventModel.find({ category: { $in: favoriteCategories } })
+          .populate("category") // Populate the category field if needed
+          .exec((err, events) => {
+            if (err) {
+              return res.status(500).json({
+                error: "An error occurred while fetching recommended events.",
+              });
+            }
+            return res.json(events[0]);
+          });
+      });
+  },
   /**
    * eventController.show()
    */

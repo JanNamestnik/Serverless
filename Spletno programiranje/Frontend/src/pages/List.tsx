@@ -54,6 +54,7 @@ const List = () => {
     {} as MyEvent
   );
   const fetched = useRef(false);
+  const [favorites, setFavorites] = useState<MyEvent[]>([]);
   useEffect(() => {
     if (!token) {
       return;
@@ -129,6 +130,7 @@ const List = () => {
         });
     }
   }, [token, user]);
+
   console.log(recommendedEvent, popularEvent, interestingEvent);
   return (
     <div className="flex flex-col h-screen w-screen pt-20 bg-primaryBackground">
@@ -222,6 +224,60 @@ const List = () => {
           {window.innerWidth > 700 ? <SwiperSlide key="6"></SwiperSlide> : null}
         </Swiper>
       </div>
+      {user.favorites.length > 0 ? (
+        <div className=" bg-primaryBackground">
+          <div className=" text-5xl font-extrabold w-screen text-center p-10">
+            Priljubljeni Dogodki
+          </div>
+          <div className="flex flex-row gap-3 items-center justify-center bg-inherit">
+            <Swiper
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                  spaceBetween: 15,
+                },
+                700: {
+                  slidesPerView: 3,
+                  spaceBetween: 13,
+                },
+              }}
+              modules={[Pagination, Mousewheel, EffectCoverflow]}
+              pagination={{
+                clickable: true,
+              }}
+              mousewheel={true}
+              effect="coverflow"
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 500,
+                modifier: 2,
+                slideShadows: true,
+              }}
+              className="max-w-[90%] lg:max-w-[80%] bg-primaryBackground"
+            >
+              {window.innerWidth > 700 ? (
+                <SwiperSlide key="0"></SwiperSlide>
+              ) : null}
+
+              {events
+                .filter((event) => {
+                  return user.favorites.includes(event._id);
+                })
+                .map((event) => {
+                  return (
+                    <SwiperSlide key={event._id}>
+                      <EventCard event={event} user={user} setUser={setUser} />
+                    </SwiperSlide>
+                  );
+                })}
+              {window.innerWidth > 700 ? (
+                <SwiperSlide key="6"></SwiperSlide>
+              ) : null}
+            </Swiper>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
