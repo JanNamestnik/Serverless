@@ -456,6 +456,21 @@ module.exports = {
       });
   },
 
+  showMyEvents: function (req, res) {
+    var userId = req.userId;
+
+    EventModel.find({ owner: userId }, function (err, events) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting events.",
+          error: err,
+        });
+      }
+
+      return res.json(events);
+    });
+  },
+
   /**
    * eventController.create()
    */
