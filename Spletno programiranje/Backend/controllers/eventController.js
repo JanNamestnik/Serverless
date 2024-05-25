@@ -194,11 +194,11 @@ module.exports = {
   },
 
   attend: function (req, res) {
-    var userId = req.userId;
-    var id = req.params.id;
+    let userId = req.userId;
+    let id = req.params.id;
 
     // Update the event document to add the current user to the attendees array
-    EventModel.populate().findByIdAndUpdate(
+    EventModel.findByIdAndUpdate(
       id,
       { $addToSet: { attendees: userId }, $inc: { attendeesCount: 1 } },
       { new: true },
@@ -216,11 +216,11 @@ module.exports = {
   },
 
   leave: function (req, res) {
-    var userId = req.session.userId;
-    var id = req.params.id;
+    let userId = req.userId;
+    let id = req.params.id;
 
     // Update the event document to remove the current user from the attendees array
-    EventModel.populate.findByIdAndUpdate(
+    EventModel.findByIdAndUpdate(
       id,
       { $pull: { attendees: userId }, $inc: { attendeesCount: -1 } },
       { new: true },
@@ -348,22 +348,24 @@ module.exports = {
   show: function (req, res) {
     var id = req.params.id;
 
-    EventModel.findOne({ _id: id }, function (err, event) {
-      if (err) {
-        return res.status(500).json({
-          message: "Error when getting event.",
-          error: err,
-        });
-      }
+    EventModel.findOne({ _id: id })
+      .populate("attendees")
+      .exec(function (err, event) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when getting event.",
+            error: err,
+          });
+        }
 
-      if (!event) {
-        return res.status(404).json({
-          message: "No such event",
-        });
-      }
+        if (!event) {
+          return res.status(404).json({
+            message: "No such event",
+          });
+        }
 
-      return res.json(event);
-    });
+        return res.json(event);
+      });
   },
 
   /**

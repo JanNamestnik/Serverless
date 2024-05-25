@@ -113,7 +113,7 @@ const List = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          setPopularEvent(data as MyEvent);
+          setPopularEvent(data);
         });
 
       fetch("http://localhost:3000/events/interesting", {
@@ -128,7 +128,7 @@ const List = () => {
           setInterestingEvent(data as MyEvent);
         });
     }
-  }, [token]);
+  }, [token, user]);
   console.log(recommendedEvent, popularEvent, interestingEvent);
   return (
     <div className="flex flex-col h-screen w-screen pt-20 bg-primaryBackground">
