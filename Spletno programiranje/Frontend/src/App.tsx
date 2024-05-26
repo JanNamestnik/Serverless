@@ -26,24 +26,24 @@ function App() {
           element={token ? <Navigate to="/" /> : <Register />}
         />
         <Route
-            path="/profile"
-            element={token ? <Profile /> : <Navigate to="/login" />}
+          path="/profile"
+          element={token ? <Profile /> : <Navigate to="/login" />}
         />
         <Route
-            path="/map"
-            element={token ? <Map /> : <Navigate to="/login" />}
+          path="/map"
+          element={token ? <Map /> : <Navigate to="/login" />}
         />
         <Route
           path="/list"
           element={token ? <List /> : <Navigate to="/login" />}
         />
         <Route
-            path="/event/:id"
-            element={token ? <EventDetails /> : <Navigate to="/login" />}
+          path="/event/:id"
+          element={token ? <EventDetails /> : <Navigate to="/login" />}
         />
         <Route
-            path="/editprofile"
-            element={token ? <EditProfile /> : <Navigate to="/login" />}
+          path="/editprofile"
+          element={token ? <EditProfile /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

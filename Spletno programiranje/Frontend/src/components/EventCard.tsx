@@ -10,9 +10,6 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, user, setUser }: EventCardProps) => {
-  const [eventHere, setEventHere] = useState<MyEvent>(event);
-  if (eventHere._id !== event._id) setEventHere(event);
-  console.log(eventHere);
   const navigate = useNavigate();
   function handleDetailsRedirect(_id: string): void {
     navigate("/event/" + _id);
@@ -83,7 +80,7 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setEventHere(data);
+        console.log(data);
       });
   }
 
@@ -97,7 +94,33 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setEventHere(data);
+        console.log(data);
+
+        if (data == null) return;
+        Cookies.set("user", JSON.stringify(data));
+        setUser({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          profileImage: data.profileImage,
+          favorites: data.favorites,
+          _id: data._id,
+        });
+        console.log("okej ", user);
+      });
+  }
+
+  function handleHidding(_id: string): void {
+    fetch("http://localhost:3000/events/showEvent/hide/" + _id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
       });
   }
 
@@ -105,56 +128,69 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <img
         className="rounded-t-lg"
-        src={"http://localhost:3000" + eventHere?.eventImage}
+        src={"http://localhost:3000" + event?.eventImage}
         alt="slika dogodka"
       />
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {eventHere?.name}
+          {event?.name}
         </h5>
 
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          {eventHere?.description?.substring(0, 80) + "..."}
+          {event?.description?.substring(0, 80) + "..."}
         </p>
-        <button
-          onClick={() => handleDetailsRedirect(eventHere?._id)}
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Read more
-        </button>
-        {JSON.parse(Cookies.get("user") || "").favorites.includes(
-          eventHere?._id
-        ) ? (
+
+        <div className="flex flex-row gap-1">
           <button
-            className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
-            onClick={() => handleUnfollowing()}
+            onClick={() => handleDetailsRedirect(event?._id)}
+            className=" items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            UnFollow
+            Read more
           </button>
-        ) : (
-          <button
-            className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
-            onClick={() => handleFollowing()}
-          >
-            Follow
-          </button>
-        )}
-        {eventHere?.attendees?.includes(user._id) ? (
-          <button
-            className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
-            onClick={() => handleLeaving()}
-          >
-            UnAttend
-          </button>
-        ) : (
-          <button
-            className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
-            onClick={() => handleAttending()}
-          >
-            Attend
-          </button>
-        )}
+          {JSON.parse(Cookies.get("user") || "").favorites.includes(
+            event?._id
+          ) ? (
+            <button
+              className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
+              onClick={() => handleUnfollowing()}
+            >
+              UnFollow
+            </button>
+          ) : (
+            <button
+              className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
+              onClick={() => handleFollowing()}
+            >
+              Follow
+            </button>
+          )}
+          {event?.attendees?.includes(
+            JSON.parse(Cookies.get("user") || "")._id
+          ) ? (
+            <button
+              className=" bg-red-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
+              onClick={() => handleLeaving()}
+            >
+              UnAttend
+            </button>
+          ) : (
+            <button
+              className=" bg-green-600 p-2 rounded-lg m-2 hover:opacity-80 text-white"
+              onClick={() => handleAttending()}
+            >
+              Attend
+            </button>
+          )}
+          <div>
+            <button
+              className=" bg-teal-500 text-white  rounded-xl p-2 m-2 hover:opacity-80"
+              onClick={() => handleHidding(event._id)}
+            >
+              Hide
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
