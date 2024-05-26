@@ -95,7 +95,7 @@ module.exports = {
 
     UserModel.findByIdAndUpdate(
       userId,
-      //{ profileImage: imagePath }
+      { profileImage: imagePath },
       { username: username, email: email, profileImage: imagePath },
       function (err, user) {
         if (err) {
