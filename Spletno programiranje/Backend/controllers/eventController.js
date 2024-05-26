@@ -476,9 +476,10 @@ module.exports = {
    */
   create: async function (req, res) {
     let userId = req.userId;
+    console.log(req.body.longtitute);
     try {
       // Find the category with the specified name
-      const category = await CategoryModel.findOne({ name: req.body.category });
+      const category = await CategoryModel.findOne({ _id: req.body.category });
 
       // If the category doesn't exist, return an error
       if (!category) {
@@ -498,8 +499,8 @@ module.exports = {
         location: {
           type: "Point",
           coordinates: [
-            parseFloat(req.body.longitude),
-            parseFloat(req.body.latitude),
+            parseFloat(req.body.longtitute),
+            parseFloat(req.body.lagtitute),
           ],
         },
         category: category._id,

@@ -37,9 +37,7 @@ type MyEvent = {
   date_end: Date;
   description: string;
   contact: string;
-  category: {
-    type: string;
-  };
+  category: string;
   eventImage: string;
   price: number;
   attendees: string[];
@@ -62,9 +60,7 @@ const emptyEvent: MyEvent = {
   date_end: new Date(),
   description: "",
   contact: "",
-  category: {
-    type: "",
-  },
+  category: "",
   eventImage: "",
   price: 0,
   attendees: [],
