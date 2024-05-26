@@ -11,6 +11,7 @@ import { Pagination, Mousewheel, EffectCoverflow } from "swiper/modules";
 
 const emptyEvent: MyEvent = {
   _id: "",
+  owner: "",
   name: "",
   venue: "",
   address: "",

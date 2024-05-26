@@ -29,17 +29,34 @@ const MyEventList = () => {
   }, []);
 
   return (
-    <div>
-      <h1>My events</h1>
-      <button onClick={() => navigate("/new-event")}>New event</button>
-      <ul>
-        {events.map((event) => (
-          <li key={event._id}>
-            <h2>{event.name}</h2>
-            <p>{event.description}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="pt-20">
+      <div className="flex flex-row ">
+        <div className="w-3/12"></div>
+        <div className="p-4 m-4 bg-white  h-[600px] w-full">
+          <div className=" text-4xl font-bold text-start flex flex-row justify-between">
+            My events
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg text-lg"
+              onClick={() => navigate("/new-event")}
+            >
+              New event
+            </button>
+          </div>
+
+          <ul>
+            {events.map((event) => (
+              <li key={event._id}>
+                <h2>{event.name}</h2>
+                <p>{event.description}</p>
+              </li>
+            ))}
+          </ul>
+          {events.length === 0 && (
+            <div className="italic font-extralight p-6">No events</div>
+          )}
+        </div>
+        <div className="w-3/12"></div>
+      </div>
     </div>
   );
 };

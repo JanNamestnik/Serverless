@@ -475,6 +475,7 @@ module.exports = {
    * eventController.create()
    */
   create: async function (req, res) {
+    let userId = req.userId;
     try {
       // Find the category with the specified name
       const category = await CategoryModel.findOne({ name: req.body.category });
@@ -505,6 +506,7 @@ module.exports = {
         eventImage: "/images/" + req.file.filename,
         price: req.body.price,
         attendees: [],
+        owner: userId,
       });
 
       // Save the event to the database

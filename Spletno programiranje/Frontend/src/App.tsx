@@ -8,11 +8,13 @@ import Profile from "./pages/Profile";
 import List from "./pages/List";
 import EventDetails from "./components/EventDetails";
 import Map from "./pages/Map";
+import MyEventList from "./pages/MyEventList";
+import EventAdd from "./components/EventAdd";
 function App() {
   const token = Cookies.get("token");
   console.log("token in app", token);
   return (
-    <div className="bg-primaryBackground w-screen  h-screen">
+    <div className="bg-primaryBackground w-screen  h-full">
       {token ? <Navbar /> : <></>}
       <Routes>
         <Route path="/" element={token ? <Home /> : <Navigate to="/login" />} />
@@ -32,6 +34,8 @@ function App() {
           element={token ? <List /> : <Navigate to="/login" />}
         />
         <Route path="/event/:id" element={<EventDetails />} />{" "}
+        <Route path="/my-events" element={<MyEventList />} />
+        <Route path="/new-event" element={<EventAdd />} />
       </Routes>
     </div>
   );
