@@ -7,6 +7,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const fetched = useRef(false);
   const token = Cookies.get("token");
+
   const [attendingEvents, setAttendingEvents] = useState<MyEvent[]>([]);
   const [hiddenEvents, setHiddenEvents] = useState<MyEvent[]>([]);
   useEffect(() => {
