@@ -43,6 +43,7 @@ router.post("/login", userController.login);
 router.post(
   "/profile/update",
   upload.single("profileImage"),
+  verifyToken,
   userController.updatePicture
 );
 /*
