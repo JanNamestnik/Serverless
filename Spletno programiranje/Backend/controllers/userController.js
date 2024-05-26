@@ -72,8 +72,18 @@ module.exports = {
   },
 
   updatePicture: function (req, res, next) {
-    var userId = req.session.userId;
+    var userId = req.userId;
     var profileImage = req.file;
+    let username = req.body.username;
+    let email = req.body.email;
+    console.log(
+        "req",
+        req.body.email,
+        req.body.username,
+        req.userId,
+        req.file,
+        req.body
+    );
 
     if (!profileImage) {
       return res.status(400).json({
@@ -81,22 +91,38 @@ module.exports = {
       });
     }
 
-    var imagePath = "/userImages/" + profileImage.filename;
+    var imagePath = profileImage.filename;
 
     UserModel.findByIdAndUpdate(
-      userId,
-      { profileImage: imagePath },
-      { new: true },
-      function (err, user) {
-        if (err) {
-          return res.status(500).json({
-            message: "Error when updating profile picture",
-            error: err,
-          });
+        userId,
+        { profileImage: imagePath },
+        { new: true },
+        //{ profileImage: imagePath }
+        { username: username, email: email, profileImage: imagePath },
+        function (err, user) {
+          if (err) {
+            return res.status(500).json({
+              message: "Error when updating profile picture",
+              error: err,
+            });
+          }
+          res.redirect("/users/profile");
         }
-        res.redirect("/users/profile");
-      }
     );
+    UserModel.findById(userId).exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        if (user === null) {
+          var err = new Error("Not authorized! Go back!");
+          err.status = 401;
+          return next(err);
+        } else {
+          //return res.render('user/profile', {username: user.username, email: user.email, profileImage: user.profileImage});
+          return res.json(user);
+        }
+      }
+    });
   },
 
   myFavorites: function (req, res, next) {

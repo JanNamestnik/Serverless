@@ -31,7 +31,7 @@ const RatingEdit = ({ rating, setRating }: RatingProps) => {
       >
         <svg
           className={
-            "w-4 h-4 text-yellow-300 ms-1 " +
+              "w-4 h-4  ms-1 " +
             (rating >= 2 ? "text-yellow-300" : "text-gray-300")
           }
           aria-hidden="true"
