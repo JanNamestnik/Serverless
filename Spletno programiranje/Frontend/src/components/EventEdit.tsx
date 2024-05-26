@@ -67,13 +67,16 @@ const EventEdit = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/events/", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        body: formDataToSend,
-      });
+      const response = await fetch(
+        "http://localhost:3000/events/update/" + event._id,
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          body: formDataToSend,
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
