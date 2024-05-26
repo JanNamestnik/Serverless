@@ -77,12 +77,12 @@ module.exports = {
     let username = req.body.username;
     let email = req.body.email;
     console.log(
-        "req",
-        req.body.email,
-        req.body.username,
-        req.userId,
-        req.file,
-        req.body
+      "req",
+      req.body.email,
+      req.body.username,
+      req.userId,
+      req.file,
+      req.body
     );
 
     if (!profileImage) {
@@ -94,20 +94,17 @@ module.exports = {
     var imagePath = profileImage.filename;
 
     UserModel.findByIdAndUpdate(
-        userId,
-        { profileImage: imagePath },
-        { new: true },
-        //{ profileImage: imagePath }
-        { username: username, email: email, profileImage: imagePath },
-        function (err, user) {
-          if (err) {
-            return res.status(500).json({
-              message: "Error when updating profile picture",
-              error: err,
-            });
-          }
-          res.redirect("/users/profile");
+      userId,
+      //{ profileImage: imagePath }
+      { username: username, email: email, profileImage: imagePath },
+      function (err, user) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when updating profile picture",
+            error: err,
+          });
         }
+      }
     );
     UserModel.findById(userId).exec(function (error, user) {
       if (error) {
@@ -207,6 +204,7 @@ module.exports = {
       password: req.body.password,
       profileImage: `${file}`,
       favorites: [],
+      unfavorites: [],
     });
 
     user.save(function (err, user) {
@@ -248,6 +246,9 @@ module.exports = {
         ? req.body.profileImage
         : user.profileImage;
       user.favorites = req.body.favorites ? req.body.favorites : user.favorites;
+      user.unfavorites = req.body.unfavorites
+        ? req.body.unfavorites
+        : user.unfavorites;
 
       user.save(function (err, user) {
         if (err) {
