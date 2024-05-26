@@ -9,6 +9,7 @@ const EventDetails = () => {
   const [rating, setRating] = useState<number>(1);
   const [content, setContent] = useState<string>("");
   const [reviews, setReviews] = useState<Review[]>([] as Review[]);
+
   const fetched = useRef(true);
   const token = Cookies.get("token");
   useEffect(() => {
@@ -110,6 +111,7 @@ const EventDetails = () => {
             </div>
           </div>
         </div>
+
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="flex-1">

@@ -42,8 +42,8 @@ router.post("/register", upload.single("file"), userController.create);
 router.post("/login", userController.login);
 router.post(
   "/profile/update",
-  upload.single("profileImage"),
   verifyToken,
+  upload.single("profileImage"),
   userController.updatePicture
 );
 /*
