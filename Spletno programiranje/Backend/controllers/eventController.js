@@ -395,6 +395,21 @@ module.exports = {
       });
     });
   },
+  listMyEvents: function (req, res) {
+    var userId = req.userId;
+
+    EventModel.find({ owner: userId }, function (err, events) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting events.",
+          error: err,
+        });
+      }
+
+      return res.json(events);
+    });
+  },
+
   // create a function that returns recommended events based on user categorys
   showRecomended: function (req, res) {
     const userId = req.userId; // Assuming the userId is set in the request object by middleware

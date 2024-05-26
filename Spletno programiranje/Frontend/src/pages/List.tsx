@@ -20,9 +20,7 @@ const emptyEvent: MyEvent = {
   date_end: new Date(),
   description: "",
   contact: "",
-  category: {
-    type: "",
-  },
+  category: "",
   eventImage: "",
   price: 0,
   attendees: [],

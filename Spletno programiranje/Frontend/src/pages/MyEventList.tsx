@@ -1,11 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import EventCard from "../components/EventCard";
+import EventShowCard from "../components/EventShowCard";
 
 const MyEventList = () => {
   const [events, setEvents] = useState<MyEvent[]>([]);
   const navigate = useNavigate();
   const token = Cookies.get("token");
+  const user = JSON.parse(Cookies.get("user") || "{}");
   const fetched = useRef(false);
 
   useEffect(() => {
@@ -14,7 +17,7 @@ const MyEventList = () => {
     }
     if (!fetched.current) {
       fetched.current = true;
-      fetch("http://localhost:5000/events/my", {
+      fetch("http://localhost:3000/events/listmyevents", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -46,8 +49,7 @@ const MyEventList = () => {
           <ul>
             {events.map((event) => (
               <li key={event._id}>
-                <h2>{event.name}</h2>
-                <p>{event.description}</p>
+                <EventShowCard eventHere={event} />
               </li>
             ))}
           </ul>

@@ -10,6 +10,7 @@ import EventDetails from "./components/EventDetails";
 import Map from "./pages/Map";
 import MyEventList from "./pages/MyEventList";
 import EventAdd from "./components/EventAdd";
+import EventEdit from "./components/EventEdit";
 function App() {
   const token = Cookies.get("token");
   console.log("token in app", token);
@@ -36,6 +37,7 @@ function App() {
         <Route path="/event/:id" element={<EventDetails />} />{" "}
         <Route path="/my-events" element={<MyEventList />} />
         <Route path="/new-event" element={<EventAdd />} />
+        <Route path="/event/edit/:id" element={<EventEdit />} />
       </Routes>
     </div>
   );
