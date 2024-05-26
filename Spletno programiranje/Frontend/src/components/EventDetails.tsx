@@ -2,14 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import RatingEdit from "./RatingEdit";
+import RatingShow from "./RatingShow";
 
 const EventDetails = () => {
   const { id } = useParams();
   const [event, setEvent] = useState<MyEvent>({} as MyEvent);
-  const [rating, setRating] = useState<number>(1);
+  const [rating, setRating] = useState<number>(5);
   const [content, setContent] = useState<string>("");
   const [reviews, setReviews] = useState<Review[]>([] as Review[]);
-
+  const user = JSON.parse(Cookies.get("user")!);
   const fetched = useRef(true);
   const token = Cookies.get("token");
   useEffect(() => {
@@ -18,6 +19,20 @@ const EventDetails = () => {
     } else {
       return;
     }
+    fetch("http://localhost:3000/reviews/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("fethched reviews", data);
+        for (const review of data) {
+          setReviews((prev) => [...prev, review]);
+        }
+      });
     console.log(token);
     fetch("http://localhost:3000/events/" + id, {
       method: "GET",
@@ -33,6 +48,29 @@ const EventDetails = () => {
         console.log(event);
       });
   }, []);
+  function handlePostComment(): void {
+    //you need to add the rating and content to the body
+
+    fetch("http://localhost:3000/reviews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        eventId: id,
+        rating: rating,
+        content: content,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setReviews((prev) => [...prev, data]);
+        setContent("");
+        setRating(5);
+      });
+  }
   console.log(event);
   return (
     <div className="pt-20 ">
@@ -123,18 +161,46 @@ const EventDetails = () => {
                     className="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
                     name="body"
                     placeholder="Type Your Comment"
-                    required
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                   ></textarea>
                 </div>
 
                 <div className="w-full flex justify-end px-3">
-                  <input
-                    type="submit"
+                  <button
                     className="px-2.5 py-1.5 rounded-md text-white text-sm bg-indigo-500"
-                    value="Post Comment"
-                  />
+                    onClick={() => handlePostComment()}
+                  >
+                    Post Comment
+                  </button>
                 </div>
               </div>
+              {reviews.map((review, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 rounded-lg shadow-lg p-6 mt-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          "http://localhost:3000/userImages/" +
+                          review?.userId?.profileImage
+                        }
+                        alt="profile"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <p className="text-gray-700 ml-2">
+                        {review?.userId?.username}
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <RatingShow rating={review.rating} />
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mt-4">{review.content}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
