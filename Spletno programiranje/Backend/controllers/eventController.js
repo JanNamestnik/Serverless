@@ -210,7 +210,20 @@ module.exports = {
           });
         }
 
-        return res.json(event);
+        // Populate the attendees field before returning the event
+        EventModel.populate(
+          event,
+          { path: "attendees" },
+          function (err, populatedEvent) {
+            if (err) {
+              return res.status(500).json({
+                message: "Error when populating attendees",
+                error: err,
+              });
+            }
+            return res.json(populatedEvent);
+          }
+        );
       }
     );
   },

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import RatingEdit from "./RatingEdit";
 import RatingShow from "./RatingShow";
 
 const EventDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [event, setEvent] = useState<MyEvent>({} as MyEvent);
   const [rating, setRating] = useState<number>(5);
   const [content, setContent] = useState<string>("");
@@ -72,6 +73,48 @@ const EventDetails = () => {
       });
   }
   console.log(event);
+  function handleAttendEvent(): void {
+    fetch("http://localhost:3000/events/showEvent/attend/" + event._id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setEvent(data);
+      });
+  }
+
+  function handleLeaving(): void {
+    fetch("http://localhost:3000/events/showEvent/leave/" + event._id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setEvent(data);
+      });
+  }
+
+  function handleHidding(): void {
+    fetch("http://localhost:3000/events/showEvent/hide/" + event._id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        navigate("/list");
+      });
+  }
+
   return (
     <div className="pt-20 ">
       <div className="bg-gray-100 flex flex-col items-center justify-center min-h-screen gap-6">
@@ -124,6 +167,31 @@ const EventDetails = () => {
               <p className="text-gray-700 mb-4">
                 Contact: <span className="font-semibold">{event.contact}</span>
               </p>
+
+              <div className="flex flex-row gap-4 ">
+                {event.attendees?.some((attendy) => attendy._id == user._id) ? (
+                  <button
+                    className="px-2.5 py-1.5 rounded-md text-white text-sm bg-indigo-500"
+                    onClick={() => handleLeaving()}
+                  >
+                    Leave
+                  </button>
+                ) : (
+                  <button
+                    className="px-2.5 py-1.5 rounded-md text-white text-sm bg-indigo-500"
+                    onClick={() => handleAttendEvent()}
+                  >
+                    Attend
+                  </button>
+                )}
+
+                <button
+                  className="px-2.5 py-1.5 rounded-md text-white text-sm bg-indigo-500"
+                  onClick={() => handleHidding()}
+                >
+                  Hide
+                </button>
+              </div>
             </div>
           </div>
         </div>
