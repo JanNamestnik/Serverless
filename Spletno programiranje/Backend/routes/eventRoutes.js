@@ -67,7 +67,7 @@ router.post(
 /*
  * PUT
  */
-router.post("/update/:id", eventController.update);
+router.post("/update/:id", upload.single("image"), eventController.update);
 
 /*
  * DELETE

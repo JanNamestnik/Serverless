@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -98,7 +98,7 @@ const EventForm = ({
         <input
           type="date"
           name="date_start"
-          value={event.date_start.toString()}
+          value={formatDateString(event.date_start.toString())}
           onChange={handleChange}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-1 ps-3"
         />
@@ -145,7 +145,7 @@ const EventForm = ({
           </label>
           <select
             name="category"
-            value={event.category.type}
+            value={event.category?.type}
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
           >
@@ -244,3 +244,15 @@ const EventForm = ({
 };
 
 export default EventForm;
+function formatDateString(dateString: string) {
+  // Parse the date string into a Date object
+  const date = new Date(dateString);
+  console.log(dateString, date);
+  // Extract the year, month, and day
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so add 1 and pad with leading zero
+  const day = String(date.getDate()).padStart(2, "0"); // Pad with leading zero
+
+  // Format as yyyy-MM-dd
+  return `${year}-${month}-${day}`;
+}

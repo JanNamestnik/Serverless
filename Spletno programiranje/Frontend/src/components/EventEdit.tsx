@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import EventForm from "./EventForm";
+import { categories } from "../types/Categories";
 
 const EventEdit = () => {
   const { id } = useParams();
@@ -37,7 +38,27 @@ const EventEdit = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setEvent(data as MyEvent);
+        console.log("event ", data);
+
+        setEvent({
+          _id: data._id,
+          name: data.name,
+          venue: data.venue,
+          address: data.address,
+          startTime: data.startTime,
+          date_start: new Date(data.data_start),
+          date_end: new Date(data.date_end),
+          description: data.description,
+          contact: data.contact,
+          category:
+            categories.find((c) => c._id.$oid === data.category)?._id.$oid ||
+            "",
+          eventImage: data.eventImage,
+          price: data.price,
+          attendees: data.attendees,
+          owner: data.owner,
+          location: data.location,
+        });
       });
   }, []);
 

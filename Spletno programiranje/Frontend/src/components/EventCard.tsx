@@ -104,7 +104,7 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <img
-        className="rounded-t-lg"
+        className="rounded-t-lg  max-h-72 "
         src={"http://localhost:3000" + eventHere?.eventImage}
         alt="slika dogodka"
       />
