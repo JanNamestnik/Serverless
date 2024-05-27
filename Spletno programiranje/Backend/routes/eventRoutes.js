@@ -39,7 +39,11 @@ router.get("/interesting", verifyToken, eventController.showInteresting);
 router.get("/popular", verifyToken, eventController.showPopular);
 
 router.get("/listattending", verifyToken, eventController.listAttending);
+
+router.get("/listmyevents", verifyToken, eventController.listMyEvents);
+
 router.get("/listhidden", verifyToken, eventController.listUnFavorites);
+
 /*
  * GET
  */
@@ -69,7 +73,7 @@ router.post(
 /*
  * PUT
  */
-router.put("/:id", eventController.update);
+router.post("/update/:id", upload.single("image"), eventController.update);
 
 /*
  * DELETE

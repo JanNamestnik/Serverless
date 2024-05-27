@@ -493,6 +493,21 @@ module.exports = {
       });
     });
   },
+  listMyEvents: function (req, res) {
+    var userId = req.userId;
+
+    EventModel.find({ owner: userId }, function (err, events) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting events.",
+          error: err,
+        });
+      }
+
+      return res.json(events);
+    });
+  },
+
   // create a function that returns recommended events based on user categorys
   showRecomended: function (req, res) {
     const userId = req.userId; // Assuming the userId is set in the request object by middleware
@@ -554,13 +569,30 @@ module.exports = {
       });
   },
 
+  showMyEvents: function (req, res) {
+    var userId = req.userId;
+
+    EventModel.find({ owner: userId }, function (err, events) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting events.",
+          error: err,
+        });
+      }
+
+      return res.json(events);
+    });
+  },
+
   /**
    * eventController.create()
    */
   create: async function (req, res) {
+    let userId = req.userId;
+    console.log(req.body.longtitute);
     try {
       // Find the category with the specified name
-      const category = await CategoryModel.findOne({ name: req.body.category });
+      const category = await CategoryModel.findOne({ _id: req.body.category });
 
       // If the category doesn't exist, return an error
       if (!category) {
@@ -580,14 +612,15 @@ module.exports = {
         location: {
           type: "Point",
           coordinates: [
-            parseFloat(req.body.longitude),
-            parseFloat(req.body.latitude),
+            parseFloat(req.body.longtitute),
+            parseFloat(req.body.lagtitute),
           ],
         },
         category: category._id,
         eventImage: "/images/" + req.file.filename,
         price: req.body.price,
         attendees: [],
+        owner: userId,
       });
 
       // Save the event to the database

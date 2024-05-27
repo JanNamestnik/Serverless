@@ -37,12 +37,11 @@ type MyEvent = {
   date_end: Date;
   description: string;
   contact: string;
-  category: {
-    type: string;
-  };
+  category: string;
   eventImage: string;
   price: number;
   attendees: string[];
+  owner: User | string;
   location: {
     type: string;
     coordinates: number[];
@@ -51,6 +50,7 @@ type MyEvent = {
 
 // create a empty event object
 const emptyEvent: MyEvent = {
+  owner: "",
   _id: "",
   name: "",
   venue: "",
@@ -60,9 +60,7 @@ const emptyEvent: MyEvent = {
   date_end: new Date(),
   description: "",
   contact: "",
-  category: {
-    type: "",
-  },
+  category: "",
   eventImage: "",
   price: 0,
   attendees: [],
