@@ -201,18 +201,8 @@ const List = () => {
             clickable: true,
           }}
           mousewheel={true}
-          effect="coverflow"
-          coverflowEffect={{
-            rotate: 0,
-            stretch: 0,
-            depth: 500,
-            modifier: 2,
-            slideShadows: true,
-          }}
           className="max-w-[90%] lg:max-w-[80%] bg-primaryBackground"
         >
-          {window.innerWidth > 700 ? <SwiperSlide key="0"></SwiperSlide> : null}
-
           {events.map((event) => {
             return (
               <SwiperSlide key={event._id}>
@@ -220,7 +210,6 @@ const List = () => {
               </SwiperSlide>
             );
           })}
-          {window.innerWidth > 700 ? <SwiperSlide key="6"></SwiperSlide> : null}
         </Swiper>
       </div>
       {user?.favorites?.length > 0 ? (
@@ -245,14 +234,6 @@ const List = () => {
                 clickable: true,
               }}
               mousewheel={true}
-              effect="coverflow"
-              coverflowEffect={{
-                rotate: 0,
-                stretch: 0,
-                depth: 500,
-                modifier: 2,
-                slideShadows: true,
-              }}
               className="max-w-[90%] lg:max-w-[80%] bg-primaryBackground"
             >
               {window.innerWidth > 700 ? (
