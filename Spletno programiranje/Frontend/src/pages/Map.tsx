@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "@mui/icons-material";
@@ -41,64 +41,28 @@ export default function Map() {
   };
 
   useEffect(() => {
-    let interval: number | null = null;
+    let interval = null;
+    const dates = [
+      ...new Set(
+        events.map((event) => new Date(event.date_start).toDateString())
+      ),
+    ].map((dateStr) => new Date(dateStr));
+
+    let index = 0;
 
     if (isAnimating) {
       interval = window.setInterval(() => {
-        setCurrentDate((prevDate) => {
-          const newDate = new Date(prevDate);
-          newDate.setDate(newDate.getDate() + 1);
-          return newDate;
-        });
-      }, 100); // Change date every second
-    }
-
-    // Check if there are any events happening on the current date
-    const hasEventOnCurrentDate = events.some(
-      (event) =>
-        new Date(event.date_start).toDateString() === currentDate.toDateString()
-    );
-
-    if (hasEventOnCurrentDate) {
-      setTimeout(() => {
-        setIsAnimating(true);
-      }, 5000); // Pause animation for 5 seconds if event on current date
+        setCurrentDate(dates[index]);
+        index = (index + 1) % dates.length;
+      }, 5000);
     }
 
     return () => {
-      if (interval !== null) clearInterval(interval);
-    };
-  }, [isAnimating, currentDate, events]);
-
-  useEffect(() => {
-    if (events.length > 0) {
-      const maxDate = new Date(
-        Math.max(...events.map((event) => new Date(event.date_start).getTime()))
-      );
-      if (currentDate > maxDate) {
-        setIsAnimating(false);
-        setAnimationEnded(true);
-      } else {
-        setAnimationEnded(false);
+      if (interval) {
+        clearInterval(interval);
       }
-    }
-  }, [currentDate, events]);
-
-  useEffect(() => {
-    if (isAnimating) {
-      markersRef.current.forEach((marker) => marker.closePopup());
-      const filteredMarkers = markersRef.current.filter((marker) => {
-        const event = marker.options.event as MyEvent;
-        return (
-          new Date(event.date_start).toDateString() ===
-          currentDate.toDateString()
-        );
-      });
-      filteredMarkers.forEach((marker) => marker.openPopup());
-    } else if (animationEnded) {
-      markersRef.current.forEach((marker) => marker.openPopup());
-    }
-  }, [currentDate, isAnimating, animationEnded]);
+    };
+  }, [events, isAnimating]);
 
   const filteredEvents = isAnimating
     ? events.filter(
@@ -119,6 +83,10 @@ export default function Map() {
     }
   }
 
+  const handleToggleAnimation = () => {
+    setIsAnimating(!isAnimating);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilter((prevFilter) => ({
@@ -126,7 +94,6 @@ export default function Map() {
       [name]: value,
     }));
   };
-
   return (
     <div className="pt-20">
       {/* Filter UI */}
@@ -166,7 +133,6 @@ export default function Map() {
         />
         <button onClick={fetchEvents}>Apply Filter</button>
       </div>
-
       {/* Map */}
       <MapContainer
         center={[46.55465, 15.645881]}
@@ -185,6 +151,7 @@ export default function Map() {
               event.location.coordinates[0],
             ]}
             ref={(marker) => {
+              marker?.openPopup();
               if (marker) {
                 markersRef.current[index] = marker;
                 marker.options.event = event;
@@ -207,12 +174,20 @@ export default function Map() {
           </Marker>
         ))}
       </MapContainer>
-      <button
-        className="p-4 m-7 mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-        onClick={resetAnimation}
-      >
-        Reset Animation
-      </button>
+      <div className="flex space-x-4">
+        <button
+          className="p-4 m-7 mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={resetAnimation}
+        >
+          Reset Animation
+        </button>
+        <button
+          className="p-4 m-7 mb-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={handleToggleAnimation}
+        >
+          {isAnimating ? "Stop Animation" : "Start Animation"}
+        </button>
+      </div>
       <div className="mb-4 text-lg font-bold">
         Current Date: {currentDate.toDateString()}
       </div>
