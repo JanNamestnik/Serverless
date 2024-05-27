@@ -124,7 +124,7 @@ module.exports = {
           }
 
           // Pass the events data to the view
-          res.render("event/list", { events: events });
+          res.json(events);
         });
       });
     } else {
@@ -156,7 +156,7 @@ module.exports = {
         }
 
         // Pass the events data to the view
-        res.render("event/list", { events: events });
+        res.json(events);
       });
     }
   },

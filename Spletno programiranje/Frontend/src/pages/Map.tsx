@@ -1,4 +1,3 @@
-// Map.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import Cookies from "js-cookie";
@@ -9,13 +8,26 @@ export default function Map() {
   const navigate = useNavigate();
   const [events, setEvents] = useState<MyEvent[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [isAnimating, setIsAnimating] = useState(true);
-  const [animationEnded, setAnimationEnded] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationEnded, setAnimationEnded] = useState(true);
+  const [filter, setFilter] = useState({
+    category: "",
+    fromDate: "",
+    toDate: "",
+    minPrice: "",
+    maxPrice: "",
+  });
   const token = Cookies.get("token");
   const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/events", {
+    fetchEvents();
+  }, [filter, token]);
+
+  const fetchEvents = () => {
+    const queryParams = new URLSearchParams(filter);
+
+    fetch(`http://localhost:3000/events/filter?${queryParams}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +38,7 @@ export default function Map() {
       .then((data) => {
         setEvents(data);
       });
-  }, [token]);
+  };
 
   useEffect(() => {
     let interval: number | null = null;
@@ -107,8 +119,55 @@ export default function Map() {
     }
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="pt-20">
+      {/* Filter UI */}
+      <div className="filter-container">
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={filter.category}
+          onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="fromDate"
+          value={filter.fromDate}
+          onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="toDate"
+          value={filter.toDate}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="minPrice"
+          placeholder="Min Price"
+          value={filter.minPrice}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="maxPrice"
+          placeholder="Max Price"
+          value={filter.maxPrice}
+          onChange={handleChange}
+        />
+        <button onClick={fetchEvents}>Apply Filter</button>
+      </div>
+
+      {/* Map */}
       <MapContainer
         center={[46.55465, 15.645881]}
         zoom={13}
@@ -149,7 +208,7 @@ export default function Map() {
         ))}
       </MapContainer>
       <button
-        className=" p-4  m-7 mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+        className="p-4 m-7 mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         onClick={resetAnimation}
       >
         Reset Animation
