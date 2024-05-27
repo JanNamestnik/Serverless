@@ -148,7 +148,7 @@ const EventCard = ({ event, user, setUser }: EventCardProps) => {
           >
             Read more
           </button>
-          {JSON.parse(Cookies.get("user") || "").favorites.includes(
+          {JSON.parse(Cookies.get("user") || "").favorites?.includes(
             event?._id
           ) ? (
             <button
