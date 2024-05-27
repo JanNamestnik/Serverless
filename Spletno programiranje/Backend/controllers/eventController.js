@@ -262,6 +262,30 @@ module.exports = {
       }
     );
   },
+  addUnFavorite: function (req, res) {
+    var userId = req.userId;
+    var eventId = req.params.id;
+
+    UserModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { unfavorites: eventId } },
+      { new: true },
+      function (err, user) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when adding favorite event",
+            error: err,
+          });
+        }
+        if (!user) {
+          return res.status(200).json({
+            message: "No such user",
+          });
+        }
+        return res.json(user);
+      }
+    );
+  },
 
   removeFavorite: function (req, res) {
     var userId = req.userId;
@@ -287,23 +311,97 @@ module.exports = {
       }
     );
   },
+  removeUnFavorite: function (req, res) {
+    var userId = req.userId;
+    var eventId = req.params.id;
+
+    UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { unfavorites: eventId } },
+      { new: true },
+      function (err, user) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when removing favorite event",
+            error: err,
+          });
+        }
+        if (!user) {
+          return res.status(200).json({
+            message: "No such user",
+          });
+        }
+        return res.json(user);
+      }
+    );
+  },
 
   //----------------------------------------------------------------------------------------------------------
   /**
    * eventController.list()
    */
+
+  //list all events, but remove ones that are in my unfavorites
+
   list: function (req, res) {
-    EventModel.find(function (err, events) {
+    const userId = req.userId; // Assuming the userId is set in the request object by middleware
+
+    UserModel.findById(userId, "unfavorites", (err, user) => {
       if (err) {
         return res.status(500).json({
-          message: "Error when getting event.",
+          message: "Error when getting user data.",
+          error: err,
+        });
+      }
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      const unfavorites = user.unfavorites || [];
+
+      EventModel.find({ _id: { $nin: unfavorites } }, (err, events) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when getting events.",
+            error: err,
+          });
+        }
+
+        return res.json(events);
+      });
+    });
+  },
+
+  //list all unfavorites
+  listUnFavorites: function (req, res) {
+    var userId = req.userId;
+
+    UserModel.findById(userId, function (err, user) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting user.",
           error: err,
         });
       }
 
-      return res.json(events);
+      EventModel.find(
+        { _id: { $in: user.unfavorites } },
+        function (err, events) {
+          if (err) {
+            return res.status(500).json({
+              message: "Error when getting unfavorites.",
+              error: err,
+            });
+          }
+
+          return res.json(events);
+        }
+      );
     });
   },
+
   listFavorites: function (req, res) {
     var userId = req.userId;
 

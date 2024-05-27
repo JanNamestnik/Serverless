@@ -72,8 +72,18 @@ module.exports = {
   },
 
   updatePicture: function (req, res, next) {
-    var userId = req.session.userId;
+    var userId = req.userId;
     var profileImage = req.file;
+    let username = req.body.username;
+    let email = req.body.email;
+    console.log(
+      "req",
+      req.body.email,
+      req.body.username,
+      req.userId,
+      req.file,
+      req.body
+    );
 
     if (!profileImage) {
       return res.status(400).json({
@@ -81,12 +91,12 @@ module.exports = {
       });
     }
 
-    var imagePath = "/userImages/" + profileImage.filename;
+    var imagePath = profileImage.filename;
 
     UserModel.findByIdAndUpdate(
       userId,
       { profileImage: imagePath },
-      { new: true },
+      { username: username, email: email, profileImage: imagePath },
       function (err, user) {
         if (err) {
           return res.status(500).json({
@@ -94,9 +104,22 @@ module.exports = {
             error: err,
           });
         }
-        res.redirect("/users/profile");
       }
     );
+    UserModel.findById(userId).exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        if (user === null) {
+          var err = new Error("Not authorized! Go back!");
+          err.status = 401;
+          return next(err);
+        } else {
+          //return res.render('user/profile', {username: user.username, email: user.email, profileImage: user.profileImage});
+          return res.json(user);
+        }
+      }
+    });
   },
 
   myFavorites: function (req, res, next) {
@@ -181,6 +204,7 @@ module.exports = {
       password: req.body.password,
       profileImage: `${file}`,
       favorites: [],
+      unfavorites: [],
     });
 
     user.save(function (err, user) {
@@ -222,6 +246,9 @@ module.exports = {
         ? req.body.profileImage
         : user.profileImage;
       user.favorites = req.body.favorites ? req.body.favorites : user.favorites;
+      user.unfavorites = req.body.unfavorites
+        ? req.body.unfavorites
+        : user.unfavorites;
 
       user.save(function (err, user) {
         if (err) {

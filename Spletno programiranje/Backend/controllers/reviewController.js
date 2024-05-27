@@ -28,22 +28,24 @@ module.exports = {
   show: function (req, res) {
     var id = req.params.id;
 
-    ReviewModel.findOne({ _id: id }, function (err, review) {
-      if (err) {
-        return res.status(500).json({
-          message: "Error when getting review.",
-          error: err,
-        });
-      }
+    ReviewModel.find({ eventId: id })
+      .populate("userId") // This will populate the userId field with user documents
+      .exec(function (err, reviews) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when getting reviews.",
+            error: err,
+          });
+        }
 
-      if (!review) {
-        return res.status(404).json({
-          message: "No such review",
-        });
-      }
+        if (!reviews || reviews.length === 0) {
+          return res.status(404).json({
+            message: "No such review",
+          });
+        }
 
-      return res.json(review);
-    });
+        return res.json(reviews);
+      });
   },
 
   /**

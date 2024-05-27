@@ -39,12 +39,18 @@ router.get("/interesting", verifyToken, eventController.showInteresting);
 router.get("/popular", verifyToken, eventController.showPopular);
 
 router.get("/listattending", verifyToken, eventController.listAttending);
+
 router.get("/listmyevents", verifyToken, eventController.listMyEvents);
+
+router.get("/listhidden", verifyToken, eventController.listUnFavorites);
+
 /*
  * GET
  */
 router.post("/showEvent/attend/:id", eventController.attend);
 router.post("/showEvent/leave/:id", eventController.leave);
+router.post("/showEvent/hide/:id", eventController.addUnFavorite);
+router.post("/showEvent/unhide/:id", eventController.removeUnFavorite);
 router.get("/:id", eventController.show);
 
 router.get("/showEvent/:id", eventController.showEvent);

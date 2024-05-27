@@ -13,8 +13,8 @@
 });*/
 type Review = {
   _id: string;
-  eventId: string;
-  userId: string;
+  eventId: Event | string;
+  userId: User | string;
   created: Date;
   rating: number;
   content: string;
