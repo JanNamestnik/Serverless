@@ -223,7 +223,7 @@ const List = () => {
           {window.innerWidth > 700 ? <SwiperSlide key="6"></SwiperSlide> : null}
         </Swiper>
       </div>
-      {user.favorites.length > 0 ? (
+      {user?.favorites?.length > 0 ? (
         <div className=" bg-primaryBackground">
           <div className=" text-5xl font-extrabold w-screen text-center p-10">
             Priljubljeni Dogodki
