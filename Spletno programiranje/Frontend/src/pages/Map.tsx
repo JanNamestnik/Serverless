@@ -109,15 +109,6 @@ export default function Map() {
 
   return (
     <div className="pt-20">
-      <button
-        className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-        onClick={resetAnimation}
-      >
-        Reset Animation
-      </button>
-      <div className="mb-4 text-lg font-bold">
-        Current Date: {currentDate.toDateString()}
-      </div>
       <MapContainer
         center={[46.55465, 15.645881]}
         zoom={13}
@@ -157,6 +148,15 @@ export default function Map() {
           </Marker>
         ))}
       </MapContainer>
+      <button
+        className=" p-4  m-7 mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+        onClick={resetAnimation}
+      >
+        Reset Animation
+      </button>
+      <div className="mb-4 text-lg font-bold">
+        Current Date: {currentDate.toDateString()}
+      </div>
     </div>
   );
 }
