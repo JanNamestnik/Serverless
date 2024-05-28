@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import "swiper/css/free-mode";
 
 import { Pagination, Mousewheel, EffectCoverflow } from "swiper/modules";
+import EventGraph from "../components/EventGraph";
 
 const emptyEvent: MyEvent = {
   _id: "",
@@ -258,6 +259,13 @@ const List = () => {
           </div>
         </div>
       ) : null}
+      {/* Add the EventGraph component */}
+      <div className=" text-5xl font-extrabold w-screen text-center p-10 bg-primaryBackground">
+        Število udeležencev na dogodkih
+      </div>
+      <div className="flex flex-row gap-3 items-center justify-center bg-inherit p-6">
+        <EventGraph events={events} />
+      </div>
     </div>
   );
 };
