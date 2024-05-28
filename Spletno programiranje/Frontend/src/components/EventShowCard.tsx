@@ -42,18 +42,20 @@ const EventShowCard = ({ eventHere }: EventShowCardProps) => {
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {eventHere?.description?.substring(0, 80) + "..."}
         </p>
-        <button
-          onClick={() => handleDetailsRedirect(eventHere?._id)}
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Read more
-        </button>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg text-lg"
-          onClick={() => handleEventDelete(eventHere._id)}
-        >
-          Delete Event
-        </button>
+        <div className="flex flex-row justify-between">
+          <button
+            onClick={() => handleDetailsRedirect(eventHere?._id)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-lg"
+          >
+            Read more
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-lg"
+            onClick={() => handleEventDelete(eventHere._id)}
+          >
+            Delete Event
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -149,7 +149,7 @@ const List = () => {
         </div>
         <div>
           <div className=" items-center text-center text-2xl font-extrabold p-5">
-            Zanimivo Tvojim prijateljem
+            Zanimivo ostalim uporabnikom
           </div>{" "}
           <div className="items-center flex flex-col">
             {interestingEvent != ({} as MyEvent) ? (
@@ -165,7 +165,7 @@ const List = () => {
         </div>
         <div>
           <div className=" items-center text-center text-2xl font-extrabold p-5">
-            Glede na tvoje prejšnnje dogodke
+            Glede na tvoje prejšnje dogodke
           </div>
 
           <div className="items-center flex flex-col">
