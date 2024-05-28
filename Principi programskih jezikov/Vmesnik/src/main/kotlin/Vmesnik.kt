@@ -159,7 +159,7 @@ fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
             onClick = { onScreenSelected("Users") }
         )
         SidebarButton(
-            icon = Icons.Default.Favorite,
+            icon = Icons.Default.Star,
             label = "Reviews",
             isSelected = selectedScreen == "Reviews",
             onClick = { onScreenSelected("Reviews") }
