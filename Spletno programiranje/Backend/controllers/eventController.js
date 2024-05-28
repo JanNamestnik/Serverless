@@ -236,8 +236,10 @@ module.exports = {
     EventModel.findByIdAndUpdate(
       id,
       { $pull: { attendees: userId }, $inc: { attendeesCount: -1 } },
-      { new: true },
-      function (err, event) {
+      { new: true }
+    )
+      .populate("attendees")
+      .exec(function (err, event) {
         if (err) {
           return res.status(500).json({
             message: "Error when leaving event",
@@ -246,8 +248,7 @@ module.exports = {
         }
 
         return res.json(event);
-      }
-    );
+      });
   },
 
   addFavorite: function (req, res) {
