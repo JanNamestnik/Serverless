@@ -51,27 +51,36 @@ module.exports = {
   /**
    * reviewController.create()
    */
-  create: function (req, res) {
-    let userId = req.userId;
+  create: async function (req, res) {
+    try {
+      const userId = req.userId;
 
-    var review = new ReviewModel({
-      eventId: req.body.eventId,
-      userId: userId,
-      created: new Date(),
-      rating: req.body.rating,
-      content: req.body.content,
-    });
+      // Create a new review object
+      const review = new ReviewModel({
+        eventId: req.body.eventId,
+        userId: userId,
+        created: new Date(),
+        rating: req.body.rating,
+        content: req.body.content,
+      });
 
-    review.save(function (err, review) {
-      if (err) {
-        return res.status(500).json({
-          message: "Error when creating review",
-          error: err,
-        });
-      }
+      // Save the review to the database
+      const savedReview = await review.save();
 
-      return res.status(201).json(review);
-    });
+      // Populate the userId field
+      const populatedReview = await ReviewModel.findById(
+        savedReview._id
+      ).populate("userId");
+
+      // Return the populated review
+      return res.status(201).json(populatedReview);
+    } catch (err) {
+      // Handle any errors that occur
+      return res.status(500).json({
+        message: "Error when creating review",
+        error: err,
+      });
+    }
   },
 
   /**

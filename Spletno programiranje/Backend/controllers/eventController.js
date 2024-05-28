@@ -719,7 +719,7 @@ module.exports = {
           error: err,
         });
       }
-
+      ReviewsModel.find({ eventId: id }).remove().exec();
       return res.status(204).json();
     });
   },
