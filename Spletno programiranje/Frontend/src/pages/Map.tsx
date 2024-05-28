@@ -3,6 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "@mui/icons-material";
+import { categories } from "../types/Categories";
 
 export default function Map() {
   const navigate = useNavigate();
@@ -97,42 +98,7 @@ export default function Map() {
   return (
     <div className="pt-20">
       {/* Filter UI */}
-      <div className="filter-container">
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={filter.category}
-          onChange={handleChange}
-        />
-        <input
-          type="date"
-          name="fromDate"
-          value={filter.fromDate}
-          onChange={handleChange}
-        />
-        <input
-          type="date"
-          name="toDate"
-          value={filter.toDate}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="minPrice"
-          placeholder="Min Price"
-          value={filter.minPrice}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="maxPrice"
-          placeholder="Max Price"
-          value={filter.maxPrice}
-          onChange={handleChange}
-        />
-        <button onClick={fetchEvents}>Apply Filter</button>
-      </div>
+
       {/* Map */}
       <MapContainer
         center={[46.55465, 15.645881]}
@@ -190,6 +156,71 @@ export default function Map() {
       </div>
       <div className="mb-4 text-lg font-bold">
         Current Date: {currentDate.toDateString()}
+      </div>
+      <div className="filter-container">
+        <div className="p-4  justify-around mx-auto flex flex-row">
+          <div className="mb-4">
+            <select
+              name="category"
+              value={filter.category}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category._id.$oid} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <input
+              type="date"
+              name="fromDate"
+              value={filter.fromDate}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="date"
+              name="toDate"
+              value={filter.toDate}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="number"
+              name="minPrice"
+              placeholder="Min Price"
+              value={filter.minPrice}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="number"
+              name="maxPrice"
+              placeholder="Max Price"
+              value={filter.maxPrice}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+        <div className="items-center flex flex-row justify-center pb-20">
+          <button
+            className=" p-2 bg-blue-500 text-white "
+            onClick={fetchEvents}
+          >
+            Apply Filter
+          </button>
+        </div>
       </div>
     </div>
   );
