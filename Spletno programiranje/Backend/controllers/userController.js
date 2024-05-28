@@ -90,35 +90,35 @@ module.exports = {
         message: "No profile image provided",
       });
     }
+    let file = profileImage.filename;
+    UserModel.findOne({ _id: userId }, function (err, user) {
+      if (err) {
+        return res.status(500).json({
+          message: "Error when getting user",
+          error: err,
+        });
+      }
 
-    var imagePath = profileImage.filename;
+      if (!user) {
+        return res.status(404).json({
+          message: "No such user",
+        });
+      }
 
-    UserModel.findByIdAndUpdate(
-      userId,
-      { profileImage: imagePath },
-      { username: username, email: email, profileImage: imagePath },
-      function (err, user) {
+      user.username = req.body.username ? req.body.username : user.username;
+      user.email = req.body.email ? req.body.email : user.email;
+      user.profileImage = file;
+
+      user.save(function (err, user) {
         if (err) {
           return res.status(500).json({
-            message: "Error when updating profile picture",
+            message: "Error when updating user.",
             error: err,
           });
         }
-      }
-    );
-    UserModel.findById(userId).exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } else {
-        if (user === null) {
-          var err = new Error("Not authorized! Go back!");
-          err.status = 401;
-          return next(err);
-        } else {
-          //return res.render('user/profile', {username: user.username, email: user.email, profileImage: user.profileImage});
-          return res.json(user);
-        }
-      }
+
+        return res.json(user);
+      });
     });
   },
 
@@ -224,7 +224,7 @@ module.exports = {
    */
   update: function (req, res) {
     var id = req.params.id;
-
+    const file = req.file?.filename || "";
     UserModel.findOne({ _id: id }, function (err, user) {
       if (err) {
         return res.status(500).json({
@@ -241,14 +241,7 @@ module.exports = {
 
       user.username = req.body.username ? req.body.username : user.username;
       user.email = req.body.email ? req.body.email : user.email;
-      user.password = req.body.password ? req.body.password : user.password;
-      user.profileImage = req.body.profileImage
-        ? req.body.profileImage
-        : user.profileImage;
-      user.favorites = req.body.favorites ? req.body.favorites : user.favorites;
-      user.unfavorites = req.body.unfavorites
-        ? req.body.unfavorites
-        : user.unfavorites;
+      user.profileImage = file;
 
       user.save(function (err, user) {
         if (err) {
