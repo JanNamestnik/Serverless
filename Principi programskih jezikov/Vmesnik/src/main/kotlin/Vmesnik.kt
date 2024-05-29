@@ -34,7 +34,32 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 // FETCHING EVENTS ------------------------------------------------------------------------------------------------
+fun fetchEvents(onResult: (List<Event>) -> Unit) {
+    val client = OkHttpClient()
 
+    val request = Request.Builder()
+        .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/events")
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.string()?.let { jsonResponse ->
+                val events = parseEventsFromJson(jsonResponse)
+                onResult(events)
+            }
+        }
+    })
+}
+
+fun parseEventsFromJson(jsonResponse: String): List<Event> {
+    val gson = Gson()
+    val eventType = object : TypeToken<List<Event>>() {}.type
+    return gson.fromJson(jsonResponse, eventType)
+}
 
 // APP-------------------------------------------------------------------------------------------------------------
 @Composable
@@ -80,14 +105,13 @@ fun App() {
         Category(name = "Technology")
     )) }
 
-    /*
     // Fetch events when the composable is first launched
     LaunchedEffect(Unit) {
         fetchEvents { fetchedEvents ->
             events = fetchedEvents
         }
     }
-    */
+
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
