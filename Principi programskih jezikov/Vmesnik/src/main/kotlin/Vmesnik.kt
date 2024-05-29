@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import scraping.fetchEvents
 import scraping.Event
 
-// za povezovanje na database
+// za povezovanje na bazo
 import okhttp3.*
 import java.io.IOException
 import com.google.gson.Gson
@@ -61,54 +61,55 @@ fun parseEventsFromJson(jsonResponse: String): List<Event> {
     return gson.fromJson(jsonResponse, eventType)
 }
 
+// FETCHING USERS -------------------------------------------------------------------------------------------------
+fun fetchUsers(onResult: (List<User>) -> Unit) {
+    val client = OkHttpClient()
+
+    val request = Request.Builder()
+        .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/users")
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.string()?.let { jsonResponse ->
+                val users = parseUsersFromJson(jsonResponse)
+                onResult(users)
+            }
+        }
+    })
+}
+
+fun parseUsersFromJson(jsonResponse: String): List<User> {
+    val gson = Gson()
+    val userType = object : TypeToken<List<User>>() {}.type
+    return gson.fromJson(jsonResponse, userType)
+}
+
+
+// FETCHING CATEGORIES -------------------------------------------------------------------------------------------------
+// FETCHING REVIEWS -------------------------------------------------------------------------------------------------
+
 // APP-------------------------------------------------------------------------------------------------------------
 @Composable
 @Preview
 fun App() {
     var selectedScreen by remember { mutableStateOf("Add event") }
     var events by remember { mutableStateOf(listOf<Event>()) }
-    var users by remember { mutableStateOf(listOf(
-        User(
-            name = "John Doe",
-            email = "john.doe@example.com",
-            password = "password123",
-            favorites = listOf("1", "2", "3"),
-            profileImage = "https://example.com/profile.jpg"
-        ),
-        User(
-            name = "Jane Smith",
-            email = "jane.smith@example.com",
-            password = "password123",
-            favorites = listOf("4", "5", "6"),
-            profileImage = "https://example.com/profile2.jpg"
-        )
-    )) }
-    var reviews by remember { mutableStateOf(listOf(
-        Review(
-            eventId = "1",
-            userId = "1",
-            created = "2024-05-28",
-            rating = 5,
-            content = "Great event!"
-        ),
-        Review(
-            eventId = "2",
-            userId = "2",
-            created = "2024-05-29",
-            rating = 4,
-            content = "Had a good time."
-        )
-    )) }
-    var categories by remember { mutableStateOf(listOf(
-        Category(name = "Music"),
-        Category(name = "Art"),
-        Category(name = "Technology")
-    )) }
+    var users by remember { mutableStateOf(listOf<User>()) }
+    var reviews by remember { mutableStateOf(listOf<Review>()) }
+    var categories by remember { mutableStateOf(listOf<Category>()) }
 
-    // Fetch events when the composable is first launched
+    // Fetch events and users when the composable is first launched
     LaunchedEffect(Unit) {
         fetchEvents { fetchedEvents ->
             events = fetchedEvents
+        }
+        fetchUsers { fetchedUsers ->
+            users = fetchedUsers
         }
     }
 
@@ -149,6 +150,7 @@ fun App() {
         }
     }
 }
+
 
 
 
@@ -608,7 +610,8 @@ fun AddUserForm(onAddUser: (User) -> Unit) {
         Button(
             onClick = {
                 val user = User(
-                    name = name,
+                    _id = null,
+                    username = name,
                     email = email,
                     password = password,
                     favorites = favorites.split(","),
@@ -894,12 +897,14 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
 
 // USERS --------------------------------------------------------------------------------------------------------
 data class User(
-    val name: String?,
+    val _id: String?,
+    val username: String?,
     val email: String?,
     val password: String?,
     val favorites: List<String>,
     val profileImage: String?
 )
+
 @Composable
 fun UsersScreen(users: List<User>, onUpdateUser: (User) -> Unit) {
     Column(
@@ -932,8 +937,9 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            user.name?.let { Text(it, style = MaterialTheme.typography.h6) }
+            user.username?.let { Text(it, style = MaterialTheme.typography.h6) }
             if (isExpanded) {
+                Text("id: ${user._id}")
                 Text("Email: ${user.email}")
                 Text("Password: ${user.password}")
                 Text("Favorites: ${user.favorites.joinToString(", ")}")
@@ -946,7 +952,6 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
         }
     }
 
-
     if (isEditing) {
         EditUserDialog(user = user, onDismiss = { isEditing = false }, onSave = { updatedUser ->
             onUpdateUser(updatedUser)
@@ -957,7 +962,8 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
 
 @Composable
 fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
-    var name by remember { mutableStateOf(user.name) }
+    var id by remember { mutableStateOf(user._id) }
+    var name by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
     var password by remember { mutableStateOf(user.password) }
     var favorites by remember { mutableStateOf(user.favorites.joinToString(", ")) }
@@ -982,6 +988,7 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
+                    item { id?.let { OutlinedTextField(value = it, onValueChange = { id = it }, label = { Text("Id") }, modifier = Modifier.fillMaxWidth()) } }
                     item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
                     item { email?.let { OutlinedTextField(value = it, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth()) } }
                     item { password?.let { OutlinedTextField(value = it, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth()) } }
@@ -1000,7 +1007,8 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                         onClick = {
                             onSave(
                                 User(
-                                    name = name,
+                                    _id = id,
+                                    username = name,
                                     email = email,
                                     password = password,
                                     favorites = favorites.split(", ").toList(),
