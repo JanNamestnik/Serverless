@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy
 import io.github.serpro69.kfaker.Faker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -27,6 +26,7 @@ import kotlinx.coroutines.launch
 
 import scraping.fetchEvents
 import scraping.Event
+import scraping.Location
 
 // za povezovanje na bazo
 import okhttp3.*
@@ -150,7 +150,7 @@ fun parseCategoriesFromJson(jsonResponse: String): List<Category> {
 @Composable
 @Preview
 fun App() {
-    var selectedScreen by remember { mutableStateOf("Add event") }
+    var selectedScreen by remember { mutableStateOf("Add") }
     var events by remember { mutableStateOf(listOf<Event>()) }
     var users by remember { mutableStateOf(listOf<User>()) }
     var reviews by remember { mutableStateOf(listOf<Review>()) }
@@ -333,7 +333,7 @@ fun ContentArea(
                 "Events" -> EventsScreen(events, onUpdateEvent)
                 "Users" -> UsersScreen(users, onUpdateUser)
                 "Reviews" -> ReviewsScreen(reviews, onUpdateReview)
-                "Categories" -> CategoriesScreen(categories, onUpdateCategory)
+                "Categories" -> CategoriesScreen(categories)
                 "Scraper" -> ScraperScreen { newEvents ->
                     newEvents.forEach { onAddEvent(it) }
                 }
@@ -567,6 +567,13 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
         Button(
             onClick = {
                 // Create the event and pass it to the onAddEvent lambda
+                val location = Location(
+                    type = "Point",
+                    coordinates = listOf(
+                        longitude.toDoubleOrNull() ?: 0.0,
+                        latitude.toDoubleOrNull() ?: 0.0
+                    )
+                )
                 val event = Event(
                     _id = null,  // Assuming ID is generated elsewhere
                     name = name,
@@ -577,8 +584,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                     description = description,
                     contact = contact,
                     category = selectedCategory,
-                    longitude = longitude,
-                    latitude = latitude,
+                    location = location,
                     eventImage = eventImage,
                     price = price,
                     attendees = attendees.split(", ").filter { it.isNotBlank() }
@@ -605,6 +611,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun AddUserForm(onAddUser: (User) -> Unit) {
@@ -846,7 +853,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
                 Text("Description: ${event.description}")
                 Text("Contact: ${event.contact}")
                 Text("Category: ${event.category}")
-                Text("Location: ${event.latitude}, ${event.longitude}")
+                Text("Location: ${event.location?.coordinates.toString()}")
                 Text("Price: ${event.price}")
                 Text("Attendees: ${event.attendees.joinToString(", ")}")
                 Text("Event Image: ${event.eventImage}")
@@ -868,17 +875,17 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
 
 @Composable
 fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit) {
-    var name by remember { mutableStateOf(event.name) }
-    var address by remember { mutableStateOf(event.address) }
-    var startTime by remember { mutableStateOf(event.startTime) }
-    var dateStart by remember { mutableStateOf(event.date_start) }
-    var dateEnd by remember { mutableStateOf(event.date_end) }
-    var description by remember { mutableStateOf(event.description) }
-    var contact by remember { mutableStateOf(event.contact) }
-    var category by remember { mutableStateOf(event.category) }
-    var longitude by remember { mutableStateOf(event.longitude) }
-    var latitude by remember { mutableStateOf(event.latitude) }
-    var eventImage by remember { mutableStateOf(event.eventImage) }
+    var name by remember { mutableStateOf(event.name ?: "") }
+    var address by remember { mutableStateOf(event.address ?: "") }
+    var startTime by remember { mutableStateOf(event.startTime ?: "") }
+    var dateStart by remember { mutableStateOf(event.date_start ?: "") }
+    var dateEnd by remember { mutableStateOf(event.date_end ?: "") }
+    var description by remember { mutableStateOf(event.description ?: "") }
+    var contact by remember { mutableStateOf(event.contact ?: "") }
+    var category by remember { mutableStateOf(event.category ?: "") }
+    var longitude by remember { mutableStateOf(event.location?.coordinates?.getOrNull(0)?.toString() ?: "") }
+    var latitude by remember { mutableStateOf(event.location?.coordinates?.getOrNull(1)?.toString() ?: "") }
+    var eventImage by remember { mutableStateOf(event.eventImage ?: "") }
     var price by remember { mutableStateOf(event.price) }
     var attendees by remember { mutableStateOf(event.attendees.joinToString(", ")) }
 
@@ -890,7 +897,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Edit event",
+                    text = "Edit Event",
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -901,17 +908,17 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { address?.let { OutlinedTextField(value = it, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { startTime?.let { OutlinedTextField(value = it, onValueChange = { startTime = it }, label = { Text("Start Time") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { dateStart?.let { OutlinedTextField(value = it, onValueChange = { dateStart = it }, label = { Text("Start Date") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { dateEnd?.let { OutlinedTextField(value = it, onValueChange = { dateEnd = it }, label = { Text("End Date") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { description?.let { OutlinedTextField(value = it, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { contact?.let { OutlinedTextField(value = it, onValueChange = { contact = it }, label = { Text("Contact") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { category?.let { OutlinedTextField(value = it, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { longitude?.let { OutlinedTextField(value = it, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { latitude?.let { OutlinedTextField(value = it, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { eventImage?.let { OutlinedTextField(value = it, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = startTime, onValueChange = { startTime = it }, label = { Text("Start Time") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = dateStart, onValueChange = { dateStart = it }, label = { Text("Start Date") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = dateEnd, onValueChange = { dateEnd = it }, label = { Text("End Date") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = contact, onValueChange = { contact = it }, label = { Text("Contact") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = category, onValueChange = { category = it }, label = { Text("Category") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = longitude, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = latitude, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = eventImage, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = attendees, onValueChange = { attendees = it }, label = { Text("Attendees") }, modifier = Modifier.fillMaxWidth()) }
                 }
@@ -925,24 +932,26 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                     }
                     Button(
                         onClick = {
-                            onSave(
-                                Event(
-                                    _id = event._id,
-                                    name = name,
-                                    address = address,
-                                    startTime = startTime,
-                                    date_start = dateStart,
-                                    date_end = dateEnd,
-                                    description = description,
-                                    contact = contact,
-                                    category = category,
-                                    longitude = longitude,
-                                    latitude = latitude,
-                                    eventImage = eventImage,
-                                    price = price,
-                                    attendees = attendees.split(", ").filter { it.isNotBlank() }
-                                )
+                            val updatedLocation = Location(
+                                type = event.location?.type ?: "Point",
+                                coordinates = listOf(longitude.toDoubleOrNull() ?: 0.0, latitude.toDoubleOrNull() ?: 0.0)
                             )
+                            val updatedEvent = Event(
+                                _id = event._id,
+                                name = name,
+                                address = address,
+                                startTime = startTime,
+                                date_start = dateStart,
+                                date_end = dateEnd,
+                                description = description,
+                                contact = contact,
+                                category = category,
+                                location = updatedLocation,
+                                eventImage = eventImage,
+                                price = price,
+                                attendees = attendees.split(", ").filter { it.isNotBlank() }
+                            )
+                            onSave(updatedEvent)
                         }
                     ) {
                         Text("Save")
@@ -953,6 +962,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
         modifier = Modifier.padding(20.dp)
     )
 }
+
 
 // USERS --------------------------------------------------------------------------------------------------------
 data class User(
@@ -966,6 +976,8 @@ data class User(
 
 @Composable
 fun UsersScreen(users: List<User>, onUpdateUser: (User) -> Unit) {
+    var userList by remember { mutableStateOf(users) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -975,8 +987,13 @@ fun UsersScreen(users: List<User>, onUpdateUser: (User) -> Unit) {
         Text("Users", style = MaterialTheme.typography.h4)
         Spacer(modifier = Modifier.height(16.dp))
 
-        users.forEach { user ->
-            UserCard(user, onUpdateUser)
+        userList.forEach { user ->
+            UserCard(user, onUpdateUser = { updatedUser ->
+                // Update the user in the list
+                userList = userList.map {
+                    if (it._id == updatedUser._id) updatedUser else it
+                }
+            })
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
@@ -1021,7 +1038,6 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
 
 @Composable
 fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
-    var id by remember { mutableStateOf(user._id) }
     var name by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
     var password by remember { mutableStateOf(user.password) }
@@ -1047,7 +1063,6 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    item { id?.let { OutlinedTextField(value = it, onValueChange = { id = it }, label = { Text("Id") }, modifier = Modifier.fillMaxWidth()) } }
                     item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
                     item { email?.let { OutlinedTextField(value = it, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth()) } }
                     item { password?.let { OutlinedTextField(value = it, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth()) } }
@@ -1066,7 +1081,7 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                         onClick = {
                             onSave(
                                 User(
-                                    _id = id,
+                                    _id = user._id,
                                     username = name,
                                     email = email,
                                     password = password,
@@ -1152,7 +1167,6 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
 
 @Composable
 fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> Unit) {
-    var Id by remember { mutableStateOf(review._id) }
     var eventId by remember { mutableStateOf(review.eventId) }
     var userId by remember { mutableStateOf(review.userId) }
     var created by remember { mutableStateOf(review.created) }
@@ -1178,7 +1192,6 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    item { OutlinedTextField(value = Id, onValueChange = { Id = it }, label = { Text("Id") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = eventId, onValueChange = { eventId = it }, label = { Text("Event ID") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = userId, onValueChange = { userId = it }, label = { Text("User ID") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = created, onValueChange = { created = it }, label = { Text("Created") }, modifier = Modifier.fillMaxWidth()) }
@@ -1197,7 +1210,7 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                         onClick = {
                             onSave(
                                 Review(
-                                    _id = Id,
+                                    _id = review._id,
                                     eventId = eventId,
                                     userId = userId,
                                     created = created,
@@ -1224,7 +1237,15 @@ data class Category(
 )
 
 @Composable
-fun CategoriesScreen(categories: List<Category>, onUpdateCategory: (Category) -> Unit) {
+fun CategoriesScreen(initialCategories: List<Category>) {
+    var categories by remember { mutableStateOf(initialCategories) }
+
+    fun handleUpdateCategory(updatedCategory: Category) {
+        categories = categories.map { category ->
+            if (category._id == updatedCategory._id) updatedCategory else category
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -1235,7 +1256,7 @@ fun CategoriesScreen(categories: List<Category>, onUpdateCategory: (Category) ->
         Spacer(modifier = Modifier.height(16.dp))
 
         categories.forEach { category ->
-            CategoryCard(category, onUpdateCategory)
+            CategoryCard(category, ::handleUpdateCategory)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
@@ -1276,7 +1297,6 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
 
 @Composable
 fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Category) -> Unit) {
-    // Local state for the category name
     var name by remember { mutableStateOf(category.name) }
 
     AlertDialog(
@@ -1286,7 +1306,6 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Title
                 Text(
                     text = "Edit Category",
                     style = MaterialTheme.typography.h6,
@@ -1296,7 +1315,6 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                     textAlign = TextAlign.Center
                 )
 
-                // Category name text field
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -1304,19 +1322,15 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Buttons row
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    // Cancel button
                     Button(onClick = onDismiss) {
                         Text("Cancel")
                     }
-                    // Save button
                     Button(
                         onClick = {
-                            // Save changes
                             onSave(Category(category._id, name))
                         }
                     ) {
@@ -1328,6 +1342,8 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
         modifier = Modifier.padding(20.dp)
     )
 }
+
+
 
 
 
@@ -1438,6 +1454,7 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
     }
 }
 
+
 fun generateRandomEvent(
     faker: Faker,
     startDateOffset: Int,
@@ -1457,34 +1474,35 @@ fun generateRandomEvent(
         description = faker.quote.mostInterestingManInTheWorld(),
         contact = faker.internet.safeEmail(),
         category = randomCategory(),
-        longitude = randomCoordinate(minLongitude..maxLongitude),
-        latitude = randomCoordinate(minLatitude..maxLatitude),
-        eventImage = "https:://nekineki",
+        location = Location(
+            type = "Point",
+            coordinates = listOf(
+                randomCoordinate(minLongitude, maxLongitude),
+                randomCoordinate(minLatitude, maxLatitude)
+            )
+        ),
+        eventImage = "https://nekineki",
         price = "Free",
         attendees = emptyList()
     )
 }
 
 fun randomDate(startOffset: Int, endOffset: Int): String {
-    val startDate = LocalDate.now().plusDays(startOffset.toLong())
-    val endDate = startDate.plusDays(endOffset.toLong())
-    val randomDay = Random.nextLong(startDate.toEpochDay(), endDate.toEpochDay())
-    val randomDate = LocalDate.ofEpochDay(randomDay)
-    return randomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    val startMillis = System.currentTimeMillis() + (startOffset * 24 * 60 * 60 * 1000L)
+    val endMillis = System.currentTimeMillis() + (endOffset * 24 * 60 * 60 * 1000L)
+    val randomMillis = Random.nextLong(startMillis, endMillis)
+    return java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(java.util.Date(randomMillis))
+}
+
+fun randomCoordinate(min: Double, max: Double): Double {
+    return Random.nextDouble(min, max)
 }
 
 fun randomCategory(): String {
-    val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
+    val categories = listOf("Music", "Art", "Theatre", "Technology", "Science", "Education", "Health", "Sports")
     return categories.random()
 }
 
-fun ClosedRange<Double>.random(): Double {
-    return (start + (endInclusive - start) * Math.random())
-}
-
-fun randomCoordinate(range: ClosedRange<Double>): String {
-    return range.random().toString()
-}
 
 // SCRAPER -----------------------------------------------------------------------------------------
 @Composable

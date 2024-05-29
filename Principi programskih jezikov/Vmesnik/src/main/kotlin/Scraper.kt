@@ -8,6 +8,11 @@ import it.skrape.selects.DocElement
 import it.skrape.selects.html5.*
 import it.skrape.selects.text
 
+data class Location(
+    val type: String,
+    val coordinates: List<Double>
+)
+
 data class Event(
     val _id: String?,
     val name: String?,
@@ -18,8 +23,7 @@ data class Event(
     val description: String?,
     val contact: String?,
     val category: String?,
-    val longitude: String?,
-    val latitude: String?,
+    val location: Location?,
     val eventImage: String?,
     val price: String = "Free",
     val attendees: List<String> = emptyList()
@@ -92,6 +96,22 @@ fun getEvent(s: String?): Event? {
                     "Free"
                 }
 
+                // Extract location coordinates (longitude and latitude)
+                val coordinates = try {
+                    val scriptText = script { findAll { text } }
+                    val regex = """\s*LatLng\s*\(([-\d.]+),\s*([-\d.]+)\)\s*""".toRegex()
+                    val matchResult = regex.find(scriptText)
+                    val latitude = matchResult?.groups?.get(1)?.value?.toDoubleOrNull()
+                    val longitude = matchResult?.groups?.get(2)?.value?.toDoubleOrNull()
+                    if (latitude != null && longitude != null) {
+                        listOf(longitude, latitude)
+                    } else {
+                        null
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+
                 Event(
                     _id = null,
                     name = eventName,
@@ -102,11 +122,10 @@ fun getEvent(s: String?): Event? {
                     description = description,
                     contact = contact?.text,
                     category = category?.text,
-                    longitude = "",
-                    latitude = "",
+                    location = coordinates?.let { Location("Point", it) },
                     eventImage = "https://www.visitmaribor.si$eventImage",
                     price = "Free",
-                    attendees = emptyList()  // No attendee info available in the scraping logic
+                    attendees = emptyList()
                 )
             }
         }
