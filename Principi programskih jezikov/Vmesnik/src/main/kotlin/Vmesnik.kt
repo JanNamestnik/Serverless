@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy
 import io.github.serpro69.kfaker.Faker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -118,6 +119,32 @@ fun parseReviewsFromJson(jsonResponse: String): List<Review> {
 }
 
 // FETCHING CATEGORIES ----------------------------------------------------------------------------------------------
+fun fetchCategories(onResult: (List<Category>) -> Unit) {
+    val client = OkHttpClient()
+
+    val request = Request.Builder()
+        .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/categories")
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.string()?.let { jsonResponse ->
+                val categories = parseCategoriesFromJson(jsonResponse)
+                onResult(categories)
+            }
+        }
+    })
+}
+
+fun parseCategoriesFromJson(jsonResponse: String): List<Category> {
+    val gson = Gson()
+    val categoryType = object : TypeToken<List<Category>>() {}.type
+    return gson.fromJson(jsonResponse, categoryType)
+}
 
 // APP-------------------------------------------------------------------------------------------------------------
 @Composable
@@ -139,6 +166,9 @@ fun App() {
         }
         fetchReviews { fetchedReviews ->
             reviews = fetchedReviews
+        }
+        fetchCategories { fetchedCategories ->
+            categories = fetchedCategories
         }
     }
 
@@ -179,10 +209,6 @@ fun App() {
         }
     }
 }
-
-
-
-
 
 @Composable
 fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
@@ -662,6 +688,7 @@ fun AddUserForm(onAddUser: (User) -> Unit) {
 
 @Composable
 fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
+    val Id by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
 
     Column(
@@ -682,7 +709,7 @@ fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
         // Save Button
         Button(
             onClick = {
-                val category = Category(name = name)
+                val category = Category(name = name, _id = Id)
                 onAddCategory(category)
                 name = ""
             },
@@ -1192,6 +1219,7 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
 
 // CATEGORIES -----------------------------------------------------------------------------------------------
 data class Category(
+    val _id: String,
     val name: String
 )
 
@@ -1229,6 +1257,7 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
         ) {
             Text(category.name, style = MaterialTheme.typography.h6)
             if (isExpanded) {
+                Text("Id: ${category._id}")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { isEditing = true }) {
                     Text("Edit Category")
@@ -1247,6 +1276,7 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
 
 @Composable
 fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Category) -> Unit) {
+    // Local state for the category name
     var name by remember { mutableStateOf(category.name) }
 
     AlertDialog(
@@ -1256,6 +1286,7 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Title
                 Text(
                     text = "Edit Category",
                     style = MaterialTheme.typography.h6,
@@ -1265,6 +1296,7 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                     textAlign = TextAlign.Center
                 )
 
+                // Category name text field
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -1272,19 +1304,23 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // Buttons row
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.align(Alignment.End)
                 ) {
+                    // Cancel button
                     Button(onClick = onDismiss) {
                         Text("Cancel")
                     }
+                    // Save button
                     Button(
                         onClick = {
-                            onSave(Category(name))
+                            // Save changes
+                            onSave(Category(category._id, name))
                         }
                     ) {
-                        Text("Save")
+                        Text("Save Changes")
                     }
                 }
             }
@@ -1292,6 +1328,7 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
         modifier = Modifier.padding(20.dp)
     )
 }
+
 
 
 // GENERATOR ---------------------------------------------------------------------------------------------
