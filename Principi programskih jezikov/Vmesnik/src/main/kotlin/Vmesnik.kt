@@ -89,9 +89,35 @@ fun parseUsersFromJson(jsonResponse: String): List<User> {
     return gson.fromJson(jsonResponse, userType)
 }
 
-
-// FETCHING CATEGORIES -------------------------------------------------------------------------------------------------
 // FETCHING REVIEWS -------------------------------------------------------------------------------------------------
+fun fetchReviews(onResult: (List<Review>) -> Unit) {
+    val client = OkHttpClient()
+
+    val request = Request.Builder()
+        .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/reviews")
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.string()?.let { jsonResponse ->
+                val reviews = parseReviewsFromJson(jsonResponse)
+                onResult(reviews)
+            }
+        }
+    })
+}
+
+fun parseReviewsFromJson(jsonResponse: String): List<Review> {
+    val gson = Gson()
+    val reviewType = object : TypeToken<List<Review>>() {}.type
+    return gson.fromJson(jsonResponse, reviewType)
+}
+
+// FETCHING CATEGORIES ----------------------------------------------------------------------------------------------
 
 // APP-------------------------------------------------------------------------------------------------------------
 @Composable
@@ -110,6 +136,9 @@ fun App() {
         }
         fetchUsers { fetchedUsers ->
             users = fetchedUsers
+        }
+        fetchReviews { fetchedReviews ->
+            reviews = fetchedReviews
         }
     }
 
@@ -666,6 +695,7 @@ fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
 
 @Composable
 fun AddReviewForm(onAddReview: (Review) -> Unit) {
+    var Id by remember { mutableStateOf("") }
     var eventId by remember { mutableStateOf("") }
     var userId by remember { mutableStateOf("") }
     var created by remember { mutableStateOf("") }
@@ -724,6 +754,7 @@ fun AddReviewForm(onAddReview: (Review) -> Unit) {
         Button(
             onClick = {
                 val review = Review(
+                    _id = Id,
                     eventId = eventId,
                     userId = userId,
                     created = created,
@@ -731,6 +762,7 @@ fun AddReviewForm(onAddReview: (Review) -> Unit) {
                     content = content
                 )
                 onAddReview(review)
+                Id = ""
                 eventId = ""
                 userId = ""
                 created = ""
@@ -1028,6 +1060,7 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
 
 // REVIEWS ----------------------------------------------------------------------------------------------------
 data class Review(
+    val _id: String,
     val eventId: String,
     val userId: String,
     val created: String,
@@ -1069,6 +1102,7 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
         ) {
             Text("Rating: ${review.rating}", style = MaterialTheme.typography.h6)
             if (isExpanded) {
+                Text("Id: ${review._id}")
                 Text("Content: ${review.content}")
                 Text("Created: ${review.created}")
                 Text("Event ID: ${review.eventId}")
@@ -1091,6 +1125,7 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
 
 @Composable
 fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> Unit) {
+    var Id by remember { mutableStateOf(review._id) }
     var eventId by remember { mutableStateOf(review.eventId) }
     var userId by remember { mutableStateOf(review.userId) }
     var created by remember { mutableStateOf(review.created) }
@@ -1116,6 +1151,7 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
+                    item { OutlinedTextField(value = Id, onValueChange = { Id = it }, label = { Text("Id") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = eventId, onValueChange = { eventId = it }, label = { Text("Event ID") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = userId, onValueChange = { userId = it }, label = { Text("User ID") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = created, onValueChange = { created = it }, label = { Text("Created") }, modifier = Modifier.fillMaxWidth()) }
@@ -1134,6 +1170,7 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                         onClick = {
                             onSave(
                                 Review(
+                                    _id = Id,
                                     eventId = eventId,
                                     userId = userId,
                                     created = created,
