@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.github.serpro69.kfaker.Faker
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -190,9 +188,6 @@ fun App() {
                 onAddUser = { newUser ->
                     users = users + newUser
                 },
-                onUpdateUser = { updatedUser ->
-                    users = users.map { if (it.email == updatedUser.email) updatedUser else it }
-                },
                 onAddReview = { newReview ->
                     reviews = reviews + newReview
                 },
@@ -201,9 +196,6 @@ fun App() {
                 },
                 onAddCategory = { newCategory ->
                     categories = categories + newCategory
-                },
-                onUpdateCategory = { updatedCategory ->
-                    categories = categories.map { if (it.name == updatedCategory.name) updatedCategory else it }
                 }
             )
         }
@@ -305,9 +297,7 @@ fun ContentArea(
     onAddEvent: (Event) -> Unit,
     onUpdateEvent: (Event) -> Unit,
     onAddUser: (User) -> Unit,
-    onUpdateUser: (User) -> Unit,
     onAddCategory: (Category) -> Unit,
-    onUpdateCategory: (Category) -> Unit,
     onAddReview: (Review) -> Unit,
     onUpdateReview: (Review) -> Unit
 ) {
@@ -331,7 +321,7 @@ fun ContentArea(
                     onAddReview = onAddReview
                 )
                 "Events" -> EventsScreen(events, onUpdateEvent)
-                "Users" -> UsersScreen(users, onUpdateUser)
+                "Users" -> UsersScreen(users)
                 "Reviews" -> ReviewsScreen(reviews, onUpdateReview)
                 "Categories" -> CategoriesScreen(categories)
                 "Scraper" -> ScraperScreen { newEvents ->
@@ -975,7 +965,7 @@ data class User(
 )
 
 @Composable
-fun UsersScreen(users: List<User>, onUpdateUser: (User) -> Unit) {
+fun UsersScreen(users: List<User>) {
     var userList by remember { mutableStateOf(users) }
 
     Column(
