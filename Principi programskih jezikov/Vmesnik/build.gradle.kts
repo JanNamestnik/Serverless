@@ -31,6 +31,8 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     implementation("com.google.code.gson:gson:2.11.0")
+
+    implementation("org.mongodb:bson:4.6.0")
 }
 
 compose.desktop {

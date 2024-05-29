@@ -7,27 +7,69 @@ import it.skrape.fetcher.skrape
 import it.skrape.selects.DocElement
 import it.skrape.selects.html5.*
 import it.skrape.selects.text
+import com.google.gson.annotations.Expose
 
 data class Location(
-    val type: String,
-    val coordinates: List<Double>
+    @Expose val type: String,
+    @Expose val coordinates: List<Double>
 )
 
 data class Event(
+    @Expose(serialize = false, deserialize = false)
     val _id: String?,
+
+    @Expose
     val name: String?,
+
+    @Expose
     val address: String?,
+
+    @Expose
     val startTime: String?,
+
+    @Expose
     val date_start: String?,
+
+    @Expose
     val date_end: String?,
+
+    @Expose
     val description: String?,
+
+    @Expose
     val contact: String?,
+
+    @Expose
     val category: String?,
+
+    @Expose
     val location: Location?,
+
+    @Expose
     val eventImage: String?,
+
+    @Expose
     val price: String = "Free",
-    val attendees: List<String> = emptyList()
+
+    @Expose
+    val attendees: List<String> = emptyList(),
+
+    @Expose
+    val owner: String?
 )
+
+fun getCategoryID(category: String): String? {
+    return when (category) {
+        "Razstava" -> "6643ef1e35e389b1272f6b82" //
+        "Športne prireditve" -> "6642325dff14c4a75477259a" //
+        "Vinsko-kulinarične prireditve" -> "66579370914872027c245c3e" //
+        "Delavnice" -> "66579337914872027c245c3d" //
+        "Koncert" -> "66423238ff14c4a754772598" //
+        "Festival" -> "66423250ff14c4a754772599" //
+        "Drugo" -> "6643ef3e35e389b1272f6b83" //
+        else -> "6643ef3e35e389b1272f6b83" //
+    }
+}
 
 fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?, String?, String?> {
     val datePattern = """(\d{1,2}\.\s\d{1,2}\.\s\d{4})""".toRegex()
@@ -121,18 +163,19 @@ fun getEvent(s: String?): Event? {
                     date_end = secondDate,
                     description = description,
                     contact = contact?.text,
-                    category = category?.text,
-                    location = coordinates?.let { Location("Point", it) },
+                    category = category?.text?.let { getCategoryID(it) },
+                    location = Location("Point", listOf(0.0, 0.0)),
                     eventImage = "https://www.visitmaribor.si$eventImage",
                     price = "Free",
-                    attendees = emptyList()
+                    attendees = emptyList(),
+                    owner = "6651c0a0278d45f6f2502b7b"
                 )
             }
         }
     }
 }
 
-fun fetchEvents(maxEvents: Int = 5): List<Event> {
+fun fetchEvents(maxEvents: Int = 1): List<Event> {
     val events = mutableListOf<Event>()
     skrape(BrowserFetcher) {
         request {

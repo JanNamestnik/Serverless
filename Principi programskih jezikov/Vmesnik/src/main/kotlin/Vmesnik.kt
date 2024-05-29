@@ -30,7 +30,13 @@ import scraping.Location
 import okhttp3.*
 import java.io.IOException
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 // FETCHING EVENTS ------------------------------------------------------------------------------------------------
 fun fetchEvents(onResult: (List<Event>) -> Unit) {
@@ -565,7 +571,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                     )
                 )
                 val event = Event(
-                    _id = null,  // Assuming ID is generated elsewhere
+                    _id = null,
                     name = name,
                     address = address,
                     startTime = startTime,
@@ -577,7 +583,8 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                     location = location,
                     eventImage = eventImage,
                     price = price,
-                    attendees = attendees.split(", ").filter { it.isNotBlank() }
+                    attendees = attendees.split(", ").filter { it.isNotBlank() },
+                    owner = "6651c0a0278d45f6f2502b7b"
                 )
                 onAddEvent(event)
                 // Clear the input fields
@@ -592,7 +599,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                 longitude = ""
                 latitude = ""
                 eventImage = ""
-                price = "Free"
+                price = ""
                 attendees = ""
             },
             modifier = Modifier.padding(top = 16.dp)
@@ -847,6 +854,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
                 Text("Price: ${event.price}")
                 Text("Attendees: ${event.attendees.joinToString(", ")}")
                 Text("Event Image: ${event.eventImage}")
+                Text("Owner: ${event.owner}")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { isEditing = true }) {
                     Text("Edit Event")
@@ -878,6 +886,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     var eventImage by remember { mutableStateOf(event.eventImage ?: "") }
     var price by remember { mutableStateOf(event.price) }
     var attendees by remember { mutableStateOf(event.attendees.joinToString(", ")) }
+    var owner by remember { mutableStateOf(event.owner) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -910,6 +919,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                     item { OutlinedTextField(value = latitude, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = eventImage, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price") }, modifier = Modifier.fillMaxWidth()) }
+                    item { owner?.let { OutlinedTextField(value = it, onValueChange = { owner = it }, label = { Text("Owner") }, modifier = Modifier.fillMaxWidth()) } }
                     item { OutlinedTextField(value = attendees, onValueChange = { attendees = it }, label = { Text("Attendees") }, modifier = Modifier.fillMaxWidth()) }
                 }
 
@@ -939,7 +949,8 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                 location = updatedLocation,
                                 eventImage = eventImage,
                                 price = price,
-                                attendees = attendees.split(", ").filter { it.isNotBlank() }
+                                attendees = attendees.split(", ").filter { it.isNotBlank() },
+                                owner = owner
                             )
                             onSave(updatedEvent)
                         }
@@ -1324,7 +1335,7 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                             onSave(Category(category._id, name))
                         }
                     ) {
-                        Text("Save Changes")
+                        Text("Save")
                     }
                 }
             }
@@ -1473,7 +1484,8 @@ fun generateRandomEvent(
         ),
         eventImage = "https://nekineki",
         price = "Free",
-        attendees = emptyList()
+        attendees = emptyList(),
+        owner = null
     )
 }
 
@@ -1495,6 +1507,40 @@ fun randomCategory(): String {
 
 
 // SCRAPER -----------------------------------------------------------------------------------------
+fun Event.toDatabaseJson(): String {
+    val gson = GsonBuilder()
+        .excludeFieldsWithoutExposeAnnotation()
+        .create()
+    return gson.toJson(this)
+}
+
+fun sendEventsToDatabase(events: List<Event>, url: String) {
+    val client = OkHttpClient()
+    val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+
+    events.forEach { event ->
+        val json = event.toDatabaseJson()
+        println("Generated JSON: $json")  // Print the JSON to check it
+
+        val body = json.toRequestBody(mediaType)
+
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                println(response.body?.string())
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+
 @Composable
 fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
     var events by remember { mutableStateOf(listOf<Event>()) }
@@ -1515,7 +1561,6 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
             Button(
                 onClick = {
                     isLoading = true
-                    // Start fetching events
                     GlobalScope.launch {
                         val fetchedEvents = fetchEvents()
                         events = fetchedEvents
@@ -1528,18 +1573,23 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Add spacer to separate the button from LazyColumn
+        Spacer(modifier = Modifier.height(16.dp))
 
         events.forEach { event ->
             EventCard(event) {}
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // Display "Add" button if events are fetched and not empty
         if (events.isNotEmpty()) {
             Button(
                 onClick = {
-                    onAddEvents(events)
+                    GlobalScope.launch {
+                        try {
+                            sendEventsToDatabase(events, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createEvent")
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                    }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
@@ -1548,6 +1598,7 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         }
     }
 }
+
 
 
 
