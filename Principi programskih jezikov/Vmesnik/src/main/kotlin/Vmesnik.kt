@@ -46,18 +46,82 @@ fun App() {
             eventImage = "https:://nekineki"
         )
     )) }
+    var users by remember { mutableStateOf(listOf(
+        User(
+            name = "John Doe",
+            email = "john.doe@example.com",
+            password = "password123",
+            favorites = listOf("1", "2", "3"),
+            profileImage = "https://example.com/profile.jpg"
+        ),
+        User(
+            name = "Jane Smith",
+            email = "jane.smith@example.com",
+            password = "password123",
+            favorites = listOf("4", "5", "6"),
+            profileImage = "https://example.com/profile2.jpg"
+        )
+    )) }
+    var reviews by remember { mutableStateOf(listOf(
+        Review(
+            eventId = "1",
+            userId = "1",
+            created = "2024-05-28",
+            rating = 5,
+            content = "Great event!"
+        ),
+        Review(
+            eventId = "2",
+            userId = "2",
+            created = "2024-05-29",
+            rating = 4,
+            content = "Had a good time."
+        )
+    )) }
+    var categories by remember { mutableStateOf(listOf(
+        Category(name = "Music"),
+        Category(name = "Art"),
+        Category(name = "Technology")
+    )) }
 
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
-            ContentArea(selectedScreen, events, onAddEvent = { newEvent ->
-                events = events + newEvent
-            }, onUpdateEvent = { updatedEvent ->
-                events = events.map { if (it.name == updatedEvent.name) updatedEvent else it }
-            })
+            ContentArea(
+                selectedScreen,
+                events,
+                users,
+                reviews,
+                categories,
+                onAddEvent = { newEvent ->
+                    events = events + newEvent
+                },
+                onUpdateEvent = { updatedEvent ->
+                    events = events.map { if (it.name == updatedEvent.name) updatedEvent else it }
+                },
+                onAddUser = { newUser ->
+                    users = users + newUser
+                },
+                onUpdateUser = { updatedUser ->
+                    users = users.map { if (it.email == updatedUser.email) updatedUser else it }
+                },
+                onAddReview = { newReview ->
+                    reviews = reviews + newReview
+                },
+                onUpdateReview = { updatedReview ->
+                    reviews = reviews.map { if (it.eventId == updatedReview.eventId && it.userId == updatedReview.userId) updatedReview else it }
+                },
+                onAddCategory = { newCategory ->
+                    categories = categories + newCategory
+                },
+                onUpdateCategory = { updatedCategory ->
+                    categories = categories.map { if (it.name == updatedCategory.name) updatedCategory else it }
+                }
+            )
         }
     }
 }
+
 
 
 
@@ -77,16 +141,36 @@ fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
     ) {
         SidebarButton(
             icon = Icons.Default.Add,
-            label = "Add event",
-            isSelected = selectedScreen == "Add event",
-            onClick = { onScreenSelected("Add event") }
+            label = "Add",
+            isSelected = selectedScreen == "Add",
+            onClick = { onScreenSelected("Add") }
         )
+        Divider(color = Color.LightGray, thickness = 2.dp)
         SidebarButton(
             icon = Icons.Default.List,
             label = "Events",
             isSelected = selectedScreen == "Events",
             onClick = { onScreenSelected("Events") }
         )
+        SidebarButton(
+            icon = Icons.Default.Person,
+            label = "Users",
+            isSelected = selectedScreen == "Users",
+            onClick = { onScreenSelected("Users") }
+        )
+        SidebarButton(
+            icon = Icons.Default.Star,
+            label = "Reviews",
+            isSelected = selectedScreen == "Reviews",
+            onClick = { onScreenSelected("Reviews") }
+        )
+        SidebarButton(
+            icon = Icons.Default.Menu,
+            label = "Categories",
+            isSelected = selectedScreen == "Categories",
+            onClick = { onScreenSelected("Categories") }
+        )
+        Divider(color = Color.LightGray, thickness = 2.dp)
         SidebarButton(
             icon = Icons.Default.Share,
             label = "Scraper",
@@ -127,7 +211,21 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
 }
 
 @Composable
-fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event) -> Unit, onUpdateEvent: (Event) -> Unit) {
+fun ContentArea(
+    selectedScreen: String,
+    events: List<Event>,
+    users: List<User>,
+    reviews: List<Review>,
+    categories: List<Category>,
+    onAddEvent: (Event) -> Unit,
+    onUpdateEvent: (Event) -> Unit,
+    onAddUser: (User) -> Unit,
+    onUpdateUser: (User) -> Unit,
+    onAddCategory: (Category) -> Unit,
+    onUpdateCategory: (Category) -> Unit,
+    onAddReview: (Review) -> Unit,
+    onUpdateReview: (Review) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,8 +239,16 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             when (selectedScreen) {
-                "Add event" -> AddEventScreen(onAddEvent)
+                "Add" -> AddScreen(
+                    onAddEvent = onAddEvent,
+                    onAddUser = onAddUser,
+                    onAddCategory = onAddCategory,
+                    onAddReview = onAddReview
+                )
                 "Events" -> EventsScreen(events, onUpdateEvent)
+                "Users" -> UsersScreen(users, onUpdateUser)
+                "Reviews" -> ReviewsScreen(reviews, onUpdateReview)
+                "Categories" -> CategoriesScreen(categories, onUpdateCategory)
                 "Scraper" -> ScraperScreen { newEvents ->
                     newEvents.forEach { onAddEvent(it) }
                 }
@@ -155,9 +261,72 @@ fun ContentArea(selectedScreen: String, events: List<Event>, onAddEvent: (Event)
     }
 }
 
-// ADD EVENT --------------------------------------------------------------------------------------------------------
+
+
+
+// ADD SCREEN --------------------------------------------------------------------------------------------------------
 @Composable
-fun AddEventScreen(onAddEvent: (Event) -> Unit) {
+fun AddScreen(
+    onAddEvent: (Event) -> Unit,
+    onAddUser: (User) -> Unit,
+    onAddCategory: (Category) -> Unit,
+    onAddReview: (Review) -> Unit
+) {
+    var selectedType by remember { mutableStateOf("Event") }
+    val types = listOf("Event", "User", "Category", "Review")
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Add New", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Dropdown Menu for Selecting Type
+        var expanded by remember { mutableStateOf(false) }
+        Box {
+            OutlinedTextField(
+                value = selectedType,
+                onValueChange = { },
+                readOnly = true,
+                label = { Text("Type") },
+                trailingIcon = {
+                    Icon(Icons.Default.ArrowDropDown, null, Modifier.clickable { expanded = true })
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                types.forEach { type ->
+                    DropdownMenuItem(onClick = {
+                        selectedType = type
+                        expanded = false
+                    }) {
+                        Text(type)
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Conditional UI based on selected type
+        when (selectedType) {
+            "Event" -> AddEventForm(onAddEvent)
+            "User" -> AddUserForm(onAddUser)
+            "Category" -> AddCategoryForm(onAddCategory)
+            "Review" -> AddReviewForm(onAddReview)
+        }
+    }
+}
+
+@Composable
+fun AddEventForm(onAddEvent: (Event) -> Unit) {
     var name by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var startTime by remember { mutableStateOf("") }
@@ -331,6 +500,198 @@ fun AddEventScreen(onAddEvent: (Event) -> Unit) {
     }
 }
 
+@Composable
+fun AddUserForm(onAddUser: (User) -> Unit) {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var favorites by remember { mutableStateOf("") }
+    var profileImage by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Add User", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Name
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Email
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Password
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Favorites
+        OutlinedTextField(
+            value = favorites,
+            onValueChange = { favorites = it },
+            label = { Text("Favorites") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Profile Image
+        OutlinedTextField(
+            value = profileImage,
+            onValueChange = { profileImage = it },
+            label = { Text("Profile Image") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Save Button
+        Button(
+            onClick = {
+                val user = User(
+                    name = name,
+                    email = email,
+                    password = password,
+                    favorites = favorites.split(","),
+                    profileImage = profileImage
+                )
+                onAddUser(user)
+                name = ""
+                email = ""
+                password = ""
+                favorites = ""
+                profileImage = ""
+            },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Add User")
+        }
+    }
+}
+
+@Composable
+fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
+    var name by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Add Category", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Name
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Save Button
+        Button(
+            onClick = {
+                val category = Category(name = name)
+                onAddCategory(category)
+                name = ""
+            },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Add Category")
+        }
+    }
+}
+
+@Composable
+fun AddReviewForm(onAddReview: (Review) -> Unit) {
+    var eventId by remember { mutableStateOf("") }
+    var userId by remember { mutableStateOf("") }
+    var created by remember { mutableStateOf("") }
+    var rating by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Add Review", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Event ID
+        OutlinedTextField(
+            value = eventId,
+            onValueChange = { eventId = it },
+            label = { Text("Event ID") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // User ID
+        OutlinedTextField(
+            value = userId,
+            onValueChange = { userId = it },
+            label = { Text("User ID") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Created Date
+        OutlinedTextField(
+            value = created,
+            onValueChange = { created = it },
+            label = { Text("Created Date") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Rating
+        OutlinedTextField(
+            value = rating,
+            onValueChange = { rating = it },
+            label = { Text("Rating") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // Content
+        OutlinedTextField(
+            value = content,
+            onValueChange = { content = it },
+            label = { Text("Content") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Save Button
+        Button(
+            onClick = {
+                val review = Review(
+                    eventId = eventId,
+                    userId = userId,
+                    created = created,
+                    rating = rating.toInt(),
+                    content = content
+                )
+                onAddReview(review)
+                eventId = ""
+                userId = ""
+                created = ""
+                rating = ""
+                content = ""
+            },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Add Review")
+        }
+    }
+}
+
 // EVETN SCREEEN ----------------------------------------------------------------------------------------------
 @Composable
 fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
@@ -461,6 +822,361 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                     eventImage = eventImage
                                 )
                             )
+                        }
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        },
+        modifier = Modifier.padding(20.dp)
+    )
+}
+
+// USERS --------------------------------------------------------------------------------------------------------
+data class User(
+    val name: String?,
+    val email: String?,
+    val password: String?,
+    val favorites: List<String>,
+    val profileImage: String?
+)
+@Composable
+fun UsersScreen(users: List<User>, onUpdateUser: (User) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Users", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        users.forEach { user ->
+            UserCard(user, onUpdateUser)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var isEditing by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded },
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            user.name?.let { Text(it, style = MaterialTheme.typography.h6) }
+            if (isExpanded) {
+                Text("Email: ${user.email}")
+                Text("Password: ${user.password}")
+                Text("Favorites: ${user.favorites.joinToString(", ")}")
+                Text("Profile Image: ${user.profileImage}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { isEditing = true }) {
+                    Text("Edit User")
+                }
+            }
+        }
+    }
+
+    if (isEditing) {
+        EditUserDialog(user = user, onDismiss = { isEditing = false }, onSave = { updatedUser ->
+            onUpdateUser(updatedUser)
+            isEditing = false
+        })
+    }
+}
+
+@Composable
+fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
+    var name by remember { mutableStateOf(user.name) }
+    var email by remember { mutableStateOf(user.email) }
+    var password by remember { mutableStateOf(user.password) }
+    var favorites by remember { mutableStateOf(user.favorites.joinToString(", ")) }
+    var profileImage by remember { mutableStateOf(user.profileImage) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Edit User",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { email?.let { OutlinedTextField(value = it, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { password?.let { OutlinedTextField(value = it, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { OutlinedTextField(value = favorites, onValueChange = { favorites = it }, label = { Text("Favorites") }, modifier = Modifier.fillMaxWidth()) }
+                    item { profileImage?.let { OutlinedTextField(value = it, onValueChange = { profileImage = it }, label = { Text("Profile Image") }, modifier = Modifier.fillMaxWidth()) } }
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = {
+                            onSave(
+                                User(
+                                    name = name,
+                                    email = email,
+                                    password = password,
+                                    favorites = favorites.split(", ").toList(),
+                                    profileImage = profileImage
+                                )
+                            )
+                        }
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        },
+        modifier = Modifier.padding(20.dp)
+    )
+}
+
+// REVIEWS ----------------------------------------------------------------------------------------------------
+data class Review(
+    val eventId: String,
+    val userId: String,
+    val created: String,
+    val rating: Int,
+    val content: String
+)
+
+@Composable
+fun ReviewsScreen(reviews: List<Review>, onUpdateReview: (Review) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Reviews", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        reviews.forEach { review ->
+            ReviewCard(review, onUpdateReview)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var isEditing by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded },
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("Rating: ${review.rating}", style = MaterialTheme.typography.h6)
+            if (isExpanded) {
+                Text("Content: ${review.content}")
+                Text("Created: ${review.created}")
+                Text("Event ID: ${review.eventId}")
+                Text("User ID: ${review.userId}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { isEditing = true }) {
+                    Text("Edit Review")
+                }
+            }
+        }
+    }
+
+    if (isEditing) {
+        EditReviewDialog(review = review, onDismiss = { isEditing = false }, onSave = { updatedReview ->
+            onUpdateReview(updatedReview)
+            isEditing = false
+        })
+    }
+}
+
+@Composable
+fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> Unit) {
+    var eventId by remember { mutableStateOf(review.eventId) }
+    var userId by remember { mutableStateOf(review.userId) }
+    var created by remember { mutableStateOf(review.created) }
+    var rating by remember { mutableStateOf(review.rating.toString()) }
+    var content by remember { mutableStateOf(review.content) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Edit Review",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    item { OutlinedTextField(value = eventId, onValueChange = { eventId = it }, label = { Text("Event ID") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = userId, onValueChange = { userId = it }, label = { Text("User ID") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = created, onValueChange = { created = it }, label = { Text("Created") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = rating, onValueChange = { rating = it }, label = { Text("Rating") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = content, onValueChange = { content = it }, label = { Text("Content") }, modifier = Modifier.fillMaxWidth()) }
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = {
+                            onSave(
+                                Review(
+                                    eventId = eventId,
+                                    userId = userId,
+                                    created = created,
+                                    rating = rating.toInt(),
+                                    content = content
+                                )
+                            )
+                        }
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        },
+        modifier = Modifier.padding(20.dp)
+    )
+}
+
+
+// CATEGORIES -----------------------------------------------------------------------------------------------
+data class Category(
+    val name: String
+)
+
+@Composable
+fun CategoriesScreen(categories: List<Category>, onUpdateCategory: (Category) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Categories", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        categories.forEach { category ->
+            CategoryCard(category, onUpdateCategory)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var isEditing by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded },
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(category.name, style = MaterialTheme.typography.h6)
+            if (isExpanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { isEditing = true }) {
+                    Text("Edit Category")
+                }
+            }
+        }
+    }
+
+    if (isEditing) {
+        EditCategoryDialog(category = category, onDismiss = { isEditing = false }, onSave = { updatedCategory ->
+            onUpdateCategory(updatedCategory)
+            isEditing = false
+        })
+    }
+}
+
+@Composable
+fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Category) -> Unit) {
+    var name by remember { mutableStateOf(category.name) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Edit Category",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = {
+                            onSave(Category(name))
                         }
                     ) {
                         Text("Save")
@@ -726,6 +1442,8 @@ fun AboutScreen() {
         Text("Jan Namestnik, Nejc Cekuta, Metod Golob")
     }
 }
+
+// MAIN-----------------------------------------------------------------------------------------------------------
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
