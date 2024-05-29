@@ -27,25 +27,21 @@ import kotlinx.coroutines.launch
 import scraping.fetchEvents
 import scraping.Event
 
+// za povezovanje na database
+import okhttp3.*
+import java.io.IOException
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+// FETCHING EVENTS ------------------------------------------------------------------------------------------------
+
+
+// APP-------------------------------------------------------------------------------------------------------------
 @Composable
 @Preview
 fun App() {
     var selectedScreen by remember { mutableStateOf("Add event") }
-    var events by remember { mutableStateOf(listOf(
-        Event(
-            name = "Lampijončki",
-            address = "Študentski kampus gosposvetska",
-            startTime = "10:00 AM",
-            dateStart = "2024-05-30",
-            dateEnd = "2024-05-31",
-            description = "Nastopili bodo: modrijani, smetnaki...",
-            contact = "info@gmail.com",
-            category = "festival",
-            longitude = "46.562828",
-            latitude = "15.626822",
-            eventImage = "https:://nekineki"
-        )
-    )) }
+    var events by remember { mutableStateOf(listOf<Event>()) }
     var users by remember { mutableStateOf(listOf(
         User(
             name = "John Doe",
@@ -84,6 +80,14 @@ fun App() {
         Category(name = "Technology")
     )) }
 
+    /*
+    // Fetch events when the composable is first launched
+    LaunchedEffect(Unit) {
+        fetchEvents { fetchedEvents ->
+            events = fetchedEvents
+        }
+    }
+    */
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
@@ -97,7 +101,7 @@ fun App() {
                     events = events + newEvent
                 },
                 onUpdateEvent = { updatedEvent ->
-                    events = events.map { if (it.name == updatedEvent.name) updatedEvent else it }
+                    events = events.map { if (it._id == updatedEvent._id) updatedEvent else it }
                 },
                 onAddUser = { newUser ->
                     users = users + newUser
@@ -263,7 +267,6 @@ fun ContentArea(
 
 
 
-
 // ADD SCREEN --------------------------------------------------------------------------------------------------------
 @Composable
 fun AddScreen(
@@ -338,6 +341,8 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
     var longitude by remember { mutableStateOf("") }
     var latitude by remember { mutableStateOf("") }
     var eventImage by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("Free") }
+    var attendees by remember { mutableStateOf("") }
 
     val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
 
@@ -380,8 +385,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             value = dateStart,
             onValueChange = { dateStart = it },
             label = { Text("Date Start") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Date End
@@ -389,8 +393,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             value = dateEnd,
             onValueChange = { dateEnd = it },
             label = { Text("Date End") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Description
@@ -455,10 +458,27 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
+        // Event Image
         OutlinedTextField(
             value = eventImage,
             onValueChange = { eventImage = it },
-            label = { Text("eventImage") },
+            label = { Text("Event Image") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Price
+        OutlinedTextField(
+            value = price,
+            onValueChange = { price = it },
+            label = { Text("Price") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Attendees
+        OutlinedTextField(
+            value = attendees,
+            onValueChange = { attendees = it },
+            label = { Text("Attendees") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -467,17 +487,20 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             onClick = {
                 // Create the event and pass it to the onAddEvent lambda
                 val event = Event(
+                    _id = null,  // Assuming ID is generated elsewhere
                     name = name,
                     address = address,
                     startTime = startTime,
-                    dateStart = dateStart,
-                    dateEnd = dateEnd,
+                    date_start = dateStart,
+                    date_end = dateEnd,
                     description = description,
                     contact = contact,
                     category = selectedCategory,
                     longitude = longitude,
                     latitude = latitude,
-                    eventImage = eventImage
+                    eventImage = eventImage,
+                    price = price,
+                    attendees = attendees.split(", ").filter { it.isNotBlank() }
                 )
                 onAddEvent(event)
                 // Clear the input fields
@@ -492,6 +515,8 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                 longitude = ""
                 latitude = ""
                 eventImage = ""
+                price = "Free"
+                attendees = ""
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -727,15 +752,18 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
         ) {
             event.name?.let { Text(it, style = MaterialTheme.typography.h6) }
             if (isExpanded) {
+                Text("_id: ${event._id}")
                 Text("Address: ${event.address}")
                 Text("Start Time: ${event.startTime}")
-                Text("Start Date: ${event.dateStart}")
-                Text("End Date: ${event.dateEnd}")
+                Text("Start Date: ${event.date_start}")
+                Text("End Date: ${event.date_end}")
                 Text("Description: ${event.description}")
                 Text("Contact: ${event.contact}")
                 Text("Category: ${event.category}")
                 Text("Location: ${event.latitude}, ${event.longitude}")
-                Text("eventImage: ${event.eventImage}")
+                Text("Price: ${event.price}")
+                Text("Attendees: ${event.attendees.joinToString(", ")}")
+                Text("Event Image: ${event.eventImage}")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { isEditing = true }) {
                     Text("Edit Event")
@@ -757,14 +785,16 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     var name by remember { mutableStateOf(event.name) }
     var address by remember { mutableStateOf(event.address) }
     var startTime by remember { mutableStateOf(event.startTime) }
-    var dateStart by remember { mutableStateOf(event.dateStart) }
-    var dateEnd by remember { mutableStateOf(event.dateEnd) }
+    var dateStart by remember { mutableStateOf(event.date_start) }
+    var dateEnd by remember { mutableStateOf(event.date_end) }
     var description by remember { mutableStateOf(event.description) }
     var contact by remember { mutableStateOf(event.contact) }
     var category by remember { mutableStateOf(event.category) }
     var longitude by remember { mutableStateOf(event.longitude) }
     var latitude by remember { mutableStateOf(event.latitude) }
     var eventImage by remember { mutableStateOf(event.eventImage) }
+    var price by remember { mutableStateOf(event.price) }
+    var attendees by remember { mutableStateOf(event.attendees.joinToString(", ")) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -796,6 +826,8 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                     item { longitude?.let { OutlinedTextField(value = it, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) } }
                     item { latitude?.let { OutlinedTextField(value = it, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) } }
                     item { eventImage?.let { OutlinedTextField(value = it, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = attendees, onValueChange = { attendees = it }, label = { Text("Attendees") }, modifier = Modifier.fillMaxWidth()) }
                 }
 
                 Row(
@@ -809,17 +841,20 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                         onClick = {
                             onSave(
                                 Event(
+                                    _id = event._id,
                                     name = name,
                                     address = address,
                                     startTime = startTime,
-                                    dateStart = dateStart,
-                                    dateEnd = dateEnd,
+                                    date_start = dateStart,
+                                    date_end = dateEnd,
                                     description = description,
                                     contact = contact,
                                     category = category,
                                     longitude = longitude,
                                     latitude = latitude,
-                                    eventImage = eventImage
+                                    eventImage = eventImage,
+                                    price = price,
+                                    attendees = attendees.split(", ").filter { it.isNotBlank() }
                                 )
                             )
                         }
@@ -886,6 +921,7 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
             }
         }
     }
+
 
     if (isEditing) {
         EditUserDialog(user = user, onDismiss = { isEditing = false }, onSave = { updatedUser ->
@@ -1306,17 +1342,20 @@ fun generateRandomEvent(
     maxLatitude: Double
 ): Event {
     return Event(
+        _id = null,
         name = faker.book.title(),
         address = faker.address.streetAddress(),
         startTime = "${(1..12).random()}:${(0..59).random().toString().padStart(2, '0')} ${if ((0..1).random() == 0) "AM" else "PM"}",
-        dateStart = randomDate(1, startDateOffset),
-        dateEnd = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
+        date_start = randomDate(1, startDateOffset),
+        date_end = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
         description = faker.quote.mostInterestingManInTheWorld(),
         contact = faker.internet.safeEmail(),
         category = randomCategory(),
         longitude = randomCoordinate(minLongitude..maxLongitude),
         latitude = randomCoordinate(minLatitude..maxLatitude),
-        eventImage = "https:://nekineki"
+        eventImage = "https:://nekineki",
+        price = "Free",
+        attendees = emptyList()
     )
 }
 

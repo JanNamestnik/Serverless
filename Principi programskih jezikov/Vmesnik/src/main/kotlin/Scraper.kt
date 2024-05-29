@@ -9,17 +9,20 @@ import it.skrape.selects.html5.*
 import it.skrape.selects.text
 
 data class Event(
+    val _id: String?,
     val name: String?,
     val address: String?,
     val startTime: String?,
-    val dateStart: String?,
-    val dateEnd: String?,
+    val date_start: String?,
+    val date_end: String?,
     val description: String?,
     val contact: String?,
     val category: String?,
     val longitude: String?,
     val latitude: String?,
     val eventImage: String?,
+    val price: String = "Free",
+    val attendees: List<String> = emptyList()
 )
 
 fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?, String?, String?> {
@@ -83,19 +86,27 @@ fun getEvent(s: String?): Event? {
                 } catch (e: Exception) {
                     null
                 }
+                val price = try {
+                    i { withClass = "fa-euro-sign"; findFirst { siblings } }
+                } catch (e: Exception) {
+                    "Free"
+                }
 
                 Event(
+                    _id = null,
                     name = eventName,
                     address = address?.text,
                     startTime = startTime,
-                    dateStart = firstDate,
-                    dateEnd = secondDate,
+                    date_start = firstDate,
+                    date_end = secondDate,
                     description = description,
                     contact = contact?.text,
                     category = category?.text,
                     longitude = "",
                     latitude = "",
-                    eventImage = "https://www.visitmaribor.si$eventImage"
+                    eventImage = "https://www.visitmaribor.si$eventImage",
+                    price = "Free",
+                    attendees = emptyList()  // No attendee info available in the scraping logic
                 )
             }
         }
