@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import scraping.fetchEvents
 import scraping.Event
 import scraping.Location
+import scraping.ObjectIdSerializer
 
 // za povezovanje na bazo
 import okhttp3.*
@@ -32,11 +33,18 @@ import java.io.IOException
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.google.gson.*
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
+import org.bson.types.ObjectId
+import java.text.SimpleDateFormat
+import java.util.Date
+
+import org.bson.Document
 
 // FETCHING EVENTS ------------------------------------------------------------------------------------------------
 fun fetchEvents(onResult: (List<Event>) -> Unit) {
@@ -53,6 +61,7 @@ fun fetchEvents(onResult: (List<Event>) -> Unit) {
 
         override fun onResponse(call: Call, response: Response) {
             response.body?.string()?.let { jsonResponse ->
+                println(jsonResponse)
                 val events = parseEventsFromJson(jsonResponse)
                 onResult(events)
             }
@@ -60,11 +69,39 @@ fun fetchEvents(onResult: (List<Event>) -> Unit) {
     })
 }
 
+
+class ObjectIdDeserializer : JsonDeserializer<ObjectId> {
+    override fun deserialize(json: JsonElement?, typeOfT: java.lang.reflect.Type?, context: JsonDeserializationContext?): ObjectId {
+        return if (json!!.isJsonObject) {
+            val jsonObject = json.asJsonObject
+            val hexString = jsonObject.get("\$oid").asString
+            ObjectId(hexString)
+        } else {
+            ObjectId(json.asString)
+        }
+    }
+}
+
+
+
+class DateDeserializer : JsonDeserializer<Date> {
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+    override fun deserialize(json: JsonElement?, typeOfT: java.lang.reflect.Type?, context: JsonDeserializationContext?): Date {
+        return dateFormat.parse(json!!.asString)
+    }
+}
+
 fun parseEventsFromJson(jsonResponse: String): List<Event> {
-    val gson = Gson()
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdDeserializer())
+        .registerTypeAdapter(Date::class.java, DateDeserializer())
+        .create()
     val eventType = object : TypeToken<List<Event>>() {}.type
     return gson.fromJson(jsonResponse, eventType)
 }
+
+
 
 // FETCHING USERS -------------------------------------------------------------------------------------------------
 fun fetchUsers(onResult: (List<User>) -> Unit) {
@@ -418,8 +455,9 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
     var longitude by remember { mutableStateOf("") }
     var latitude by remember { mutableStateOf("") }
     var eventImage by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("Free") }
+    var price by remember { mutableStateOf("") }
     var attendees by remember { mutableStateOf("") }
+    var owner by remember { mutableStateOf("") }
 
     val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
 
@@ -548,7 +586,8 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             value = price,
             onValueChange = { price = it },
             label = { Text("Price") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
         // Attendees
@@ -556,6 +595,14 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             value = attendees,
             onValueChange = { attendees = it },
             label = { Text("Attendees") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Owner
+        OutlinedTextField(
+            value = owner,
+            onValueChange = { owner = it },
+            label = { Text("Owner") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -579,12 +626,12 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                     date_end = dateEnd,
                     description = description,
                     contact = contact,
-                    category = selectedCategory,
+                    category = ObjectId(selectedCategory),
                     location = location,
                     eventImage = eventImage,
-                    price = price,
+                    price = price.toIntOrNull() ?: 0,
                     attendees = attendees.split(", ").filter { it.isNotBlank() },
-                    owner = "6651c0a0278d45f6f2502b7b"
+                    owner = ObjectId(owner)
                 )
                 onAddEvent(event)
                 // Clear the input fields
@@ -601,6 +648,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                 eventImage = ""
                 price = ""
                 attendees = ""
+                owner = ""
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -608,6 +656,7 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
         }
     }
 }
+
 
 
 @Composable
@@ -880,13 +929,13 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     var dateEnd by remember { mutableStateOf(event.date_end ?: "") }
     var description by remember { mutableStateOf(event.description ?: "") }
     var contact by remember { mutableStateOf(event.contact ?: "") }
-    var category by remember { mutableStateOf(event.category ?: "") }
+    var category by remember { mutableStateOf(event.category?.toString() ?: "") }
     var longitude by remember { mutableStateOf(event.location?.coordinates?.getOrNull(0)?.toString() ?: "") }
     var latitude by remember { mutableStateOf(event.location?.coordinates?.getOrNull(1)?.toString() ?: "") }
     var eventImage by remember { mutableStateOf(event.eventImage ?: "") }
-    var price by remember { mutableStateOf(event.price) }
+    var price by remember { mutableStateOf(event.price.toString()) }
     var attendees by remember { mutableStateOf(event.attendees.joinToString(", ")) }
-    var owner by remember { mutableStateOf(event.owner) }
+    var owner by remember { mutableStateOf(event.owner?.toString() ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -918,9 +967,9 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                     item { OutlinedTextField(value = longitude, onValueChange = { longitude = it }, label = { Text("Longitude") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = latitude, onValueChange = { latitude = it }, label = { Text("Latitude") }, modifier = Modifier.fillMaxWidth()) }
                     item { OutlinedTextField(value = eventImage, onValueChange = { eventImage = it }, label = { Text("Event Image") }, modifier = Modifier.fillMaxWidth()) }
-                    item { OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price") }, modifier = Modifier.fillMaxWidth()) }
-                    item { owner?.let { OutlinedTextField(value = it, onValueChange = { owner = it }, label = { Text("Owner") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)) }
                     item { OutlinedTextField(value = attendees, onValueChange = { attendees = it }, label = { Text("Attendees") }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(value = owner, onValueChange = { owner = it }, label = { Text("Owner") }, modifier = Modifier.fillMaxWidth()) }
                 }
 
                 Row(
@@ -945,12 +994,12 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                 date_end = dateEnd,
                                 description = description,
                                 contact = contact,
-                                category = category,
+                                category = ObjectId(category),
                                 location = updatedLocation,
                                 eventImage = eventImage,
-                                price = price,
+                                price = price.toIntOrNull() ?: 0,
                                 attendees = attendees.split(", ").filter { it.isNotBlank() },
-                                owner = owner
+                                owner = ObjectId(owner)
                             )
                             onSave(updatedEvent)
                         }
@@ -963,6 +1012,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
         modifier = Modifier.padding(20.dp)
     )
 }
+
 
 
 // USERS --------------------------------------------------------------------------------------------------------
@@ -1455,7 +1505,6 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
     }
 }
 
-
 fun generateRandomEvent(
     faker: Faker,
     startDateOffset: Int,
@@ -1465,6 +1514,7 @@ fun generateRandomEvent(
     minLatitude: Double,
     maxLatitude: Double
 ): Event {
+
     return Event(
         _id = null,
         name = faker.book.title(),
@@ -1474,7 +1524,7 @@ fun generateRandomEvent(
         date_end = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
         description = faker.quote.mostInterestingManInTheWorld(),
         contact = faker.internet.safeEmail(),
-        category = randomCategory(),
+        category = ObjectId.get(),  // Generates a new ObjectId for the category
         location = Location(
             type = "Point",
             coordinates = listOf(
@@ -1483,9 +1533,9 @@ fun generateRandomEvent(
             )
         ),
         eventImage = "https://nekineki",
-        price = "Free",
+        price = Random.nextInt(0, 100),  // Random price between 0 and 100
         attendees = emptyList(),
-        owner = null
+        owner = ObjectId.get()  // Generates a new ObjectId for the owner
     )
 }
 
@@ -1500,19 +1550,21 @@ fun randomCoordinate(min: Double, max: Double): Double {
     return Random.nextDouble(min, max)
 }
 
-fun randomCategory(): String {
-    val categories = listOf("Music", "Art", "Theatre", "Technology", "Science", "Education", "Health", "Sports")
-    return categories.random()
+fun randomCategory(): ObjectId {
+    return ObjectId.get()  // Generates a new ObjectId
 }
+
 
 
 // SCRAPER -----------------------------------------------------------------------------------------
 fun Event.toDatabaseJson(): String {
     val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdSerializer())
         .excludeFieldsWithoutExposeAnnotation()
         .create()
     return gson.toJson(this)
 }
+
 
 fun sendEventsToDatabase(events: List<Event>, url: String) {
     val client = OkHttpClient()
@@ -1522,7 +1574,11 @@ fun sendEventsToDatabase(events: List<Event>, url: String) {
         val json = event.toDatabaseJson()
         println("Generated JSON: $json")  // Print the JSON to check it
 
-        val body = json.toRequestBody(mediaType)
+        // Convert JSON string to Document (BSON)
+        val document = Document.parse(json)
+
+        // Create a request body
+        val body = document.toJson().toRequestBody(mediaType)
 
         val request = Request.Builder()
             .url(url)
@@ -1539,6 +1595,8 @@ fun sendEventsToDatabase(events: List<Event>, url: String) {
         }
     }
 }
+
+
 
 
 @Composable
@@ -1598,8 +1656,6 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         }
     }
 }
-
-
 
 
 // ABOUT --------------------------------------------------------------------------------------------

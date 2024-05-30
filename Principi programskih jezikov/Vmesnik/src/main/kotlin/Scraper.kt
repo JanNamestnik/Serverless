@@ -9,6 +9,15 @@ import it.skrape.selects.html5.*
 import it.skrape.selects.text
 import com.google.gson.annotations.Expose
 
+import org.bson.types.ObjectId
+import java.text.SimpleDateFormat
+import java.util.Date
+
+import com.google.gson.*
+import java.lang.reflect.Type
+
+
+
 data class Location(
     @Expose val type: String,
     @Expose val coordinates: List<Double>
@@ -40,7 +49,7 @@ data class Event(
     val contact: String?,
 
     @Expose
-    val category: String?,
+    val category: ObjectId?,
 
     @Expose
     val location: Location?,
@@ -49,27 +58,40 @@ data class Event(
     val eventImage: String?,
 
     @Expose
-    val price: String = "Free",
+    val price: Int = 0,
 
     @Expose
     val attendees: List<String> = emptyList(),
 
     @Expose
-    val owner: String?
+    val owner: ObjectId?
 )
 
-fun getCategoryID(category: String): String? {
+
+fun getCategoryID(category: String): ObjectId {
     return when (category) {
-        "Razstava" -> "6643ef1e35e389b1272f6b82" //
-        "Športne prireditve" -> "6642325dff14c4a75477259a" //
-        "Vinsko-kulinarične prireditve" -> "66579370914872027c245c3e" //
-        "Delavnice" -> "66579337914872027c245c3d" //
-        "Koncert" -> "66423238ff14c4a754772598" //
-        "Festival" -> "66423250ff14c4a754772599" //
-        "Drugo" -> "6643ef3e35e389b1272f6b83" //
-        else -> "6643ef3e35e389b1272f6b83" //
+        "Razstava" -> ObjectId("6643ef1e35e389b1272f6b82")
+        "Športne prireditve" -> ObjectId("6642325dff14c4a75477259a")
+        "Vinsko-kulinarične prireditve" -> ObjectId("66579370914872027c245c3e")
+        "Delavnice" -> ObjectId("66579337914872027c245c3d")
+        "Koncert" -> ObjectId("66423238ff14c4a754772598")
+        "Festival" -> ObjectId("66423250ff14c4a754772599")
+        "Drugo" -> ObjectId("6643ef3e35e389b1272f6b83")
+        else -> ObjectId("6643ef3e35e389b1272f6b83")
     }
 }
+
+fun parseDate(dateStr: String?): Date? {
+    val dateFormat = SimpleDateFormat("dd. MM. yyyy")
+    return dateStr?.let {
+        try {
+            dateFormat.parse(it)
+        } catch (e: Exception) {
+            null
+        }
+    }
+}
+
 
 fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?, String?, String?> {
     val datePattern = """(\d{1,2}\.\s\d{1,2}\.\s\d{4})""".toRegex()
@@ -132,13 +154,13 @@ fun getEvent(s: String?): Event? {
                 } catch (e: Exception) {
                     null
                 }
-                val price = try {
+                val priceText = try {
                     i { withClass = "fa-euro-sign"; findFirst { siblings } }
                 } catch (e: Exception) {
                     "Free"
                 }
+                val price = 0
 
-                // Extract location coordinates (longitude and latitude)
                 val coordinates = try {
                     val scriptText = script { findAll { text } }
                     val regex = """\s*LatLng\s*\(([-\d.]+),\s*([-\d.]+)\)\s*""".toRegex()
@@ -164,11 +186,11 @@ fun getEvent(s: String?): Event? {
                     description = description,
                     contact = contact?.text,
                     category = category?.text?.let { getCategoryID(it) },
-                    location = Location("Point", listOf(0.0, 0.0)),
+                    location = Location("Point", coordinates ?: listOf(15.649242, 46.559036)),
                     eventImage = "https://www.visitmaribor.si$eventImage",
-                    price = "Free",
+                    price = price,
                     attendees = emptyList(),
-                    owner = "6651c0a0278d45f6f2502b7b"
+                    owner = ObjectId("6651c0a0278d45f6f2502b7b")
                 )
             }
         }
@@ -203,4 +225,19 @@ fun fetchEvents(maxEvents: Int = 1): List<Event> {
         }
     }
     return events
+}
+
+
+class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {
+    override fun serialize(src: ObjectId, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        // Custom JSON element representing an ObjectId
+        val obj = JsonObject()
+        obj.add("\$oid", JsonPrimitive(src.toHexString()))
+        return obj
+    }
+
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): ObjectId {
+        val hexString = json.asJsonObject.get("\$oid").asString
+        return ObjectId(hexString)
+    }
 }
