@@ -1658,12 +1658,20 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
                     maxLatitude.toDouble()
                 )
             }
-            onAddEvents(events)
+
+            GlobalScope.launch {
+                try {
+                    sendEventsToDatabase(events, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createEvent")
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
         }) {
-            Text("Generate")
+            Text("Generate and Save to Database")
         }
     }
 }
+
 
 fun generateRandomEvent(
     faker: Faker,
@@ -1680,11 +1688,11 @@ fun generateRandomEvent(
         name = faker.book.title(),
         address = faker.address.streetAddress(),
         startTime = "${(1..12).random()}:${(0..59).random().toString().padStart(2, '0')} ${if ((0..1).random() == 0) "AM" else "PM"}",
-        date_start = randomDate(1, startDateOffset),
+        date_start = randomDate(0, startDateOffset),
         date_end = randomDate(startDateOffset + 1, startDateOffset + endDateOffset),
         description = faker.quote.mostInterestingManInTheWorld(),
         contact = faker.internet.safeEmail(),
-        category = ObjectId.get(),  // Generates a new ObjectId for the category
+        category = ObjectId("6643ef3e35e389b1272f6b83"),
         location = Location(
             type = "Point",
             coordinates = listOf(
@@ -1695,7 +1703,7 @@ fun generateRandomEvent(
         eventImage = "https://nekineki",
         price = Random.nextInt(0, 100),  // Random price between 0 and 100
         attendees = emptyList(),
-        owner = ObjectId.get()  // Generates a new ObjectId for the owner
+        owner = ObjectId("6651c0a0278d45f6f2502b7b")
     )
 }
 
