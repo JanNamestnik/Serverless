@@ -1619,15 +1619,11 @@ fun randomDate(startOffset: Int, endOffset: Int): String {
     val startMillis = System.currentTimeMillis() + (startOffset * 24 * 60 * 60 * 1000L)
     val endMillis = System.currentTimeMillis() + (endOffset * 24 * 60 * 60 * 1000L)
     val randomMillis = Random.nextLong(startMillis, endMillis)
-    return java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(java.util.Date(randomMillis))
+    return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date(randomMillis))
 }
 
 fun randomCoordinate(min: Double, max: Double): Double {
     return Random.nextDouble(min, max)
-}
-
-fun randomCategory(): ObjectId {
-    return ObjectId.get()  // Generates a new ObjectId
 }
 
 
@@ -1707,7 +1703,9 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         events.forEach { event ->
-            EventCard(event) {}
+            EventCard(event) { updatedEvent ->
+                events = events.map { if (it._id == updatedEvent._id) updatedEvent else it }
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -1729,6 +1727,7 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         }
     }
 }
+
 
 
 // ABOUT --------------------------------------------------------------------------------------------

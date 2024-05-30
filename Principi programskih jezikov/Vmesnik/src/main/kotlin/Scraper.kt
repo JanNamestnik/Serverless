@@ -10,8 +10,6 @@ import it.skrape.selects.text
 import com.google.gson.annotations.Expose
 
 import org.bson.types.ObjectId
-import java.text.SimpleDateFormat
-import java.util.Date
 
 import com.google.gson.*
 import java.lang.reflect.Type
@@ -81,17 +79,6 @@ fun getCategoryID(category: String): ObjectId {
     }
 }
 
-fun parseDate(dateStr: String?): Date? {
-    val dateFormat = SimpleDateFormat("dd. MM. yyyy")
-    return dateStr?.let {
-        try {
-            dateFormat.parse(it)
-        } catch (e: Exception) {
-            null
-        }
-    }
-}
-
 
 fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?, String?, String?> {
     val datePattern = """(\d{1,2}\.\s\d{1,2}\.\s\d{4})""".toRegex()
@@ -153,11 +140,6 @@ fun getEvent(s: String?): Event? {
                     picture { img { findFirst { attributes["data-src"] } } }
                 } catch (e: Exception) {
                     null
-                }
-                val priceText = try {
-                    i { withClass = "fa-euro-sign"; findFirst { siblings } }
-                } catch (e: Exception) {
-                    "Free"
                 }
                 val price = 0
 
