@@ -121,9 +121,12 @@ fun fetchUsers(onResult: (List<User>) -> Unit) {
 }
 
 fun parseUsersFromJson(jsonResponse: String): List<User> {
-    val gson = Gson()
-    val userType = object : TypeToken<List<User>>() {}.type
-    return gson.fromJson(jsonResponse, userType)
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdDeserializer())
+        .registerTypeAdapter(Date::class.java, DateDeserializer())
+        .create()
+    val eventType = object : TypeToken<List<User>>() {}.type
+    return gson.fromJson(jsonResponse, eventType)
 }
 
 // FETCHING REVIEWS -------------------------------------------------------------------------------------------------
@@ -179,9 +182,12 @@ fun fetchCategories(onResult: (List<Category>) -> Unit) {
 }
 
 fun parseCategoriesFromJson(jsonResponse: String): List<Category> {
-    val gson = Gson()
-    val categoryType = object : TypeToken<List<Category>>() {}.type
-    return gson.fromJson(jsonResponse, categoryType)
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdDeserializer())
+        .registerTypeAdapter(Date::class.java, DateDeserializer())
+        .create()
+    val eventType = object : TypeToken<List<Category>>() {}.type
+    return gson.fromJson(jsonResponse, eventType)
 }
 
 // APP-------------------------------------------------------------------------------------------------------------
@@ -794,7 +800,6 @@ fun AddUserForm(onAddUser: (User) -> Unit) {
 // CATEGORY FORM ------------------------------------------------------------------------------------------------
 @Composable
 fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
-    val Id by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
 
     Column(
@@ -815,7 +820,7 @@ fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
         // Save Button
         Button(
             onClick = {
-                val category = Category(name = name, _id = Id)
+                val category = Category(name = name, _id = null)
 
                 GlobalScope.launch {
                     sendToDatabase(category, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createCategory")
@@ -892,7 +897,7 @@ fun AddReviewForm(onAddReview: (Review) -> Unit) {
         Button(
             onClick = {
                 val review = Review(
-                    _id = Id,
+                    _id = null,
                     eventId = ObjectId(eventId),
                     userId = ObjectId(userId),
                     created = created,
@@ -1064,6 +1069,30 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                 owner = ObjectId(owner)
                             )
                             onSave(updatedEvent)
+
+                            val updateFields = mutableMapOf<String, Any>()
+                            if (name != event.name) updateFields["name"] = name
+                            if (address != event.address) updateFields["address"] = address
+                            if (startTime != event.startTime) updateFields["startTime"] = startTime
+                            if (dateStart != event.date_start.toString()) updateFields["date_start"] = dateStart
+                            if (dateEnd != event.date_end.toString()) updateFields["date_end"] = dateEnd
+                            if (description != event.description) updateFields["description"] = description
+                            if (contact != event.contact) updateFields["contact"] = contact
+                            if (category != event.category.toString()) updateFields["category"] = ObjectId(category)
+                            if (longitude != event.location?.coordinates?.getOrNull(0)?.toString()) updateFields["location.coordinates[0]"] = longitude.toDoubleOrNull() ?: 0.0
+                            if (latitude != event.location?.coordinates?.getOrNull(1)?.toString()) updateFields["location.coordinates[1]"] = latitude.toDoubleOrNull() ?: 0.0
+                            if (eventImage != event.eventImage) updateFields["eventImage"] = eventImage
+                            if (price != event.price.toString()) updateFields["price"] = price.toIntOrNull() ?: 0
+                            if (attendees != event.attendees.joinToString(", ")) updateFields["attendees"] = attendees.split(", ").filter { it.isNotBlank() }
+                            if (owner != event.owner.toString()) updateFields["owner"] = ObjectId(owner)
+
+                            GlobalScope.launch {
+                                try {
+                                    updateInDatabase(event._id!!, updateFields, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/updateEvent")
+                                } catch (e: Exception) {
+                                    println("Can't find/update the event in the database")
+                                }
+                            }
                         }
                     ) {
                         Text("Save")
@@ -1075,12 +1104,39 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
     )
 }
 
+fun updateInDatabase(entityId: ObjectId, updateFields: Map<String, Any>, url: String) {
+    val client = OkHttpClient()
+    val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+
+    val jsonPayload = JsonObject().apply {
+        addProperty("_id", entityId.toHexString())
+        add("updateFields", Gson().toJsonTree(updateFields))
+    }.toString()
+
+    println("Generated JSON: $jsonPayload")
+
+    val body = jsonPayload.toRequestBody(mediaType)
+
+    val request = Request.Builder()
+        .url(url)
+        .put(body)
+        .build()
+
+    try {
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            println(response.body?.string())
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
 
 
 // USERS --------------------------------------------------------------------------------------------------------
 data class User(
     @Expose(serialize = false, deserialize = false)
-    val _id: String?,
+    val _id: ObjectId?,
     @Expose
     val username: String?,
     @Expose
@@ -1157,11 +1213,11 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
 
 @Composable
 fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
-    var name by remember { mutableStateOf(user.username) }
-    var email by remember { mutableStateOf(user.email) }
-    var password by remember { mutableStateOf(user.password) }
+    var name by remember { mutableStateOf(user.username ?: "") }
+    var email by remember { mutableStateOf(user.email ?: "") }
+    var password by remember { mutableStateOf(user.password ?: "") }
     var favorites by remember { mutableStateOf(user.favorites.joinToString(", ")) }
-    var profileImage by remember { mutableStateOf(user.profileImage) }
+    var profileImage by remember { mutableStateOf(user.profileImage ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1182,11 +1238,11 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    item { name?.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { email?.let { OutlinedTextField(value = it, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth()) } }
-                    item { password?.let { OutlinedTextField(value = it, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { name.let { OutlinedTextField(value = it, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { email.let { OutlinedTextField(value = it, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { password.let { OutlinedTextField(value = it, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth()) } }
                     item { OutlinedTextField(value = favorites, onValueChange = { favorites = it }, label = { Text("Favorites") }, modifier = Modifier.fillMaxWidth()) }
-                    item { profileImage?.let { OutlinedTextField(value = it, onValueChange = { profileImage = it }, label = { Text("Profile Image") }, modifier = Modifier.fillMaxWidth()) } }
+                    item { profileImage.let { OutlinedTextField(value = it, onValueChange = { profileImage = it }, label = { Text("Profile Image") }, modifier = Modifier.fillMaxWidth()) } }
                 }
 
                 Row(
@@ -1198,16 +1254,26 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
                     }
                     Button(
                         onClick = {
-                            onSave(
-                                User(
-                                    _id = user._id,
-                                    username = name,
-                                    email = email,
-                                    password = password,
-                                    favorites = favorites.split(", ").toList(),
-                                    profileImage = profileImage
-                                )
+                            val updatedUser = User(
+                                _id = user._id,
+                                username = name,
+                                email = email,
+                                password = password,
+                                favorites = favorites.split(", ").toList(),
+                                profileImage = profileImage
                             )
+                            onSave(updatedUser)
+
+                            val updateFields = mutableMapOf<String, Any>()
+                            if (name != user.username) updateFields["username"] = name
+                            if (email != user.email) updateFields["email"] = email
+                            if (password != user.password) updateFields["password"] = password
+                            if (favorites != user.favorites.joinToString(", ")) updateFields["favorites"] = favorites.split(", ").toList()
+                            if (profileImage != user.profileImage) updateFields["profileImage"] = profileImage
+
+                            GlobalScope.launch {
+                                updateInDatabase(user._id!!, updateFields, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/updateUser")
+                            }
                         }
                     ) {
                         Text("Save")
@@ -1219,10 +1285,11 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
     )
 }
 
+
 // REVIEWS ----------------------------------------------------------------------------------------------------
 data class Review(
     @Expose(serialize = false, deserialize = false)
-    val _id: String,
+    val _id: ObjectId?,
     @Expose
     val eventId: ObjectId,
     @Expose
@@ -1333,16 +1400,26 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                     }
                     Button(
                         onClick = {
-                            onSave(
-                                Review(
-                                    _id = review._id,
-                                    eventId = ObjectId(eventId),
-                                    userId = ObjectId(userId),
-                                    created = created,
-                                    rating = rating.toInt(),
-                                    content = content
-                                )
+                            val updatedReview = Review(
+                                _id = review._id,
+                                eventId = ObjectId(eventId),
+                                userId = ObjectId(userId),
+                                created = created,
+                                rating = rating.toInt(),
+                                content = content
                             )
+                            onSave(updatedReview)
+
+                            val updateFields = mutableMapOf<String, Any>()
+                            if (eventId != review.eventId.toString()) updateFields["eventId"] = ObjectId(eventId)
+                            if (userId != review.userId.toString()) updateFields["userId"] = ObjectId(userId)
+                            if (created != review.created) updateFields["created"] = created
+                            if (rating != review.rating.toString()) updateFields["rating"] = rating.toInt()
+                            if (content != review.content) updateFields["content"] = content
+
+                            GlobalScope.launch {
+                                updateInDatabase(review._id!!, updateFields, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/updateReview")
+                            }
                         }
                     ) {
                         Text("Save")
@@ -1355,10 +1432,11 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
 }
 
 
+
 // CATEGORIES -----------------------------------------------------------------------------------------------
 data class Category(
     @Expose(serialize = false, deserialize = false)
-    val _id: String,
+    val _id: ObjectId?,
     @Expose
     val name: String
 )
@@ -1458,7 +1536,15 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
                     }
                     Button(
                         onClick = {
-                            onSave(Category(category._id, name))
+                            val updatedCategory = Category(category._id, name)
+                            onSave(updatedCategory)
+
+                            val updateFields = mutableMapOf<String, Any>()
+                            if (name != category.name) updateFields["name"] = name
+
+                            GlobalScope.launch {
+                                updateInDatabase(category._id!!, updateFields, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/updateCategory")
+                            }
                         }
                     ) {
                         Text("Save")
@@ -1469,8 +1555,6 @@ fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Categ
         modifier = Modifier.padding(20.dp)
     )
 }
-
-
 
 
 

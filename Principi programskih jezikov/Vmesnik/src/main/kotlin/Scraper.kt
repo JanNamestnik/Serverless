@@ -23,7 +23,7 @@ data class Location(
 
 data class Event(
     @Expose(serialize = false, deserialize = false)
-    val _id: String?,
+    val _id: ObjectId?,
 
     @Expose
     val name: String?,
