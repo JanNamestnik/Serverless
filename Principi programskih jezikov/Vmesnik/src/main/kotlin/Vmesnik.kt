@@ -22,11 +22,6 @@ import kotlin.random.Random
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-import scraping.fetchEvents
-import scraping.Event
-import scraping.Location
-import scraping.ObjectIdSerializer
-
 // za povezovanje na bazo
 import okhttp3.*
 import java.io.IOException
@@ -34,6 +29,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.google.gson.*
+import com.google.gson.annotations.Expose
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -45,6 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import org.bson.Document
+import scraping.*
 
 // FETCHING EVENTS ------------------------------------------------------------------------------------------------
 fun fetchEvents(onResult: (List<Event>) -> Unit) {
@@ -81,8 +78,6 @@ class ObjectIdDeserializer : JsonDeserializer<ObjectId> {
         }
     }
 }
-
-
 
 class DateDeserializer : JsonDeserializer<Date> {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -154,9 +149,11 @@ fun fetchReviews(onResult: (List<Review>) -> Unit) {
 }
 
 fun parseReviewsFromJson(jsonResponse: String): List<Review> {
-    val gson = Gson()
-    val reviewType = object : TypeToken<List<Review>>() {}.type
-    return gson.fromJson(jsonResponse, reviewType)
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdDeserializer())
+        .create()
+    val eventType = object : TypeToken<List<Review>>() {}.type
+    return gson.fromJson(jsonResponse, eventType)
 }
 
 // FETCHING CATEGORIES ----------------------------------------------------------------------------------------------
@@ -460,6 +457,7 @@ fun AddScreen(
     }
 }
 
+// EVENT FORM ------------------------------------------------------------------------------------------------
 @Composable
 fun AddEventForm(onAddEvent: (Event) -> Unit) {
     var name by remember { mutableStateOf("") }
@@ -478,6 +476,9 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
     var owner by remember { mutableStateOf("") }
 
     val categories = listOf("concert", "festival", "sport", "community event", "educational event", "performance", "conference", "exhibition", "other")
+
+    // State to hold the new event
+    var newEvent by remember { mutableStateOf<Event?>(null) }
 
     Column(
         modifier = Modifier
@@ -608,22 +609,6 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
 
-        // Attendees
-        OutlinedTextField(
-            value = attendees,
-            onValueChange = { attendees = it },
-            label = { Text("Attendees") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Owner
-        OutlinedTextField(
-            value = owner,
-            onValueChange = { owner = it },
-            label = { Text("Owner") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
         // Save Button
         Button(
             onClick = {
@@ -644,14 +629,24 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
                     date_end = dateEnd,
                     description = description,
                     contact = contact,
-                    category = ObjectId(selectedCategory),
+                    category =  getCategoryID(selectedCategory),
                     location = location,
                     eventImage = eventImage,
                     price = price.toIntOrNull() ?: 0,
                     attendees = attendees.split(", ").filter { it.isNotBlank() },
-                    owner = ObjectId(owner)
+                    owner = ObjectId("6651c0a0278d45f6f2502b7b")
                 )
-                onAddEvent(event)
+
+                // Update the newEvent state
+                newEvent = event
+
+                // Add event to the database array and send to the database
+                newEvent?.let {
+                    GlobalScope.launch {
+                        sendEventsToDatabase(listOf(it), "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createEvent")
+                    }
+                }
+
                 // Clear the input fields
                 name = ""
                 address = ""
@@ -674,9 +669,44 @@ fun AddEventForm(onAddEvent: (Event) -> Unit) {
         }
     }
 }
+// funckije sendToDatabase in toJson za user, review, category----------------------------------------------------
+inline fun <reified T> T.toDatabaseJson(): String {
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ObjectId::class.java, ObjectIdSerializer())
+        .excludeFieldsWithoutExposeAnnotation()
+        .create()
+    return gson.toJson(this)
+}
+
+inline fun <reified T> sendToDatabase(item: T, url: String) {
+    val client = OkHttpClient()
+    val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+    val json = item.toDatabaseJson()
+    println("Generated JSON: $json")  // Print the JSON to check it
+
+    // Convert JSON string to Document (BSON)
+    val document = Document.parse(json)
+
+    // Create a request body
+    val body = document.toJson().toRequestBody(mediaType)
+
+    val request = Request.Builder()
+        .url(url)
+        .post(body)
+        .build()
+
+    try {
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            println(response.body?.string())
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
 
 
-
+// USER FORM ------------------------------------------------------------------------------------------------
 @Composable
 fun AddUserForm(onAddUser: (User) -> Unit) {
     var name by remember { mutableStateOf("") }
@@ -743,7 +773,11 @@ fun AddUserForm(onAddUser: (User) -> Unit) {
                     favorites = favorites.split(","),
                     profileImage = profileImage
                 )
-                onAddUser(user)
+
+                GlobalScope.launch {
+                    sendToDatabase(user, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createUser")
+                }
+
                 name = ""
                 email = ""
                 password = ""
@@ -757,6 +791,7 @@ fun AddUserForm(onAddUser: (User) -> Unit) {
     }
 }
 
+// CATEGORY FORM ------------------------------------------------------------------------------------------------
 @Composable
 fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
     val Id by remember { mutableStateOf("") }
@@ -781,7 +816,11 @@ fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
         Button(
             onClick = {
                 val category = Category(name = name, _id = Id)
-                onAddCategory(category)
+
+                GlobalScope.launch {
+                    sendToDatabase(category, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createCategory")
+                }
+
                 name = ""
             },
             modifier = Modifier.padding(top = 16.dp)
@@ -791,6 +830,7 @@ fun AddCategoryForm(onAddCategory: (Category) -> Unit) {
     }
 }
 
+// REVIEW FORM ------------------------------------------------------------------------------------------------
 @Composable
 fun AddReviewForm(onAddReview: (Review) -> Unit) {
     var Id by remember { mutableStateOf("") }
@@ -853,13 +893,17 @@ fun AddReviewForm(onAddReview: (Review) -> Unit) {
             onClick = {
                 val review = Review(
                     _id = Id,
-                    eventId = eventId,
-                    userId = userId,
+                    eventId = ObjectId(eventId),
+                    userId = ObjectId(userId),
                     created = created,
                     rating = rating.toInt(),
                     content = content
                 )
-                onAddReview(review)
+
+                GlobalScope.launch {
+                    sendToDatabase(review, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createReview")
+                }
+
                 Id = ""
                 eventId = ""
                 userId = ""
@@ -1035,11 +1079,17 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
 
 // USERS --------------------------------------------------------------------------------------------------------
 data class User(
+    @Expose(serialize = false, deserialize = false)
     val _id: String?,
+    @Expose
     val username: String?,
+    @Expose
     val email: String?,
+    @Expose
     val password: String?,
+    @Expose
     val favorites: List<String>,
+    @Expose
     val profileImage: String?
 )
 
@@ -1171,11 +1221,17 @@ fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
 
 // REVIEWS ----------------------------------------------------------------------------------------------------
 data class Review(
+    @Expose(serialize = false, deserialize = false)
     val _id: String,
-    val eventId: String,
-    val userId: String,
+    @Expose
+    val eventId: ObjectId,
+    @Expose
+    val userId: ObjectId,
+    @Expose
     val created: String,
+    @Expose
     val rating: Int,
+    @Expose
     val content: String
 )
 
@@ -1236,8 +1292,8 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
 
 @Composable
 fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> Unit) {
-    var eventId by remember { mutableStateOf(review.eventId) }
-    var userId by remember { mutableStateOf(review.userId) }
+    var eventId by remember { mutableStateOf(review.eventId.toString()) }
+    var userId by remember { mutableStateOf(review.userId.toString()) }
     var created by remember { mutableStateOf(review.created) }
     var rating by remember { mutableStateOf(review.rating.toString()) }
     var content by remember { mutableStateOf(review.content) }
@@ -1280,8 +1336,8 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
                             onSave(
                                 Review(
                                     _id = review._id,
-                                    eventId = eventId,
-                                    userId = userId,
+                                    eventId = ObjectId(eventId),
+                                    userId = ObjectId(userId),
                                     created = created,
                                     rating = rating.toInt(),
                                     content = content
@@ -1301,7 +1357,9 @@ fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> 
 
 // CATEGORIES -----------------------------------------------------------------------------------------------
 data class Category(
+    @Expose(serialize = false, deserialize = false)
     val _id: String,
+    @Expose
     val name: String
 )
 
@@ -1613,9 +1671,6 @@ fun sendEventsToDatabase(events: List<Event>, url: String) {
         }
     }
 }
-
-
-
 
 @Composable
 fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
