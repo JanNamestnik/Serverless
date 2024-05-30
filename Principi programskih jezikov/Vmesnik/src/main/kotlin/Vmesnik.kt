@@ -213,6 +213,24 @@ fun App() {
         }
     }
 
+    // Fetch data every time the corresponding screen is selected
+    LaunchedEffect(selectedScreen) {
+        when (selectedScreen) {
+            "Events" -> fetchEvents { fetchedEvents ->
+                events = fetchedEvents
+            }
+            "Users" -> fetchUsers { fetchedUsers ->
+                users = fetchedUsers
+            }
+            "Reviews" -> fetchReviews { fetchedReviews ->
+                reviews = fetchedReviews
+            }
+            "Categories" -> fetchCategories { fetchedCategories ->
+                categories = fetchedCategories
+            }
+        }
+    }
+
     MaterialTheme {
         Row(modifier = Modifier.fillMaxSize()) {
             Sidebar(selectedScreen) { selectedScreen = it }
