@@ -179,7 +179,7 @@ fun getEvent(s: String?): Event? {
     }
 }
 
-fun fetchEvents(maxEvents: Int = 1): List<Event> {
+fun fetchEvents(maxEvents: Int = 5): List<Event> {
     val events = mutableListOf<Event>()
     skrape(BrowserFetcher) {
         request {

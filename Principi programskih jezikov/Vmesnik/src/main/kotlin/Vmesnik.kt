@@ -249,8 +249,14 @@ fun App() {
                 onUpdateEvent = { updatedEvent ->
                     events = events.map { if (it._id == updatedEvent._id) updatedEvent else it }
                 },
+                onDeleteEvent = { deletedEvent ->
+                    events = events.filter { it._id != deletedEvent._id }
+                },
                 onAddUser = { newUser ->
                     users = users + newUser
+                },
+                onDeleteUser = { deletedUser ->
+                    users = users.filter { it._id != deletedUser._id }
                 },
                 onAddReview = { newReview ->
                     reviews = reviews + newReview
@@ -258,13 +264,20 @@ fun App() {
                 onUpdateReview = { updatedReview ->
                     reviews = reviews.map { if (it.eventId == updatedReview.eventId && it.userId == updatedReview.userId) updatedReview else it }
                 },
+                onDeleteReview = { deletedReview ->
+                    reviews = reviews.filter { it._id != deletedReview._id }
+                },
                 onAddCategory = { newCategory ->
                     categories = categories + newCategory
+                },
+                onDeleteCategory = { deletedCategory ->
+                    categories = categories.filter { it._id != deletedCategory._id }
                 }
             )
         }
     }
 }
+
 
 @Composable
 fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
@@ -343,13 +356,18 @@ fun SidebarButton(icon: ImageVector, label: String, isSelected: Boolean, onClick
         ),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
             Icon(imageVector = icon, contentDescription = label)
             Spacer(modifier = Modifier.width(8.dp))
             Text(label)
         }
     }
 }
+
 
 @Composable
 fun ContentArea(
@@ -360,10 +378,14 @@ fun ContentArea(
     categories: List<Category>,
     onAddEvent: (Event) -> Unit,
     onUpdateEvent: (Event) -> Unit,
+    onDeleteEvent: (Event) -> Unit,
     onAddUser: (User) -> Unit,
+    onDeleteUser: (User) -> Unit,
     onAddCategory: (Category) -> Unit,
+    onDeleteCategory: (Category) -> Unit,
     onAddReview: (Review) -> Unit,
-    onUpdateReview: (Review) -> Unit
+    onUpdateReview: (Review) -> Unit,
+    onDeleteReview: (Review) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -384,10 +406,10 @@ fun ContentArea(
                     onAddCategory = onAddCategory,
                     onAddReview = onAddReview
                 )
-                "Events" -> EventsScreen(events, onUpdateEvent)
-                "Users" -> UsersScreen(users)
-                "Reviews" -> ReviewsScreen(reviews, onUpdateReview)
-                "Categories" -> CategoriesScreen(categories)
+                "Events" -> EventsScreen(events, onUpdateEvent, onDeleteEvent)
+                "Users" -> UsersScreen(users, onDeleteUser)
+                "Reviews" -> ReviewsScreen(reviews, onUpdateReview, onDeleteReview)
+                "Categories" -> CategoriesScreen(categories, onDeleteCategory)
                 "Scraper" -> ScraperScreen { newEvents ->
                     newEvents.forEach { onAddEvent(it) }
                 }
@@ -399,6 +421,7 @@ fun ContentArea(
         }
     }
 }
+
 
 
 
@@ -925,7 +948,7 @@ fun AddReviewForm(onAddReview: (Review) -> Unit) {
 
 // EVETN SCREEEN ----------------------------------------------------------------------------------------------
 @Composable
-fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
+fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Event) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -936,14 +959,15 @@ fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         events.forEach { event ->
-            EventCard(event, onUpdateEvent)
+            EventCard(event, onUpdateEvent, onDeleteEvent)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
+
 @Composable
-fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
+fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Event) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
 
@@ -972,8 +996,27 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
                 Text("Event Image: ${event.eventImage}")
                 Text("Owner: ${event.owner}")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { isEditing = true }) {
-                    Text("Edit Event")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = { isEditing = true }) {
+                        Text("Edit Event")
+                    }
+                    Button(onClick = {
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(event._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteEvent")
+                                onDeleteEvent(event)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                    ) {
+                        Text("Delete Event")
+                    }
                 }
             }
         }
@@ -986,6 +1029,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit) {
         })
     }
 }
+
 
 @Composable
 fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit) {
@@ -1132,6 +1176,34 @@ fun updateInDatabase(entityId: ObjectId, updateFields: Map<String, Any>, url: St
     }
 }
 
+fun deleteFromDatabase(entityId: ObjectId, url: String) {
+    val client = OkHttpClient()
+    val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+
+    val jsonPayload = JsonObject().apply {
+        addProperty("_id", entityId.toHexString())
+    }.toString()
+
+    println("Generated JSON: $jsonPayload")
+
+    val body = jsonPayload.toRequestBody(mediaType)
+
+    val request = Request.Builder()
+        .url(url)
+        .post(body)
+        .build()
+
+    try {
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            println(response.body?.string())
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
+
+
 
 // USERS --------------------------------------------------------------------------------------------------------
 data class User(
@@ -1150,7 +1222,7 @@ data class User(
 )
 
 @Composable
-fun UsersScreen(users: List<User>) {
+fun UsersScreen(users: List<User>, onDeleteUser: (User) -> Unit) {
     var userList by remember { mutableStateOf(users) }
 
     Column(
@@ -1168,6 +1240,10 @@ fun UsersScreen(users: List<User>) {
                 userList = userList.map {
                     if (it._id == updatedUser._id) updatedUser else it
                 }
+            }, onDeleteUser = { userToDelete ->
+                // Delete the user from the list
+                userList = userList.filter { it._id != userToDelete._id }
+                onDeleteUser(userToDelete)
             })
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -1175,7 +1251,7 @@ fun UsersScreen(users: List<User>) {
 }
 
 @Composable
-fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
+fun UserCard(user: User, onUpdateUser: (User) -> Unit, onDeleteUser: (User) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
 
@@ -1196,8 +1272,27 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit) {
                 Text("Favorites: ${user.favorites.joinToString(", ")}")
                 Text("Profile Image: ${user.profileImage}")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { isEditing = true }) {
-                    Text("Edit User")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = { isEditing = true }) {
+                        Text("Edit Event")
+                    }
+                    Button(onClick = {
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(user._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteUser")
+                                onDeleteUser(user)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                    ) {
+                        Text("Delete Event")
+                    }
                 }
             }
         }
@@ -1303,7 +1398,9 @@ data class Review(
 )
 
 @Composable
-fun ReviewsScreen(reviews: List<Review>, onUpdateReview: (Review) -> Unit) {
+fun ReviewsScreen(reviews: List<Review>, onUpdateReview: (Review) -> Unit, onDeleteReview: (Review) -> Unit) {
+    var reviewList by remember { mutableStateOf(reviews) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -1313,15 +1410,24 @@ fun ReviewsScreen(reviews: List<Review>, onUpdateReview: (Review) -> Unit) {
         Text("Reviews", style = MaterialTheme.typography.h4)
         Spacer(modifier = Modifier.height(16.dp))
 
-        reviews.forEach { review ->
-            ReviewCard(review, onUpdateReview)
+        reviewList.forEach { review ->
+            ReviewCard(review, onUpdateReview = { updatedReview ->
+                // Update the review in the list
+                reviewList = reviewList.map {
+                    if (it._id == updatedReview._id) updatedReview else it
+                }
+            }, onDeleteReview = { reviewToDelete ->
+                // Delete the review from the list
+                reviewList = reviewList.filter { it._id != reviewToDelete._id }
+                onDeleteReview(reviewToDelete)
+            })
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
+fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit, onDeleteReview: (Review) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
 
@@ -1342,8 +1448,28 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
                 Text("Event ID: ${review.eventId}")
                 Text("User ID: ${review.userId}")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { isEditing = true }) {
-                    Text("Edit Review")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = { isEditing = true }) {
+                        Text("Edit Review")
+                    }
+                    Button(
+                        onClick = {
+                            GlobalScope.launch {
+                                try {
+                                    deleteFromDatabase(review._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteReview")
+                                    onDeleteReview(review)
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                    ) {
+                        Text("Delete Review")
+                    }
                 }
             }
         }
@@ -1356,6 +1482,7 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit) {
         })
     }
 }
+
 
 @Composable
 fun EditReviewDialog(review: Review, onDismiss: () -> Unit, onSave: (Review) -> Unit) {
@@ -1442,13 +1569,18 @@ data class Category(
 )
 
 @Composable
-fun CategoriesScreen(initialCategories: List<Category>) {
+fun CategoriesScreen(initialCategories: List<Category>, onDeleteCategory: (Category) -> Unit) {
     var categories by remember { mutableStateOf(initialCategories) }
 
     fun handleUpdateCategory(updatedCategory: Category) {
         categories = categories.map { category ->
             if (category._id == updatedCategory._id) updatedCategory else category
         }
+    }
+
+    fun handleDeleteCategory(categoryToDelete: Category) {
+        categories = categories.filter { it._id != categoryToDelete._id }
+        onDeleteCategory(categoryToDelete)
     }
 
     Column(
@@ -1461,14 +1593,14 @@ fun CategoriesScreen(initialCategories: List<Category>) {
         Spacer(modifier = Modifier.height(16.dp))
 
         categories.forEach { category ->
-            CategoryCard(category, ::handleUpdateCategory)
+            CategoryCard(category, onUpdateCategory = ::handleUpdateCategory, onDeleteCategory = ::handleDeleteCategory)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
+fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit, onDeleteCategory: (Category) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
 
@@ -1485,8 +1617,28 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
             if (isExpanded) {
                 Text("Id: ${category._id}")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { isEditing = true }) {
-                    Text("Edit Category")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(onClick = { isEditing = true }) {
+                        Text("Edit Category")
+                    }
+                    Button(
+                        onClick = {
+                            GlobalScope.launch {
+                                try {
+                                    deleteFromDatabase(category._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteCategory")
+                                    onDeleteCategory(category)
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                    ) {
+                        Text("Delete Category")
+                    }
                 }
             }
         }
@@ -1499,6 +1651,7 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit) {
         })
     }
 }
+
 
 @Composable
 fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Category) -> Unit) {
@@ -1795,9 +1948,11 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         events.forEach { event ->
-            EventCard(event) { updatedEvent ->
+            EventCard(event, onUpdateEvent = { updatedEvent ->
                 events = events.map { if (it._id == updatedEvent._id) updatedEvent else it }
-            }
+            }, onDeleteEvent = { deletedEvent ->
+                events = events.filter { it._id != deletedEvent._id }
+            })
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -1819,6 +1974,7 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
         }
     }
 }
+
 
 
 
