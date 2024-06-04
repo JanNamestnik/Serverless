@@ -1,0 +1,4 @@
+map "Map10" :
+(mesto "Ancient Town":
+ {{busstop "Old Bus Stop" : {crt : {[0, 1], [1, 2], 1, 1}}} ,
+  {ulica "Heritage Road" : {krog :{[ 26.81527317438463, 64.71454194486398] , 1000000}}}  , {reka "Old River" : {kva  : {[1, 2], [2, 2], [3, 4], [4, 4]}}}})
