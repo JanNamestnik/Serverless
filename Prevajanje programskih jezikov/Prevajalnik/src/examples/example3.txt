@@ -1,0 +1,5 @@
+map "Map11" :
+(mesto "Tech Park"  :
+{{stavba "Office" : { var x = 5 , var y = 10, ponovi ( x > 0 ) : {crt : {[1, x], [y, 2], x, y}, x = x - 1, y = y + 1}}} ,
+ {ulica "Innovation Blvd" : {krog :{[1, 1], 1000}}} ,
+ {gozd "Tech Forest" : {krog :{[3, 3], 1000}}}})

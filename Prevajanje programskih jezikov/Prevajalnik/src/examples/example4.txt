@@ -1,0 +1,5 @@
+map "Map12"  :
+(mesto "Science Campus" :
+ {{plac "Lab" :
+  {var a = 3, var b = 6, crt :  {[0, a], [b, a], a, b}, a = a * 2, b = b - 1}} ,
+  {ulica "Research Ave" : {krog :{[2, 2], 1000}}}  , {gozd "Research Forest" : {krog :{[4, 4], 1000}}}})

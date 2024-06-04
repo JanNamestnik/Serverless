@@ -1,0 +1,4 @@
+map "Map13" :
+(mesto "Historic Park":
+ {{buy "Gift Shop" : {tri : {[3, 3], [4, 4], [5, 5]},  var items = 20, ponovi (items > 0) :{crt  : {[1, items], [2, items], 1, 1}, items = items - 1}}}
+  , {ulica "Heritage Lane" : {krog :{[2, 2], 10000}}} , {gozd "Historic Forest" : {krog :{[4, 4], 10000}}}})

@@ -1,0 +1,3 @@
+map "Map14" :
+(mesto "Eco Village" :
+{{stavba "Community Center" : {kva: {[1, 1], [1, 2], [2, 2], [2, 1]}, var visitors = 100, ponovi (visitors > 0) :{crt  : {[0, visitors], [1, visitors], 1, 1}, visitors = visitors - 1}}}, {ulica "Eco Street" : {krog :{[1, 1], 10000}}} , {gozd "Eco Forest" : {krog :{[2, 2], 10000}}}})
