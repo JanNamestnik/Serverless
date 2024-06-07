@@ -970,6 +970,7 @@ fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit, onDeleteEv
 fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Event) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -1003,16 +1004,8 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Even
                     Button(onClick = { isEditing = true }) {
                         Text("Edit Event")
                     }
-                    Button(onClick = {
-                        GlobalScope.launch {
-                            try {
-                                deleteFromDatabase(event._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteEvent")
-                                onDeleteEvent(event)
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                            }
-                        }
-                    },
+                    Button(
+                        onClick = { showDeleteConfirmation = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                     ) {
                         Text("Delete Event")
@@ -1028,7 +1021,38 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Even
             isEditing = false
         })
     }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Confirmation") },
+            text = { Text("Are you sure you want to delete this event?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmation = false
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(event._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteEvent")
+                                onDeleteEvent(event)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
+
 
 
 @Composable
@@ -1112,7 +1136,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                                 attendees = attendees.split(", ").filter { it.isNotBlank() },
                                 owner = ObjectId(owner)
                             )
-                            onSave(updatedEvent)
+
 
                             val updateFields = mutableMapOf<String, Any>()
                             if (name != event.name) updateFields["name"] = name
@@ -1133,6 +1157,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
                             GlobalScope.launch {
                                 try {
                                     updateInDatabase(event._id!!, updateFields, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/updateEvent")
+                                    onSave(updatedEvent)
                                 } catch (e: Exception) {
                                     println("Can't find/update the event in the database")
                                 }
@@ -1254,6 +1279,7 @@ fun UsersScreen(users: List<User>, onDeleteUser: (User) -> Unit) {
 fun UserCard(user: User, onUpdateUser: (User) -> Unit, onDeleteUser: (User) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -1277,21 +1303,13 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit, onDeleteUser: (User) -> U
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Button(onClick = { isEditing = true }) {
-                        Text("Edit Event")
+                        Text("Edit User")
                     }
-                    Button(onClick = {
-                        GlobalScope.launch {
-                            try {
-                                deleteFromDatabase(user._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteUser")
-                                onDeleteUser(user)
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                            }
-                        }
-                    },
+                    Button(
+                        onClick = { showDeleteConfirmation = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                     ) {
-                        Text("Delete Event")
+                        Text("Delete User")
                     }
                 }
             }
@@ -1304,7 +1322,38 @@ fun UserCard(user: User, onUpdateUser: (User) -> Unit, onDeleteUser: (User) -> U
             isEditing = false
         })
     }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Confirmation") },
+            text = { Text("Are you sure you want to delete this user?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmation = false
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(user._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteUser")
+                                onDeleteUser(user)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
+
 
 @Composable
 fun EditUserDialog(user: User, onDismiss: () -> Unit, onSave: (User) -> Unit) {
@@ -1430,6 +1479,7 @@ fun ReviewsScreen(reviews: List<Review>, onUpdateReview: (Review) -> Unit, onDel
 fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit, onDeleteReview: (Review) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -1456,16 +1506,7 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit, onDeleteReview:
                         Text("Edit Review")
                     }
                     Button(
-                        onClick = {
-                            GlobalScope.launch {
-                                try {
-                                    deleteFromDatabase(review._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteReview")
-                                    onDeleteReview(review)
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        },
+                        onClick = { showDeleteConfirmation = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                     ) {
                         Text("Delete Review")
@@ -1481,7 +1522,38 @@ fun ReviewCard(review: Review, onUpdateReview: (Review) -> Unit, onDeleteReview:
             isEditing = false
         })
     }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Confirmation") },
+            text = { Text("Are you sure you want to delete this review?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmation = false
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(review._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteReview")
+                                onDeleteReview(review)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
+
 
 
 @Composable
@@ -1603,6 +1675,7 @@ fun CategoriesScreen(initialCategories: List<Category>, onDeleteCategory: (Categ
 fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit, onDeleteCategory: (Category) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -1625,16 +1698,7 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit, onDel
                         Text("Edit Category")
                     }
                     Button(
-                        onClick = {
-                            GlobalScope.launch {
-                                try {
-                                    deleteFromDatabase(category._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteCategory")
-                                    onDeleteCategory(category)
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        },
+                        onClick = { showDeleteConfirmation = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                     ) {
                         Text("Delete Category")
@@ -1650,8 +1714,37 @@ fun CategoryCard(category: Category, onUpdateCategory: (Category) -> Unit, onDel
             isEditing = false
         })
     }
-}
 
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Confirmation") },
+            text = { Text("Are you sure you want to delete this category?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmation = false
+                        GlobalScope.launch {
+                            try {
+                                deleteFromDatabase(category._id!!, "https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/deleteCategory")
+                                onDeleteCategory(category)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}
 
 @Composable
 fun EditCategoryDialog(category: Category, onDismiss: () -> Unit, onSave: (Category) -> Unit) {
