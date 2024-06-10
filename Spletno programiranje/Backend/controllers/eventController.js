@@ -69,66 +69,13 @@ module.exports = {
     const favourite = req.query.favourite === "on"; // Convert the string to boolean
     const minPrice = req.query.minPrice;
     const maxPrice = req.query.maxPrice;
+    const minAvgRating = parseInt(req.query.rating, 10); // Get minimum average rating
 
     // Initialize the filter object
     let filter = {};
 
-    // Check if a category is provided
-    if (categoryName) {
-      // Find the category document based on the provided name
-      CategoryModel.findOne({ name: categoryName }, function (err, category) {
-        if (err) {
-          return res.status(500).json({
-            message: "Error when getting category.",
-            error: err,
-          });
-        }
-
-        if (!category) {
-          return res.status(404).json({
-            message: "Category not found.",
-          });
-        }
-
-        // Add category filter to the filter object
-        filter.category = category._id;
-
-        // Check if date range is provided
-        if (fromDate && toDate) {
-          // Apply date range filtering logic
-          filter.date_start = {
-            $gte: new Date(fromDate),
-            $lte: new Date(toDate),
-          };
-        }
-
-        // Check if price range is provided
-        if (minPrice && maxPrice) {
-          // Apply price range filtering logic
-          filter.price = { $gte: minPrice, $lte: maxPrice };
-        }
-
-        // Find all events that match the filter
-        EventModel.find(filter, function (err, events) {
-          if (err) {
-            return res.status(500).json({
-              message: "Error when getting events.",
-              error: err,
-            });
-          }
-
-          // Filter events based on the favourite parameter
-          if (favourite) {
-            // Sort events by the number of attendees in descending order
-            events.sort((a, b) => b.attendees.length - a.attendees.length);
-          }
-
-          // Pass the events data to the view
-          res.json(events);
-        });
-      });
-    } else {
-      // No category selected, filter only by date range and/or price range if provided
+    const applyFiltersAndRespond = (filter) => {
+      // Check if date range is provided
       if (fromDate && toDate) {
         filter.date_start = {
           $gte: new Date(fromDate),
@@ -136,6 +83,7 @@ module.exports = {
         };
       }
 
+      // Check if price range is provided
       if (minPrice && maxPrice) {
         filter.price = { $gte: minPrice, $lte: maxPrice };
       }
@@ -155,9 +103,63 @@ module.exports = {
           events.sort((a, b) => b.attendees.length - a.attendees.length);
         }
 
-        // Pass the events data to the view
-        res.json(events);
+        // If minAvgRating is provided, filter events based on average rating
+        if (minAvgRating) {
+          const eventIds = events.map((event) => event._id);
+
+          ReviewsModel.aggregate(
+            [
+              { $match: { eventId: { $in: eventIds } } },
+              { $group: { _id: "$eventId", avgRating: { $avg: "$rating" } } },
+              { $match: { avgRating: { $gte: minAvgRating } } },
+            ],
+            function (err, results) {
+              if (err) {
+                return res.status(500).json({
+                  message: "Error when calculating average ratings.",
+                  error: err,
+                });
+              }
+
+              const filteredEventIds = results.map((result) =>
+                result._id.toString()
+              );
+              const filteredEvents = events.filter((event) =>
+                filteredEventIds.includes(event._id.toString())
+              );
+
+              res.json(filteredEvents);
+            }
+          );
+        } else {
+          // Pass the events data to the view
+          res.json(events);
+        }
       });
+    };
+
+    if (categoryName) {
+      // Find the category document based on the provided name
+      CategoryModel.findOne({ name: categoryName }, function (err, category) {
+        if (err) {
+          return res.status(500).json({
+            message: "Error when getting category.",
+            error: err,
+          });
+        }
+
+        if (!category) {
+          return res.status(404).json({
+            message: "Category not found.",
+          });
+        }
+
+        // Add category filter to the filter object
+        filter.category = category._id;
+        applyFiltersAndRespond(filter);
+      });
+    } else {
+      applyFiltersAndRespond(filter);
     }
   },
 

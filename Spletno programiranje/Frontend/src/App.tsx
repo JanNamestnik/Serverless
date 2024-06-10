@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home";
+
 import Cookies from "js-cookie";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
@@ -22,7 +22,7 @@ function App() {
     <div className="bg-primaryBackground w-screen  h-full">
       {token ? <Navbar /> : <></>}
       <Routes>
-        <Route path="/" element={token ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/" element={token ? <List /> : <Navigate to="/login" />} />
         <Route
           path="/login"
           element={token ? <Navigate to="/" /> : <Login />}
@@ -39,15 +39,10 @@ function App() {
           path="/map"
           element={token ? <Map /> : <Navigate to="/login" />}
         />
-        <Route
-          path="/list"
-          element={token ? <List /> : <Navigate to="/login" />}
-        />
-       <Route path="/event/:id" element={<EventDetails />} />{" "}
+        <Route path="/event/:id" element={<EventDetails />} />{" "}
         <Route path="/my-events" element={<MyEventList />} />
         <Route path="/new-event" element={<EventAdd />} />
         <Route path="/event/edit/:id" element={<EventEdit />} />
-
         <Route
           path="/event/:id"
           element={token ? <EventDetails /> : <Navigate to="/login" />}
@@ -56,7 +51,6 @@ function App() {
           path="/editprofile"
           element={token ? <EditProfile /> : <Navigate to="/login" />}
         />
-
       </Routes>
     </div>
   );
