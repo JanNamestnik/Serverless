@@ -111,7 +111,7 @@ const EventDetails = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        navigate("/list");
+        navigate("/");
       });
   }
 

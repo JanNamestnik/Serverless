@@ -31,7 +31,7 @@ const EventShowCard = ({ eventHere }: EventShowCardProps) => {
       <img
         className="rounded-t-lg w-96 h-64"
         src={
-          eventHere?.eventImage.substring(0, 8) != "http://"
+          eventHere?.eventImage.substring(0, 8) == "http://"
             ? eventHere?.eventImage
             : "http://localhost:3000" + eventHere?.eventImage
         }
