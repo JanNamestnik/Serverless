@@ -3,4 +3,5 @@ map "Map2":
 {{ busstop "Central Bus Stop" :
 {tri : {[1, 1], [2, 2], [3, 3]}}} ,
 {ulica "North Street" : {krog :{[1, 1], 1000}}}  ,
- {gozd "Central Forest" : {krog :{[5, 5], 1000}}}  ,
+ {gozd "Central Forest" : {krog :{[5, 5], 1000}}}
+})

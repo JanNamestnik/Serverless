@@ -1,4 +1,4 @@
  map "Map15":
   (mesto "Festival Grounds" :
-   {{plac "Main Stage" : {crt  : {[0, 0], [1, 1], 1, 0.1}, var seats = 75, ponovi (seats > 0) :{tri : {[2, seats], [3, seats +1], [4, seats]}, seats = seats - 1}}} ,   {ulica "Festival Street" : {krog :{[1, 1], 10000}}}  ,
+   {{plac "Main Stage" : {crt  : {[0, 0], [1, 1], 1}, var seats = 75, ponovi (seats > 0) :{tri : {[2, seats], [3, seats +1], [4, seats]}, seats = seats - 1}}} ,   {ulica "Festival Street" : {krog :{[1, 1], 10000}}}  ,
     {gozd "Festival Forest" : {krog :{[2, 2], 10000}}}})
