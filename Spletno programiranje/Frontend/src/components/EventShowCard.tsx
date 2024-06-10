@@ -30,7 +30,11 @@ const EventShowCard = ({ eventHere }: EventShowCardProps) => {
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <img
         className="rounded-t-lg w-96 h-64"
-        src={"http://localhost:3000" + eventHere?.eventImage}
+        src={
+          eventHere?.eventImage.substring(0, 8) != "http://"
+            ? eventHere?.eventImage
+            : "http://localhost:3000" + eventHere?.eventImage
+        }
         alt="slika dogodka"
       />
 

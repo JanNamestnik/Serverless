@@ -115,13 +115,27 @@ const EventDetails = () => {
       });
   }
 
+  function CalcuateAvarageRating(): number {
+    let avg = 0;
+    for (const review of reviews) {
+      avg += review.rating;
+    }
+    console.log("avrage rating : ", avg, reviews.length);
+    if (reviews.length == 0) return 5;
+    return avg / reviews.length;
+  }
+
   return (
     <div className="pt-20 ">
       <div className="bg-gray-100 flex flex-col items-center justify-center min-h-screen gap-6">
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
           <div className="flex flex-col md:flex-row md:items-center">
             <img
-              src={"http://localhost:3000" + event.eventImage}
+              src={
+                event?.eventImage?.substring(0, 8) == "https://"
+                  ? event?.eventImage
+                  : "http://localhost:3000" + event?.eventImage
+              }
               alt="Event Image"
               className="w-full md:w-1/3 rounded-lg md:mr-6 mb-4 md:mb-0"
             />
@@ -167,7 +181,13 @@ const EventDetails = () => {
               <p className="text-gray-700 mb-4">
                 Contact: <span className="font-semibold">{event.contact}</span>
               </p>
-
+              <p className="text-gray-700 mb-4">
+                Avarage rating:
+                <span className="font-semibold">
+                  {" "}
+                  <RatingShow rating={CalcuateAvarageRating()} />
+                </span>
+              </p>
               <div className="flex flex-row gap-4 ">
                 {event.attendees?.some((attendy) => attendy._id == user._id) ? (
                   <button
