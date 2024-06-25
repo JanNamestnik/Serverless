@@ -11,9 +11,9 @@
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
     ·
-    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/issues/new?labels=bug&template=bug-report---.md">Prijavite napako</a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Scraper">Scraper</a>
     ·
-    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/issues/new?labels=enhancement&template=feature-request---.md">Predlagajte funkcijo</a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Vmesnik">Vmesnik</a>
   </p>
 </div>
 
