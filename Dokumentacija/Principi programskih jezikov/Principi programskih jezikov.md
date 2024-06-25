@@ -49,21 +49,24 @@
 
 Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o dogodkih iz spletnih strani in njihovo upravljanje v uporabniškem vmesniku. Omogoča uporabnikom ogled, urejanje in shranjevanje podatkov o dogodkih v bazi podatkov.
 
-Tukaj je nekaj razlogov, zakaj je ta projekt izjemen:
+
+
+### Glavne funkcionalnosti aplikacije:
 * Dodajanje in upravljanje dogodkov v podatkovni bazi
 * Prikaz in urejanje vseh podatkov v PB
 * Scrapa podatke iz visitmaribor.si in jih vstavi v bazo
 * Ustvari izmišljene podatke za namene testiranja
 
-<p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
 
-### Uporabljena oprema
+<br />
+
+## Uporabljena oprema
 
 * [![Kotlin][Kotlin]][Kotlin-url]
 * [![Compose for Desktop][Compose]][Compose-url]
 * [![MongoDB][MongoDB]][MongoDB-url]
 
-<p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
+<br />
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -91,22 +94,22 @@ npm install npm@latest -g
    ```sh
    cd Project-Name
 
-<p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
+<br />
+
 
 <!-- USAGE EXAMPLES -->
 ## Uporaba
 
 To aplikacijo uporabite za pridobivanje podatkov o dogodkih iz spletnih strani, upravljanje podatkov prek uporabniškega vmesnika in shranjevanje v bazo podatkov. Aplikacija omogoča tudi generiranje naključnih podatkov o dogodkih za testne namene.
 
-<p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
+<br />
 
 <!-- CONTACT -->
 ## Kontakt
-Ime skupine: Serverless
-Člani skupine: Jan Namestnik, Nejc Cekuta, Metod Golob
+Ime skupine: Serverless <br/>
+Člani skupine: Jan Namestnik, Nejc Cekuta, Metod Golob <br/>
 Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/main)
-
-<p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
+<br /><br />
 
 <!-- ACKNOWLEDGMENTS -->
 ## Viri
