@@ -45,7 +45,7 @@
 <!-- O projektu -->
 ## O projektu
 
-[!Slika](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
+![Slika!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
 
 Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o dogodkih iz spletnih strani in njihovo upravljanje v uporabniškem vmesniku. Omogoča uporabnikom ogled, urejanje in shranjevanje podatkov o dogodkih v bazi podatkov.
 
