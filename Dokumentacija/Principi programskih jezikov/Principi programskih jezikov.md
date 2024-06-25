@@ -50,9 +50,10 @@
 Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o dogodkih iz spletnih strani in njihovo upravljanje v uporabniškem vmesniku. Omogoča uporabnikom ogled, urejanje in shranjevanje podatkov o dogodkih v bazi podatkov.
 
 Tukaj je nekaj razlogov, zakaj je ta projekt izjemen:
-* Poenostavi postopek pridobivanja in upravljanja podatkov o dogodkih
-* Ponuja intuitiven vmesnik za upravljanje podatkov
-* Uvaja DRY načela za optimizacijo nalog
+* Dodajanje in upravljanje dogodkov v podatkovni bazi
+* Prikaz in urejanje vseh podatkov v PB
+* Scrapa podatke iz visitmaribor.si in jih vstavi v bazo
+* Ustvari izmišljene podatke za namene testiranja
 
 <p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
 
