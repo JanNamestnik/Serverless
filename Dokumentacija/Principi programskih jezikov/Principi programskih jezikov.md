@@ -91,7 +91,7 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 
 Če želite pridobiti lokalno kopijo in jo zagnati, sledite tem preprostim korakom.
 
-<h2 id="kloniranje-repozitorija">2.1 Kloniranje repozitorija</h2>
+<h3 id="kloniranje-repozitorija">2.1 Kloniranje repozitorija</h3>
 
 Najprej klonirajte repozitorij iz GitHub-a na vaš lokalni računalnik. V terminalu zaženite naslednji ukaz:
 ```sh
@@ -145,7 +145,6 @@ Ko so vse zgornje zahteve izpolnjene, lahko zaženete scraper z naslednjim ukazo
   gradlew.bat run
   ```
 
-### 2.5 Opombe
 <h3 id="opombe">2.5 Opombe</h3>
 
 - Če naletite na težave, preverite, ali so vse odvisnosti pravilno nameščene in ali je MongoDB strežnik zagnan.
