@@ -23,6 +23,7 @@
     <li>
       <a href="#o-projektu">O projektu</a>
       <ul>
+        <li><a href="#glavne-funkcionalnosti-aplikacije">Glavne funkcionalnosti aplikacije</a></li>
         <li><a href="#uporabljena-oprema">Uporabljena oprema</a></li>
       </ul>
     </li>
@@ -37,7 +38,7 @@
       </ul>
     </li>
     <li>
-        <a href="#Opis projekta">Opis projekta</a>
+        <a href="#opis-projekta">Opis projekta</a>
         <ul>
             <li><a href="#scraper">Scraper</a></li>
             <ul>
@@ -47,7 +48,7 @@
             </ul>
             <li><a href="#vmesnik">Vmesnik</a></li>
             <ul>
-                <li><a href="#podatkovni-razredi">Podatkovni razredi</a></li>
+                <li><a href="#podatkovni-razredi2">Podatkovni razredi</a></li>
                 <li><a href="#fetch-funkcije">Fetch funkcije</a></li>
                 <li><a href="#kompozicije">Kompozicije</a></li>
                 <li><a href="#pomožne-funkcije2">Pomožne funkcije</a></li>
@@ -61,15 +62,15 @@
 </details>
 
 <!-- O projektu -->
-## 1. O projektu
+<h2 id="o-projektu">1. O projektu</h2>
 
 ![Slika!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
 
 Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o dogodkih iz spletnih strani in njihovo upravljanje v uporabniškem vmesniku. Omogoča uporabnikom ogled, urejanje in shranjevanje podatkov o dogodkih v bazi podatkov.
 
 
+<h3 id="glavne-funkcionalnosti-aplikacije">1.1 Glavne funkcionalnosti aplikacije:</h3>
 
-### 1.1 Glavne funkcionalnosti aplikacije:
 * Dodajanje in upravljanje dogodkov v podatkovni bazi
 * Prikaz in urejanje vseh podatkov v PB
 * Scrapa podatke iz [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/) in jih vstavi v bazo
@@ -77,8 +78,7 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 
 
 <br />
-
-## 1.2 Uporabljena oprema
+<h2 id="uporabljena-oprema">1.2 Uporabljena oprema</h2>
 
 * [![Kotlin][Kotlin]][Kotlin-url]
 * [![Compose for Desktop][Compose]][Compose-url]
@@ -87,21 +87,23 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 <br />
 
 <!-- GETTING STARTED -->
-## 2. Getting Started
+<h2 id="getting-started">2. Getting Started</h2>
 
 Če želite pridobiti lokalno kopijo in jo zagnati, sledite tem preprostim korakom.
 
-### 2.1 Kloniranje repozitorija
+<h2 id="kloniranje-repozitorija">2.1 Kloniranje repozitorija</h2>
+
 Najprej klonirajte repozitorij iz GitHub-a na vaš lokalni računalnik. V terminalu zaženite naslednji ukaz:
 ```sh
-git clone https://github.com/USERNAME/REPOSITORY_NAME.git
+gh repo clone JanNamestnik/Serverless
 ```
 Potem se pramaknemo v mapu s projektom
 ```sh
-cd REPOSITORY_NAME
+cd Serverless
 ```
 
-### 2.2 Namestitev potrebne programske opreme
+<h3 id="namestitev-potrebne-programske-opreme">2.2 Namestitev potrebne 
+programske opreme</h3>
 
 Preden zaženete scraper, boste morali namestiti nekaj programske opreme:
 
@@ -118,7 +120,7 @@ Preden zaženete scraper, boste morali namestiti nekaj programske opreme:
 
 - **MongoDB:** Podatki se shranjujejo v MongoDB bazo podatkov. Prepričajte se, da imate nameščen MongoDB strežnik. Navodila za namestitev so na voljo na uradni [MongoDB strani](https://docs.mongodb.com/manual/installation/).
 
-### 2.3 Konfiguracija
+<h3 id="konfiguracija">2.3 Konfiguracija</h3>
 
 Preden zaženete scraper, preverite konfiguracijo in prilagodite, če je potrebno.
 
@@ -130,7 +132,7 @@ Prepričajte se, da je MongoDB strežnik zagnan in deluje na privzetem naslovu (
 
 Projektne odvisnosti so določene v datoteki `build.gradle`. Gradle bo samodejno prenesel potrebne knjižnice ob prvem zagonu projekta.
 
-### 2.4 Zagon scraperja
+<h3 id="zagon-scraperja">2.4 Zagon scraperja</h3>
 
 Ko so vse zgornje zahteve izpolnjene, lahko zaženete scraper z naslednjim ukazom:
 
@@ -144,24 +146,28 @@ Ko so vse zgornje zahteve izpolnjene, lahko zaženete scraper z naslednjim ukazo
   ```
 
 ### 2.5 Opombe
+<h3 id="opombe">2.5 Opombe</h3>
+
 - Če naletite na težave, preverite, ali so vse odvisnosti pravilno nameščene in ali je MongoDB strežnik zagnan.
 - Za podrobnejše informacije o uporabi Gradle-a in odpravljanju napak obiščite [Gradle dokumentacijo](https://docs.gradle.org/current/userguide/userguide.html).
 
 <br />
 
 <!-- USAGE EXAMPLES -->
-## 3. Opis projekta
+<h2 id="opis-projekta">3. Opis projekta</h2>
 
 Aplikacija omogoča pridobivanje podatkov o dogodkih iz spletne strani [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/), ogled in urejanje podatkov prek uporabniškega vmesnika in shranjevanje vseh podatkov v podatkovno bazo. Aplikacija omogoča dodajanje novih podatkov in tudi generiranje naključnih podatkov o dogodkih za testne namene.
 
-## 3.1 Scraper
+<h2 id="scraper">3.1 Scraper</h2>
+
 Scraper je implementiran v Kotlinu, pri čemer uporablja knjižnico `skrape.it` za naloge spletnega strganja. Koda je razdeljena na več komponent:
 
 - `Podatkovni razredi`, ki definirajo strukturo podatkov, ki jih strgamo.
 - `Pomožne funkcije`, ki zagotavljajo pripomočke za razčlenjevanje in preoblikovanje strganih podatkov.
 - `Funkcije strganja`, ki izvajajo dejansko spletno strganje in pridobivanje podatkov.
 
-### 3.1.1 Podatkovni razredi
+<h3 id="podatkovni-razredi">3.1.1 Podatkovni razredi</h3>
+
 - Razred `Location` predstavlja geografske koordinate dogodka.
   ```
   data class Location(
@@ -218,7 +224,8 @@ data class Event(
 )
 ```
 
-### 3.1.2 Pomožne funkcije
+<h3 id="pomožne-funkcije">3.1.2 Pomožne funkcije</h3>
+
 - `getCategoryId`
 Ta funkcija preslika imena kategorij na ObjectId.
 
@@ -258,7 +265,8 @@ fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?
 
 ```
 
-### 3.1.3 Funkcije strganja
+<h3 id="funkcije-strganja">3.1.3 Funkcije strganja</h3>
+
 - `getEvent` funkcija pridobi podrobnosti posameznega dogodka
 ```
 fun getEvent(s: String?): Event? {
@@ -383,7 +391,8 @@ fun fetchEvents(maxEvents: Int = 10): List<Event> {
 
 <br />
 
-## 3.2 Vmesnik
+<h2 id="vmesnik">3.2 Vmesnik</h2>
+
 Vmesnik je uporabniški vmesnik, ki omogoča prikaz in upravljanje podatkov o dogodkih, uporabnikih, ocenah in kategorijah iz baze podatkov. Vmesnik je zgrajen z uporabo Kotlin in Jetpack Compose za Desktop.
 
 Koda vmesnika je razdeljena na več komponent:
@@ -393,7 +402,8 @@ Koda vmesnika je razdeljena na več komponent:
 - `Kompozicije`, ki ustvarjajo uporabniški vmesnik za prikaz, urejanje in brisanje podatkov
 - `Pomožne funkcije`, ki skrbijo za pošiljanje podatkov v bazo, brisanje in posodabljanje podatkov v bazi
 
-### 3.2.1 Podatkovni razredi
+<h3 id="podatkovni-razredi2">3.2.1 Podatkovni razredi</h3>
+
 - Razred `User` predstavlja uporabnika z različnimi podrobnostmi
 
 ```
@@ -445,7 +455,8 @@ data class Category(
 )
 ```
 
-### 3.2.2 Fetch funkcije
+<h3 id="fetch-funkcije">3.2.2 Fetch funkcije</h3>
+
 Koda vsebuje 4 fetch funkcije (posebej za vsak podatkovni razred), ki so si med seboj zelo podobne, zato je spodaj primer samo za pridobivanje dogodkov.
 - `fetchEvents`, Pridobi podatke o dogodkih iz API-ja
 
@@ -484,7 +495,8 @@ fun parseEventsFromJson(jsonResponse: String): List<Event> {
 
 ```
 
-### 3.2.3 Kompozicije
+<h3 id="kompozicije">3.2.3 Kompozicije</h3>
+
 Sem spadajo vse funkcije, ki ustvarjajo uporabniški vmesnik za prikaz, urejanje, brisanje podatkov in pošiljanje podatkov v podatkovno bazo
 
 - funkcija `App`, je glavna funkcije kompozicije, ki upravlja vse komponente kompozicije (sidebar in contentArea)
@@ -1163,7 +1175,8 @@ fun AboutScreen() {
 
 ```
 
-### 3.2.4 Pomožne funkcije
+<h3 id="pomožne-funkcije2">3.2.4 Pomožne funkcije</h3>
+
 So funkcije za pošiljanje podatkov v bazo, brisanje in posodabljanje podatkov v bazi
 
 - Ko podatke v določeni kartici uredimo, se morajo ti tudi poslati in posodobiti v podatkovni bazi, in zato naredimo funkcijo `updateInDatabase`
@@ -1264,21 +1277,23 @@ fun sendEventsToDatabase(events: List<Event>, url: String) {
 
 ```
 
-## 3.3 Povzetek delovanja aplikacije
+<h2 id="povzetek-delovanja-aplikacije">3.3 Povzetek delovanja aplikacije</h2>
+
 Scraper učinkovito pridobiva podatke o dogodkih iz spletne strani [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/), jih preoblikuje v strukturirane objekte Event za nadaljnjo uporabo. Koda zagotavlja pravilno obravnavo morebitnih napak pri razčlenjevanju in vključuje prilagojeno JSON serializacijo za ObjectId. Aplikacija omogoča celovito upravljanje podatkovne baze z enostavnim uporabniškim vmesnikom, izdelanim z Jetpack Compose. Nudi širok spekter funkcionalnosti za upravljanje dogodkov, uporabnikov, ocen in kategorij ter vključuje orodja za pridobivanje in generiranje podatkov, zaradi česar je primerna za uporabo pri razvoju in testiranju različnih podatkovnih aplikacij.
 
 
 <br />
 
 <!-- CONTACT -->
-## 4. Kontakt
+<h2 id="kontakt">4. Kontakt</h2>
+
 Ime skupine: Serverless <br/>
 Člani skupine: Jan Namestnik, Nejc Cekuta, Metod Golob <br/>
 Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/main)
 <br /><br />
 
 <!-- ACKNOWLEDGMENTS -->
-## 5. Viri
+<h2 id="viri">5. Viri</h2>
 
 * [Thinking in Compose](https://developer.android.com/jetpack/compose/mental-model)
 * [Compose for Desktop features](https://github.com/JetBrains/compose-multiplatform/tree/master)
