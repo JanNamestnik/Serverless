@@ -3,23 +3,19 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/your_username/Project-Name">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">Event Scraper and Manager</h3>
 
   <p align="center">
     A comprehensive application to scrape, manage, and display event data.
     <br />
-    <a href="https://github.com/your_username/Project-Name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/your_username/Project-Name">View Demo</a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov">View Demo</a>
     ·
-    <a href="https://github.com/your_username/Project-Name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/your_username/Project-Name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -117,21 +113,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/your_username/Project-Name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -167,14 +148,12 @@ Project Link: [https://github.com/your_username/Project-Name](https://github.com
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [Thinking in Compose](https://developer.android.com/jetpack/compose/mental-model)
+* [Compose for Desktop features](https://github.com/JetBrains/compose-multiplatform/tree/master)
+* [Jetpack Compose Tutorial](https://developer.android.com/jetpack/compose/tutorial)
+* [Material Components and layouts](https://developer.android.com/jetpack/compose/layouts/material)
+* [Side-effects in Compose](https://developer.android.com/develop/ui/compose/side-effects)
+* [OkHttp](https://square.github.io/okhttp/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
