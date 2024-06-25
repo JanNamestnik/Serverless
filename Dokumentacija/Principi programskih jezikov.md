@@ -1,7 +1,6 @@
 <a name="readme-top"></a>
 
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
   <h3 align="center">Event Scraper and Manager</h3>
 
