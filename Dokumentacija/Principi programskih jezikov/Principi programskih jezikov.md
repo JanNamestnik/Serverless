@@ -21,26 +21,44 @@
   <summary>Kazalo vsebine</summary>
   <ol>
     <li>
-      <a href="#about-the-project">O projektu</a>
+      <a href="#o-projektu">O projektu</a>
       <ul>
-        <li><a href="#built-with">Uporabljena oprema</a></li>
+        <li><a href="#uporabljena-oprema">Uporabljena oprema</a></li>
       </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Predpogoji</a></li>
-        <li><a href="#installation">Namestitev</a></li>
+        <li><a href="#kloniranje-repozitorija">Kloniranje repozitorija</a></li>
+        <li><a href="#namestitev-potrebne-programske-opreme">Namestitev potrebne programske opreme</a></li>
+        <li><a href="#konfiguracija">Konfiguracija</a></li>
+        <li><a href="#zagon-scraperja">Zagon scraperja</a></li>
+        <li><a href="#opombe">Opombe</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Uporaba</a></li>
-    <li><a href="#contact">Kontakt</a></li>
-    <li><a href="#acknowledgments">Viri</a></li>
+    <li>
+        <a href="#Opis projekta">Opis projekta</a>
+        <ul>
+            <li><a href="#scraper">Scraper</a></li>
+            <ul>
+                <li><a href="#podatkovni-razredi">Podatkovni razredi</a></li>
+                <li><a href="#pomožne-funkcije">Pomožne funkcije</a></li>
+                <li><a href="#funkcije-strganja">Funkcije strganja</a></li>
+                <li><a href="#povzetek-delovanja">Povzetek delovanja</a></li>
+            </ul>
+            <li><a href="#vmesnik">Vmesnik</a></li>
+            <ul>
+                <li><a href="#podatkovni-razredi">neki</a></li>
+            </ul>
+        </ul>
+    </li>
+    <li><a href="#kontakt">Kontakt</a></li>
+    <li><a href="#viri">Viri</a></li>
   </ol>
 </details>
 
 <!-- O projektu -->
-## O projektu
+## 1. O projektu
 
 ![Slika!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
 
@@ -48,7 +66,7 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 
 
 
-### Glavne funkcionalnosti aplikacije:
+### 1.1 Glavne funkcionalnosti aplikacije:
 * Dodajanje in upravljanje dogodkov v podatkovni bazi
 * Prikaz in urejanje vseh podatkov v PB
 * Scrapa podatke iz [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/) in jih vstavi v bazo
@@ -57,7 +75,7 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 
 <br />
 
-## Uporabljena oprema
+## 1.2 Uporabljena oprema
 
 * [![Kotlin][Kotlin]][Kotlin-url]
 * [![Compose for Desktop][Compose]][Compose-url]
@@ -66,11 +84,11 @@ Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o
 <br />
 
 <!-- GETTING STARTED -->
-## Getting Started
+## 2. Getting Started
 
 Če želite pridobiti lokalno kopijo in jo zagnati, sledite tem preprostim korakom.
 
-### Kloniranje repozitorija
+### 2.1 Kloniranje repozitorija
 Najprej klonirajte repozitorij iz GitHub-a na vaš lokalni računalnik. V terminalu zaženite naslednji ukaz:
 ```sh
 git clone https://github.com/USERNAME/REPOSITORY_NAME.git
@@ -80,7 +98,7 @@ Potem se pramaknemo v mapu s projektom
 cd REPOSITORY_NAME
 ```
 
-### Namestitev potrebne programske opreme
+### 2.2 Namestitev potrebne programske opreme
 
 Preden zaženete scraper, boste morali namestiti nekaj programske opreme:
 
@@ -97,19 +115,19 @@ Preden zaženete scraper, boste morali namestiti nekaj programske opreme:
 
 - **MongoDB:** Podatki se shranjujejo v MongoDB bazo podatkov. Prepričajte se, da imate nameščen MongoDB strežnik. Navodila za namestitev so na voljo na uradni [MongoDB strani](https://docs.mongodb.com/manual/installation/).
 
-### Konfiguracija
+### 2.3 Konfiguracija
 
 Preden zaženete scraper, preverite konfiguracijo in prilagodite, če je potrebno.
 
-### Nastavitve MongoDB
+- Nastavitve MongoDB
 
 Prepričajte se, da je MongoDB strežnik zagnan in deluje na privzetem naslovu (`localhost:27017`). Če MongoDB deluje na drugem naslovu ali portu, posodobite ustrezne nastavitve v kodi.
 
-### Odvisnosti projekta
+- Odvisnosti projekta
 
 Projektne odvisnosti so določene v datoteki `build.gradle`. Gradle bo samodejno prenesel potrebne knjižnice ob prvem zagonu projekta.
 
-### Zagon scraperja
+### 2.4 Zagon scraperja
 
 Ko so vse zgornje zahteve izpolnjene, lahko zaženete scraper z naslednjim ukazom:
 
@@ -122,25 +140,25 @@ Ko so vse zgornje zahteve izpolnjene, lahko zaženete scraper z naslednjim ukazo
   gradlew.bat run
   ```
 
-### Opombe
+### 2.5 Opombe
 - Če naletite na težave, preverite, ali so vse odvisnosti pravilno nameščene in ali je MongoDB strežnik zagnan.
 - Za podrobnejše informacije o uporabi Gradle-a in odpravljanju napak obiščite [Gradle dokumentacijo](https://docs.gradle.org/current/userguide/userguide.html).
 
 <br />
 
 <!-- USAGE EXAMPLES -->
-## Uporaba in opis
+## 3. Opis projekta
 
 Aplikacija omogoča pridobivanje podatkov o dogodkih iz spletne strani [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/), ogled in urejanje podatkov prek uporabniškega vmesnika in shranjevanje vseh podatkov v podatkovno bazo. Aplikacija omogoča dodajanje novih podatkov in tudi generiranje naključnih podatkov o dogodkih za testne namene.
 
-## Scraper
+## 3.1 Scraper
 Scraper je implementiran v Kotlinu, pri čemer uporablja knjižnico `skrape.it` za naloge spletnega strganja. Koda je razdeljena na več komponent:
 
 - Podatkovni razredi: Definirajo strukturo podatkov, ki jih strgamo.
 - Pomožne funkcije: Zagotavljajo pripomočke za razčlenjevanje in preoblikovanje strganih podatkov.
 - Funkcije strganja: Izvajajo dejansko spletno strganje in pridobivanje podatkov.
 
-### Podatkovni razredi
+### 3.1.1 Podatkovni razredi
 - Razred `Location` predstavlja geografske koordinate dogodka.
   ```
   data class Location(
@@ -195,11 +213,12 @@ data class Event(
     @Expose
     val owner: ObjectId?
 )
-
 ```
-### Pomožne funkcije
+
+### 3.1.2 Pomožne funkcije
 - `getCategoryId`
 Ta funkcija preslika imena kategorij na ObjectId.
+
 ```
 fun getCategoryID(category: String): ObjectId {
     return when (category) {
@@ -236,7 +255,7 @@ fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?
 
 ```
 
-### Funkcije strganja
+### 3.1.3 Funkcije strganja
 - `getEvent` funkcija pridobi podrobnosti posameznega dogodka
 ```
 fun getEvent(s: String?): Event? {
@@ -323,6 +342,7 @@ fun getEvent(s: String?): Event? {
 }
 
 ```
+
 - `fetchEvents` funkcija pridobi seznam dogodkov s spletne strani
 
 ```
@@ -355,27 +375,26 @@ fun fetchEvents(maxEvents: Int = 10): List<Event> {
     }
     return events
 }
-
 ```
 
-### Povzetek
+### 3.1.4 Povzetek delovanja
 Scraper učinkovito pridobiva podatke o dogodkih iz spletne strani [visitmaribor.si](https://www.visitmaribor.si/si/kaj-poceti/dogodki-in-prireditve/vsi-dogodki-in-prireditve/), jih preoblikuje v strukturirane objekte `Event` za nadaljnjo uporabo. Koda zagotavlja pravilno obravnavo morebitnih napak pri razčlenjevanju in vključuje prilagojeno JSON serializacijo za `ObjectId`.
 
 <br />
 
-## Vmesnik
+## 3.2 Vmesnik
 
 <br />
 
 <!-- CONTACT -->
-## Kontakt
+## 4. Kontakt
 Ime skupine: Serverless <br/>
 Člani skupine: Jan Namestnik, Nejc Cekuta, Metod Golob <br/>
 Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/main)
 <br /><br />
 
 <!-- ACKNOWLEDGMENTS -->
-## Viri
+## 5. Viri
 
 * [Thinking in Compose](https://developer.android.com/jetpack/compose/mental-model)
 * [Compose for Desktop features](https://github.com/JetBrains/compose-multiplatform/tree/master)
