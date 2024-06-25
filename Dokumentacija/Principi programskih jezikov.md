@@ -6,14 +6,13 @@
   <p align="center">
     Celovita aplikacija za pridobivanje, upravljanje in prikaz podatkov o dogodkih.
     <br />
-    <a href="https://github.com/JanNamestnik/Serverless/tree/devel/Dokumentacija"><strong>Vsa dokumentacija»</strong></a>
-    <br />
-    <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
     ·
     <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Scraper">Scraper</a>
     ·
     <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Vmesnik">Vmesnik</a>
+    <br />
+    <a href="https://github.com/JanNamestnik/Serverless/tree/devel/Dokumentacija"><strong>Vsa dokumentacija»</strong></a>
   </p>
 </div>
 
