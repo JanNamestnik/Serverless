@@ -64,7 +64,7 @@
 <!-- O projektu -->
 <h2 id="o-projektu">1. O projektu</h2>
 
-![Slika!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
+![appMain!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
 
 Ta projekt je namizna aplikacija, zgrajena s Kotlinom za pridobivanje podatkov o dogodkih iz spletnih strani in njihovo upravljanje v uporabniškem vmesniku. Omogoča uporabnikom ogled, urejanje in shranjevanje podatkov o dogodkih v bazi podatkov.
 
@@ -646,6 +646,8 @@ fun ContentArea(
     - `AboutScreen`
 
  - `Add Screen` je zaslon, v katerem lahko ročno dodajamo nove dogodke, uporabnike, kategorije in ocene
+
+![appMain!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
     
 ```
 @Composable
@@ -729,6 +731,8 @@ fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit, onDeleteEv
 ```
 
 - Funkcija `EventsScreen`, deluje tako da prikaže vse dogodke, ki se nahajajo v podatkovni bazi na zaslon. Vsak dogodek je stiliran s dodatno funkcijo `EventCard`, ki je nekakšna kartica za prikaz podrobnosti dogodka z možnostmi urejanja in brisanja
+
+![events!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/events.png)
 
 ```
 @Composable
@@ -944,6 +948,8 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
 
 - Izberemo lahko tudi zaslon `GeneratorScreen`, ki omogoča  generiranje naključnih dogodkov. Deluje tako, da vanj vpišemo določene parametre in se dogodek zgenerira in shrani v bazo
 
+![generator!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/generator.png)
+
 ```
 @Composable
 fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
@@ -1062,6 +1068,8 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
 
 - Najbolj pomemben je seveda zaslon `ScraperScreen`, ki skrbi za prikaz vseh pridobljenih dogodkov iz spletne strani. 
 
+![scraped!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/scraped.png)
+
 ```
 @Composable
 fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
@@ -1127,6 +1135,8 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
 
 ```
 - In čisto na koncu pa imamo še `AboutScreen`, ki pa je nekakšen povzetek in prikaz vseh informacij o aplikaciji
+
+![about!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/about.png)
 
 ```
 @Composable
