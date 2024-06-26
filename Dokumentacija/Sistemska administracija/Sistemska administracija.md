@@ -4,13 +4,8 @@
   <h1 align="center">Sistemska administracija</h1>
 
   <p align="center">
-    Celovita aplikacija za pridobivanje, upravljanje in prikaz podatkov o dogodkih.
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
-    ·
-    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Scraper">Scraper</a>
-    ·
-    <a href="https://github.com/JanNamestnik/Serverless/tree/main/Principi%20programskih%20jezikov/Vmesnik">Vmesnik</a>
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/devel/Dokumentacija"><strong>Vsa dokumentacija»</strong></a>
   </p>
@@ -88,15 +83,15 @@ Spodaj so podana navodila,  kako si naložiti potrebno infrastrukturo in strežn
 
 Za uspešno izvedbo zgoraj navedenega je potrebno pričeti z lokalno namestitvijo Docker okolja. Docker okolje je brezplačno in ga lahko namestimo s uporabo brskalnika. Potrebno je ustvariti tudi uporabniški račun, ki najbolje, da je strukturiran z skupnim geslom. Geslo naj bo strukturirano tako, da ga lahko uporablja celotna delovna skupina in varno pred vsiljivci. Povezava:  [Docker](https://www.docker.com/ ) 
 
-![Slika1]()
-![Slika2]()
+![Slika1](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture1.png)
+![Slika2](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture2.png)
 
 <h4 id="Uporabniški-račun-na-Microsoft-Azure">2.1.2	Uporabniški račun na Microsoft Azure</h4>
 
 Docker je sedaj lokalno nameščen in se lahko vanj prijavimo z uporabniškim računom, ki ga je v našem primeru, ustvaril kar vodja skupine. 
 Naslednji korak je ustvarjanje uporabniškega računa na Microsoft Azure okolju, kjer bomo gostili našo virtualno napravo. Povezava: [Azure](https://azure.microsoft.com/en-gb/)  
 
-![Slika3]()
+![Slika3](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture3.png)
 
 <h4 id="Ustvarjanje-virtualne-naprave-na-Microsoft-Azure">2.1.3	Ustvarjanje virtualne naprave na Microsoft Azure</h4>
 
@@ -116,26 +111,26 @@ Po uspešno ustvarjenem računu je potrebno ustvariti novo Linux virtualno napra
 
 Določiti je potrebno ime virtualne naprave in geslo s katerim se bodo uporabniki kasneje prijavili, ter povezali v virtualno napravo preko terminala.
 
-![Slika4]()
+![Slika4](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture4.png)
 
 <h4 id="Kreiranje-Dockerfile">2.1.4	Kreiranje Dockerfile  Azure</h4>
 
 Za Dockerfile je potrebno v urejevalniku kode, (ki podpira takšne vrste datotek) ga ustvariti in napisati kodo ki nam bo služila za kreiranje Docker slike. V našem primeru se nam zažene express aplikacija na vratih 3000 preko node.js strežnika. Priporočamo urejevalnik kode Visual Studio Code.
 
-![Slika5]()
+![Slika5](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture5.png)
 
 <h4 id="Povezava-na-virtualno-napravo">2.1.5	Povezava na virtualno napravo</h4>
 
 Če želimo uspešno uporabljati našo virtualno,  moramo omogočiti dostop povezave preko protokola SSH. S tem uporabnikom omogočimo, da se preko javnega IP naslova povežejo na našo virtualno napravo,  v kolikor poznajo geslo in lastnikov javni IP naslov.
 Željeno zadevo lahko vzpostavimo v nastavitvah naše virtualne naprave na Microsoft Azure
 
-![Slika6]()
+![Slika6](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture6.png)
 
 Najdemo jo pod zavihkom »connect«, kjer imamo na izbiro dva načina povezave preko SSH. V našem primeru izberemo, kar drugo možnost »Native SSH« 
 
 Ko stisnemo na gumb »select« se nam odpre nov zavihek, kjer dobimo povezavo ki jo uporabimo v terminalu za povezavo na našo virtualno napravo
 
-![Slika7]()
+![Slika7](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture7.png)
 
 <h4 id="Vzpostavitev-Docker-na-Azure">2.1.6	Vzpostavitev Docker na Azure</h4>
 
@@ -143,32 +138,32 @@ V kolikor želimo dostopati do Docker infrastrukture na naši virtualni napravi 
 
 Namestitev Docker na našo virtualno napravo. Uporabimo ukaz »sudo apt install docker.io«
 
-![Slika8]()
+![Slika8](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture8.png)
 
 Pred tem je seveda potrebno vzpostaviti povezavo na našo virtualno napravo preko SSH protokola. Nato preverimo ali se je Docker uspešno namestil, kar storimo z ukazom« docker –version«, ki nam izpiše verzijo nameščene infrastrukture Docker.
 
 Sledi zagon infrastrukture z ukazom »sudo systemctl start docker«
 
-![Slika9]()
+![Slika9](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture9.png)
 
-![Slika10]()
+![Slika10](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture10.png)
 
 <h4 id="Docker-Hub">2.1.7 Docker Hub</h4>
 
 Vzpostavitev okolja Docker Hub in ustvarjanje uporabniškega računa.
 Povezava: [Docker](https://www.docker.com/products/docker-hub/) 
 
-![Slika11]()
+![Slika11](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture11.png)
 
 Na strani najdemo gumb »create repository«, kjer si lahko ustvarimo en privatni repozitorij za naše Docker slike, ki jih bomo preko Github Actions Workflow shranjevali v ta repozitorij.
 
-![Slika12]()
+![Slika12](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture12.png)
 
 <h4 id="Github-Actions-Workflow">2.1.8 Github Actions Workflow</h4>
 
 Na Github je potrebno ustvariti svoj repozitorij in v glavno vejo (main branch) dodati mapo ».github/workflow«, kjer bomo shranjevali datoteke .yml  potrebne za avtomatizacijo. Tukaj je potrebno paziti, da se direktorij nahaja znotraj naše korenske veje oz. »main branch«.
 
-![Slika13]()
+![Slika13](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture13.png)
 
 Ustvarimo datoteko npr. deploy.yml v kateri se bo prožila akcija in s tem avtomatizirala željene stvari v našem repozitoriju.
 V kodi lahko sami specificiramo v katerem primeru naj se akcija proži. Mi smo nastavili akcijo, da se proži ob vsaki spremembi v glavni veji. Pametno bi bilo to narediti v veji za razvoj (»devel branch«), kjer se dogaja največ sprememb, vendar bi tam priporočili raje kakšno  testiranje kode.
@@ -181,23 +176,23 @@ Najprej je potrebno namestiti vse potrebno, da bo naš strežnik deloval kot se 
 Poleg tega je potrebno na naši virtualni napravi omogočiti tudi poslušanje na vratih, kjer bomo strežnik zagnali.
 Zraven node.js  strežnika namestimo tudi ogrodje express.js.
 
-![Slika14]()
+![Slika14](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture14.png)
 
-![Slika15]()
+![Slika15](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture15.png)
 
 Omogočanje »port-forwarding« na MS Azure, je potrebno, da bo naš strežnik lahko sprejemal sporočila preko proženja akcij. V našem primeru se node.js strežnik zažene na vratih 3000, tako da je potrebno odpreti vrata 3000. Gremo pod zavihek »Networking« in nato »Network settings«. Odpre se nam novo okno, kjer poiščemo gumb »Create port rule«, ki omogoča odpiranje novih vrat oz. poslušalca.
 
-![Slika16]()
+![Slika16](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture16.png)
 
-![Slika17]()
+![Slika17](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture17.png)
 
 Ko gumb pritisnemo se nam odpre meni in izberemo možnost »inbound port rule«. Nato se odpre nov zavihek, kjer lahko naredimo zasnovo novega pravila, po specifikacijah, ki jih prikazuje slika. Ustvarjen port rule se nato pridruži ostalim v tabeli prikazani spodaj na sliki 19.
 
-![Slika18]()
+![Slika18](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture19.png)
 
-![Slika19]()
+![Slika19](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture20.png)
 
-![Slika20]()
+![Slika20](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture21.png)
 
 <h2 id="Katere projektne naloge smo izvedli (načrt rešitve)?">3.	Katere projektne naloge smo izvedli (načrt rešitve)?</h2>
 
