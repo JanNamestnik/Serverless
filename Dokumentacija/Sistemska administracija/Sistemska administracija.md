@@ -4,7 +4,6 @@
   <h1 align="center">Sistemska administracija</h1>
 
   <p align="center">
-    <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/devel/Dokumentacija"><strong>Vsa dokumentacija»</strong></a>
@@ -25,13 +24,41 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#kloniranje-repozitorija">Kloniranje repozitorija</a></li>
+        <li><a href="#neki">neki</a></li>
+        <li><a href="#Nalaganje-infrastrukture-Docker-in-uporabniški-račun">Nalaganje infrastrukture Docker in uporabniški račun</a></li>
+        <li><a href="#Uporabniški-račun-na-Microsoft-Azure">Uporabniški račun na Microsoft Azure</a></li>
+        <li><a href="#Ustvarjanje-virtualne-naprave-na-Microsoft-Azure">Ustvarjanje virtualne naprave na Microsoft Azure</a></li>
+        <li><a href="#Kreiranje-Dockerfile-Azure">Kreiranje Dockerfile Azure</a></li>
+        <li><a href="#Povezava-na-virtualno-napravo">Povezava na virtualno napravo</a></li>
+        <li><a href="#Vzpostavitev-Docker-na-Azure">Vzpostavitev Docker na Azure</a></li>
+        <li><a href="#Docker-Hub">Docker Hub</a></li>
+        <li><a href="#Github-Actions-Workflow">Github Actions Workflow</a></li>
+        <li><a href="#Strežnik-za-prejemanje-webhook-sporočil">Strežnik za prejemanje webhook sporočil</a></li>
       </ul>
     </li>
     <li>
-        <a href="#opis-projekta">Opis projekta</a>
+        <a href="#Katere">Katere projektne naloge smo izvedli (načrt rešitve)?</a></li>
         <ul>
-            <li><a href="#povzetek-delovanja-aplikacije">Povzetek delovanja aplikacije</a></li>
+            <li><a href="#Prva-faza">Prva faza</a></li>
+            <ul>
+                <li><a href="#Ustvarjanje-Azure-računa">Ustvarjanje Azure računa</a></li>
+                <li><a href="#Postavitev-navidezne-naprave-(VM)-na-Azure">Postavitev navidezne naprave (VM) na Azure</a></li>
+                <li><a href="#Namestitev-Docker-in-aplikacije">Namestitev Docker in aplikacije</a></li>
+                <li><a href="#Konfiguracija-Gita">Konfiguracija Gita</a></li>
+            </ul>
+            <li><a href="#Druga-faza">Druga faza</a></li>
+            <ul>
+                <li><a href="#Ustvarjanje-Docker-Hub-računa">Ustvarjanje Docker Hub računa</a></li>
+                <li><a href="#Gradnja-in-nalaganje-Docker-slik">Gradnja in nalaganje Docker slik</a></li>
+                <li><a href="#Nastavitev-GitHub-Actions-workflow">Nastavitev GitHub Actions workflow</a></li>
+                <li><a href="#Implementacija-Webhook">Implementacija Webhook in skripte za posodabljanje Docker containerja</a></li>
+                <li><a href="#Varnostne-izboljšave">Varnostne izboljšave</a></li>
+            </ul>
+        </ul>
+    <li>
+        <a href="#Implementacija">Implementacija</a>
+        <ul>
+            <li><a href="#neki">neki</a></li>
         </ul>
     </li>
     <li><a href="#kontakt">Kontakt</a></li>
@@ -76,24 +103,23 @@ V tem dokumentu podrobno opišemo načrtovane naloge, izvedbo posameznih korakov
 <!-- GETTING STARTED -->
 <h2 id="getting-started">2. Getting Started</h2>
 
-<h3 id="Kaj-je-potrebno-narediti">2.1 Kaj je potrebno narediti?</h3>
 Spodaj so podana navodila,  kako si naložiti potrebno infrastrukturo in strežniško storitev, vzpostaviti Github Actions Workflow, strežnik za prejemanje webhook sporočil ter skripto, ki za avtomatsko posodabljanje.
 
-<h4 id="Nalaganje-infrastrukture-Docker-in-uporabniški-račun">2.1.1	Nalaganje infrastrukture Docker in uporabniški račun</h4>
+<h3 id="Nalaganje-infrastrukture-Docker-in-uporabniški-račun">2.1	Nalaganje infrastrukture Docker in uporabniški račun</h3>
 
 Za uspešno izvedbo zgoraj navedenega je potrebno pričeti z lokalno namestitvijo Docker okolja. Docker okolje je brezplačno in ga lahko namestimo s uporabo brskalnika. Potrebno je ustvariti tudi uporabniški račun, ki najbolje, da je strukturiran z skupnim geslom. Geslo naj bo strukturirano tako, da ga lahko uporablja celotna delovna skupina in varno pred vsiljivci. Povezava:  [Docker](https://www.docker.com/ ) 
 
 ![Slika1](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture1.png)
 ![Slika2](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture2.png)
 
-<h4 id="Uporabniški-račun-na-Microsoft-Azure">2.1.2	Uporabniški račun na Microsoft Azure</h4>
+<h3 id="Uporabniški-račun-na-Microsoft-Azure">2.2	Uporabniški račun na Microsoft Azure</h3>
 
 Docker je sedaj lokalno nameščen in se lahko vanj prijavimo z uporabniškim računom, ki ga je v našem primeru, ustvaril kar vodja skupine. 
 Naslednji korak je ustvarjanje uporabniškega računa na Microsoft Azure okolju, kjer bomo gostili našo virtualno napravo. Povezava: [Azure](https://azure.microsoft.com/en-gb/)  
 
 ![Slika3](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture3.png)
 
-<h4 id="Ustvarjanje-virtualne-naprave-na-Microsoft-Azure">2.1.3	Ustvarjanje virtualne naprave na Microsoft Azure</h4>
+<h3 id="Ustvarjanje-virtualne-naprave-na-Microsoft-Azure">2.3	Ustvarjanje virtualne naprave na Microsoft Azure</h3>
 
 Po uspešno ustvarjenem računu je potrebno ustvariti novo Linux virtualno napravo z naslednjimi specifikacijami: 
 - Ubuntu Server (ali poljubna distribucija)
@@ -113,13 +139,13 @@ Določiti je potrebno ime virtualne naprave in geslo s katerim se bodo uporabnik
 
 ![Slika4](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture4.png)
 
-<h4 id="Kreiranje-Dockerfile">2.1.4	Kreiranje Dockerfile  Azure</h4>
+<h3 id="Kreiranje-Dockerfile">2.4	Kreiranje Dockerfile  Azure</h3>
 
 Za Dockerfile je potrebno v urejevalniku kode, (ki podpira takšne vrste datotek) ga ustvariti in napisati kodo ki nam bo služila za kreiranje Docker slike. V našem primeru se nam zažene express aplikacija na vratih 3000 preko node.js strežnika. Priporočamo urejevalnik kode Visual Studio Code.
 
 ![Slika5](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture5.png)
 
-<h4 id="Povezava-na-virtualno-napravo">2.1.5	Povezava na virtualno napravo</h4>
+<h3 id="Povezava-na-virtualno-napravo">2.5	Povezava na virtualno napravo</h3>
 
 Če želimo uspešno uporabljati našo virtualno,  moramo omogočiti dostop povezave preko protokola SSH. S tem uporabnikom omogočimo, da se preko javnega IP naslova povežejo na našo virtualno napravo,  v kolikor poznajo geslo in lastnikov javni IP naslov.
 Željeno zadevo lahko vzpostavimo v nastavitvah naše virtualne naprave na Microsoft Azure
@@ -132,7 +158,7 @@ Ko stisnemo na gumb »select« se nam odpre nov zavihek, kjer dobimo povezavo ki
 
 ![Slika7](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture7.png)
 
-<h4 id="Vzpostavitev-Docker-na-Azure">2.1.6	Vzpostavitev Docker na Azure</h4>
+<h3 id="Vzpostavitev-Docker-na-Azure">2.6	Vzpostavitev Docker na Azure</h3>
 
 V kolikor želimo dostopati do Docker infrastrukture na naši virtualni napravi na MS Azure, moramo za to izvesti naslednje korake.
 
@@ -148,7 +174,7 @@ Sledi zagon infrastrukture z ukazom »sudo systemctl start docker«
 
 ![Slika10](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture10.png)
 
-<h4 id="Docker-Hub">2.1.7 Docker Hub</h4>
+<h3 id="Docker-Hub">2.7 Docker Hub</h3>
 
 Vzpostavitev okolja Docker Hub in ustvarjanje uporabniškega računa.
 Povezava: [Docker](https://www.docker.com/products/docker-hub/) 
@@ -159,7 +185,7 @@ Na strani najdemo gumb »create repository«, kjer si lahko ustvarimo en privatn
 
 ![Slika12](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture12.png)
 
-<h4 id="Github-Actions-Workflow">2.1.8 Github Actions Workflow</h4>
+<h3 id="Github-Actions-Workflow">2.8 Github Actions Workflow</h3>
 
 Na Github je potrebno ustvariti svoj repozitorij in v glavno vejo (main branch) dodati mapo ».github/workflow«, kjer bomo shranjevali datoteke .yml  potrebne za avtomatizacijo. Tukaj je potrebno paziti, da se direktorij nahaja znotraj naše korenske veje oz. »main branch«.
 
@@ -169,7 +195,7 @@ Ustvarimo datoteko npr. deploy.yml v kateri se bo prožila akcija in s tem avtom
 V kodi lahko sami specificiramo v katerem primeru naj se akcija proži. Mi smo nastavili akcijo, da se proži ob vsaki spremembi v glavni veji. Pametno bi bilo to narediti v veji za razvoj (»devel branch«), kjer se dogaja največ sprememb, vendar bi tam priporočili raje kakšno  testiranje kode.
 Povezava na Github: [Github](https://github.com/)
 
-<h4 id="Strežnik-za-prejemanje-webhook-sporočil">2.1.9	Strežnik za prejemanje webhook sporočil</h4>
+<h3 id="Strežnik-za-prejemanje-webhook-sporočil">2.9	Strežnik za prejemanje webhook sporočil</h3>
 
 V kolikor si želimo, da ob proženju akcije dobimo sporočilo, moramo na naši virtualni napravi ustvariti node.js ali poljuben strežnik. Ta bo poslušal na določenih vratih in naše Github commite izpisal v konzoli.
 Najprej je potrebno namestiti vse potrebno, da bo naš strežnik deloval kot se od njega pričakuje.
@@ -194,7 +220,7 @@ Ko gumb pritisnemo se nam odpre meni in izberemo možnost »inbound port rule«.
 
 ![Slika20](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture21.png)
 
-<h2 id="Katere projektne naloge smo izvedli (načrt rešitve)?">3.	Katere projektne naloge smo izvedli (načrt rešitve)?</h2>
+<h2 id="Katere">3.	Katere projektne naloge smo izvedli (načrt rešitve)?</h2>
 
 <h3 id="Prva-faza">3.1 Prva faza</h3>
 
@@ -236,7 +262,7 @@ Na vodilnem računu smo ustvarili novo Linux navidezno napravo (VM) z podanimi s
 - Pošiljanje sporočila (webhook) strežniku na Azure, da je nova različica aplikacije pripravljena.
 - Vse občutljive podatke, kot so Docker Hub in GitHub API ključi, smo shranili v GitHub Secrets.
 
-<h4 id="implementacija">3.2.4 Implementacija Webhook in skripte za posodabljanje Docker containerja</h4>
+<h4 id="Implementacija-Webhook">3.2.4 Implementacija Webhook in skripte za posodabljanje Docker containerja</h4>
 
 - Na VM smo nastavili sprejemanje webhook sporočil.
 - Razvili smo skripto, ki ob prejemu webhook sporočila zaustavi trenutno zagnani Docker container, prenese najnovejšo Docker sliko iz Docker Hub in zažene nov kontejner.
@@ -247,7 +273,8 @@ Na vodilnem računu smo ustvarili novo Linux navidezno napravo (VM) z podanimi s
 - Pregledali smo potencialne varnostne luknje pri uporabi webhook sporočil in izvedli potrebne izboljšave za zagotovitev varnega delovanja sistema
 
 
-<h2 id="3.	Implementacija">4.	Implementacija</h2>
+<h2 id="Implementacija">4.	Implementacija</h2>
+
 
 
 
