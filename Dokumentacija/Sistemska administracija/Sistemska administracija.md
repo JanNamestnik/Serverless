@@ -24,7 +24,6 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#neki">neki</a></li>
         <li><a href="#Nalaganje-infrastrukture-Docker-in-uporabniški-račun">Nalaganje infrastrukture Docker in uporabniški račun</a></li>
         <li><a href="#Uporabniški-račun-na-Microsoft-Azure">Uporabniški račun na Microsoft Azure</a></li>
         <li><a href="#Ustvarjanje-virtualne-naprave-na-Microsoft-Azure">Ustvarjanje virtualne naprave na Microsoft Azure</a></li>
@@ -58,9 +57,11 @@
     <li>
         <a href="#Implementacija">Implementacija</a>
         <ul>
-            <li><a href="#neki">neki</a></li>
+            <li><a href="#Prva-projektna-naloga">Prva projektna naloga</a></li>
+            <li><a href="#Druga-projektna-naloga">Druga projektna naloga</a></li>
         </ul>
     </li>
+    <li><a href="#zaključek">Zaključek</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
     <li><a href="#viri">Viri</a></li>
   </ol>
@@ -275,13 +276,94 @@ Na vodilnem računu smo ustvarili novo Linux navidezno napravo (VM) z podanimi s
 
 <h2 id="Implementacija">4.	Implementacija</h2>
 
+Reševanja nalog smo se lotili tako, da smo vse večje naloge razčlenili na manjše naloge oz. opravila, ki smo jih enakovredno razdelili med člane mikroskupine. Vsak član je tedensko poročal na projektnih sestankih, kako se je naloge lotil in ali so bile kakšne težave pri samem reševanju.
+
+<h3 id="Prva-projektna-naloga ">4.1	Prva projektna naloga </h3>
+
+Kot že omenjeno smo najprej vzpostavili okolje Docker, brez katerega ne bi morali realizirati prve projektne naloge.
+
+- Ustvarili smo skupni uporabniški račun do katerega lahko dostopamo vsi člani. Namestili smo Docker Desktop lokalno in se vanj tudi prijavili
+
+![Slika22](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture22.png)
+
+- Nato smo ustvarili smo uporabniški račun na Microsoft Azure, do katerega lahko dostopamo vsi člani. 
+
+- S pomočjo Docker CLI smo namestili našo podatkovno bazo MongoDB, katera ni lokalna
+
+![Slika23](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture23.png)
+
+- Pri tem smo uporabili CLI ukaze, ki jih ponuja Docker, ko ga namestimo na naš sistem. Na primer: »docker build« za grajenje slik, »docker run« za kontejnerizacijo slik, »docker ps« za izpis vseh aktivnih kontejnerjev. S pomočjo le teh smo omogočili, da je naša aplikacija iz predmeta spletno programiranje aktivno tekla na vratih.
+
+- Po tem, ko smo ustvarili virtualno napravo na MS Azure z podanimi specifikacijami, smo jo tudi povezali z našim Docker-jem. Da smo zagotovili, da je povezava res uspela smo tudi to preizkusili z ukazom »sudo docker –version«, ki nam je izpisal trenutno različico Docker na naši virtualni napravi.
+
+- S pomočjo naše Dockerfile datoteke smo ustvarili prvo Docker sliko in kontejner za našo express aplikacijo pri predmetu spletno programiranje. Stvar smo speljali na vratih 4000.
+
+![Slika24](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture24.png)
+
+- Dostopnost naše aplikacije iz javnega omrežja smo rešili z uporabo SSH protokola. Klonirali smo naš Git repozitorij na virtualno napravo preko CLI ukazov. Tukaj smo imeli težavo z avtentikacijo Github računa. Težavo smo rešili, tako da smo uporabili »GitHub Access token«, ki je omogočil, da smo se prijavili na naš repozitorij preko terminala.
+
+- Možnost povezave vseh članov na virtualno napravo smo testirali z ukazom »ssh -i ~/.ssh/id_rsa.pem Serverless@51.136.39.245« . Ukaz ob proženju zahteva geslo naše virtualne naprave in ob uspešnem vnosu se lahko prijavimo.
+
+![Slika25](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture25.png)
+
+![Slika26](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture26.png)
+
+- Pri odgovarjanju na zastavljena vprašanja, smo si pri obeh pomagali s spletom in datotekami naloženimi v e-študij. V poštev je prišlo tudi samo okolje MS Azure, kjer smo iskali odgovore.
+
+<h3 id="Druga-projektna-naloga ">4.1 Druga projektna naloga </h3>
+
+Pri drugi projektni nalogi je bila implementacija nekoliko težja kot pri prvi. Potrebno je bilo vzpostavit aktiven GitHub Actions Workflow, ki omogoča avtomatsko nalaganje Docker slik v naš Docker Cotainer Registry. 
+
+- Kot prvo smo se lotili izdelave uporabniškega računa na Docker Hub. Ponovno smo izbrali enake prijavne podatke tako, da smo vsem članom omogočili dostop do računa. 
+
+![Slika27](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture27.png)
+
+- Nato smo ustvarili repozitorij v katerega se nalagajo Docker slike, ki so ustvarjene v našem Github Actions Workflow ob vsaki spremembi v glavni veji.
+
+![Slika28](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture28.png)
+
+- Naslednji korak je bil dejanska implementacija našega workflowa. Najprej smo naredili direktorij ».github/workflows« v našem repozitoriju na Github. Ustvarili smo .yml datoteko poimenovano »deploy.yml«. 
+
+- Tukaj smo se srečali s problemi, saj nismo vedeli da mora biti ta direktorij obvezno v korenski veji našega Github repozitorija. Zadevo smo rešili in nadaljevali s pisanjem kode.
+
+- Koda je sestavljena iz dveh glavnih delov. V prvem imamo vključeno github akcijo, ki dejansko ustvari novo sliko glede na naš Dockerfile, ki se nahaja v Backend direktoriju. Slika se nato potisne v repozitorij na Docker Hub. V drugem delu imamo sporočila preko webhook orodja. Na naš strežnik, ki je zagnan se bo poslalo sporočilo ob vsaki akciji, ki se bo prožila v našo <strong>glavno vejo</strong>.
+
+- Pri webhook smo naleteli na težavo, da se sporočila niso pravilno poslala. Ugotovili smo, da je problem tičal v vratih, ki smo jih nastavili za ustvarjanje naših kontejnerjev.
+
+- Posluževali smo se tudi »Github Secrets«, ki nam koristijo pri varnosti v našem Github Actions Workflow«. V njih smo shranili uporabniško ime in geslo do našega Docker Hub repozitorija ter URL povezavo na naš webhook strežnik.
+
+![Slika29](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture29.png)
+
+- Težavo smo odpravili tako, da smo naše kontejnerje začeli ustvarjati na portu 4000.
 
 
+![Slika30](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture30.png)
+
+- Sam strežnik smo namestili na naši virtualni napravi s pomočjo node.js in express.js. Ustvarili smo direktorij webhook-handler v katerem imamo vse konfiguracijske in strežniške datoteke. V enakem direktoriju se nahaja tudi bash skripta, ki omogoča avtomatično posodabljanje kontejnerjev v našem repozitoriju. Potrebno je poudarit, da se skripta ne proži v kolikor se webhook sporočilio ni poslalo. Enako velja za Webhook, ki se ne pošlje  v primeru, da se slika na potisnila na repozitorij.
+
+![Slika31](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture31.png)
+
+- Skripta poimenovana update_container deluje tako da v spremenljivke shranimo ime kontejnerja, ki ga ustvarimo pred tem v Github Actions Workflowu in ime slike. V if stavku nato preverimo ali kontejner že teče v ozadju, v primeru da ga najdemo se ustavi. V novem if stavku ta kontejner zbrišemo. Za preverjanje ali se res naloži nova slika se pridobi id stare in se lahko primerja z novim. Na koncu se zažene nov kontejner z novo sliko iz Docker Container Registry.
+
+![Slika32](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Sistemska%20administracija/Slike/Picture32.png)
+
+- Skripto smo obogatili tudi z izpisi starih in novih slik v konzolo, kar nam omogoča lažji pregled nad dogajanjem, ter odkrivanjem napak v sami skripti. 
 
 <br />
 
+<h2 id="zaključek">5. zaključek</h2>
+
+Naloge, izvedene v okviru predmeta sistemska administracija, so omogočile pridobitev dragocenih praktičnih izkušenj na področju uporabe naprednih tehnologij za upravljanje in implementacijo aplikacij v oblačnem okolju. S pomočjo Dockerja smo uspešno kontejnerizirali aplikacijo, razvito pri predmetu Spletno programiranje, in jo namestili na navidezno napravo na platformi Microsoft Azure. S tem smo pridobili vpogled v prednosti kontejnerizacije, kot so poenostavljena namestitev, boljša prenosljivost aplikacij in enostavnejše upravljanje odvisnosti.
+
+Uspešno smo vzpostavili GitHub Actions workflow, ki avtomatsko gradi in nalaga nove Docker slike ter obvešča strežnik o novih različicah aplikacije. S pomočjo preproste skripte na strežniku smo avtomatizirali proces posodabljanja aplikacije, kar je izboljšalo učinkovitost in zmanjšalo možnost napak pri ročnem posodabljanju.
+
+Skozi ta projekt smo pridobili pomembne veščine, ki so ključne za delo na področju sistemske administracije in DevOps. Naučili smo se uporabljati različna orodja in tehnologije za vzpostavitev, upravljanje in avtomatizacijo infrastrukture v oblaku. Poleg tega smo pridobili tudi izkušnje pri reševanju težav in izboljšanju varnosti sistema.
+
+Na koncu smo dosegli cilje, ki smo si jih zadali, in uspešno izvedli vse načrtovane naloge. Naše delo predstavlja dobro osnovo za nadaljnje projekte in omogoča, da se v prihodnosti lotimo še bolj zahtevnih nalog na področju sistemske administracije in oblačnih tehnologij.
+
+
 <!-- CONTACT -->
-<h2 id="kontakt">5. Kontakt</h2>
+<h2 id="kontakt">6. Kontakt</h2>
 
 Ime skupine: Serverless <br/>
 Člani skupine: Jan Namestnik, Nejc Cekuta, Metod Golob <br/>
@@ -289,7 +371,12 @@ Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/m
 <br /><br />
 
 <!-- ACKNOWLEDGMENTS -->
-<h2 id="viri">6. Viri</h2>
+<h2 id="viri">7. Viri</h2>
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [GitHub](https://github.com/)
+- [Microsoft Azure](https://azure.microsoft.com/en-gb/)
+- [Docker Hub](https://hub.docker.com/)
 
 <p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
 
