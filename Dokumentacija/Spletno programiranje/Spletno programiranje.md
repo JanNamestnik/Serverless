@@ -85,9 +85,11 @@ nekineki
 <!-- USAGE EXAMPLES -->
 <h2 id="opis-projekta">3. Opis projekta</h2>
 
+<h3 id="Backend">3.2 Backend</h3>
+
 <h3 id="Frontend">3.1 Frontend</h3>
 
-<h3 id="Backend">3.2 Backend</h3>
+
 
 <!-- CONTACT -->
 <h2 id="kontakt">4. Kontakt</h2>
