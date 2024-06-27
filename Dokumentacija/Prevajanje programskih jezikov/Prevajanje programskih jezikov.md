@@ -28,7 +28,11 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#neki">neki</a></li>
+        <li><a href="#Prenos">Prenos projektne kode</a></li>
+        <li><a href="#Namestitev">Namestitev potrebnih odvisnosti</a></li>
+        <li><a href="#Zagon">Zagon glavnega programa</a></li>
+        <li><a href="#Preverjanje">Preverjanje delovanja</a></li>
+        <li><a href="#Uporaba">Uporaba pridobljenih podatkov v geojson.io</a></li>
       </ul>
     </li>
     <li>
@@ -88,6 +92,47 @@ Ta projekt je narejen v sklopu predmeta "Prevajanje programskih jezikov" in se s
 <!-- GETTING STARTED -->
 <h2 id="getting-started">2. Getting Started</h2>
 
+Za začetek dela s projektom sledite spodnjim korakom:
+
+<h3 id="Prenos">2.1 Prenos projektne kode</h3>
+
+- Obiščite GitHub repozitorij, kjer je shranjena projektna koda.
+- Prenesite repozitorij z uporabo ukaza git clone:
+
+```
+git clone https://github.com/JanNamestnik/Serverless.git
+```
+
+- Premaknite se v imenik projekta:
+
+```
+cd Serverless/Prevajanje programskih jezikov/Prevajalnik
+```
+<h3 id="Namestitev">2.2 Namestitev potrebnih odvisnosti</h3>
+
+- Prepričajte se, da imate nameščeno okolje Java Development Kit (JDK) in IntelliJ IDEA.
+- Odprite projekt v IntelliJ IDEA:
+    - Kliknite na File -> Open in izberite preneseni imenik projekta.
+- Po odprtju projekta IntelliJ IDEA običajno samodejno zazna in namesti vse potrebne odvisnosti. Če se to ne zgodi, uporabite pom.xml ali build.gradle datoteko (odvisno od vašega projekta) za ročno namestitev odvisnosti.
+
+<h3 id="Zagon">2.3 Zagon glavnega programa</h3>
+
+- Poiščite glavni vhodni razred (main class) v vašem projektu. Običajno se nahaja v mapi src/main/kotlin ali src/main/java.
+- Zaženite glavni program:
+    - Desni klik na glavni razred in izberite Run.
+- Glavni program bo prebral vhodne podatke in jih pretvoril v želene oblike v GeoJSON formatu.
+
+<h3 id="Preverjanje">2.4 Preverjanje delovanja</h3>
+
+- Preverite, ali se podatki pravilno pretvorijo v GeoJSON format.
+- Za dodatno preverjanje uporabite priložene testne primere ali dodajte svoje testne primere.
+
+<h3 id="Uporaba">2.5 Uporaba pridobljenih podatkov v geojson.io</h3>
+
+- Pridobljene GeoJSON podatke lahko uporabite in preizkusite na spletni strani [geojson.io](https://geojson.io/#map=2/0/20).
+- Obiščite spletno stran, prilepite GeoJSON podatke in preverite njihov prikaz na zemljevidu.
+
+S temi koraki boste lahko uspešno začeli z delom na projektu. Če naletite na težave, preverite dokumentacijo ali se obrnite na vzdrževalce repozitorija.
 
 
 <!-- USAGE EXAMPLES -->
