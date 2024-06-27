@@ -168,7 +168,7 @@ Scraper je implementiran v Kotlinu, pri čemer uporablja knjižnico `skrape.it` 
 <h3 id="podatkovni-razredi">3.1.1 Podatkovni razredi</h3>
 
 - Razred `Location` predstavlja geografske koordinate dogodka.
-  ```
+  ```kotlin
   data class Location(
     @Expose val type: String,
     @Expose val coordinates: List<Double>
@@ -177,7 +177,7 @@ Scraper je implementiran v Kotlinu, pri čemer uporablja knjižnico `skrape.it` 
 
 
 - Razred `Event` predstavlja dogodek z različnimi podrobnostmi.
-```
+```kotlin
 data class Event(
     @Expose(serialize = false, deserialize = false)
     val _id: ObjectId?,
