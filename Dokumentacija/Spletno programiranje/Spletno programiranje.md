@@ -36,6 +36,10 @@
     <li>
         <a href="#opis-projekta">Opis projekta</a>
         <ul>
+            <li><a href="#Vzpostavitev-podatkovne-baze">Vzpostavitev podatkovne baze</a></li>
+            <ul>
+                <li><a href="#neki">neki</a></li>
+            </ul>
             <li><a href="#Backend">Backend</a></li>
             <ul>
                 <li><a href="#neki">neki</a></li>
@@ -85,9 +89,11 @@ nekineki
 <!-- USAGE EXAMPLES -->
 <h2 id="opis-projekta">3. Opis projekta</h2>
 
+<h3 id="Vzpostavitev-podatkovne-baze">3.1 Vzpostavitev podatkovne baze</h3>
+
 <h3 id="Backend">3.2 Backend</h3>
 
-<h3 id="Frontend">3.1 Frontend</h3>
+<h3 id="Frontend">3.3 Frontend</h3>
 
 
 
