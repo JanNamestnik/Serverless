@@ -228,7 +228,7 @@ data class Event(
 - `getCategoryId`
 Ta funkcija preslika imena kategorij na ObjectId.
 
-```
+```kotlin
 fun getCategoryID(category: String): ObjectId {
     return when (category) {
         "Razstava" -> ObjectId("6643ef1e35e389b1272f6b82")
@@ -245,7 +245,7 @@ fun getCategoryID(category: String): ObjectId {
 ```
 - `dateSeparatorVisitMaribor` funkcija izloči datum in čas iz elementov dokumenta.
 
-```
+```kotlin
 fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?, String?, String?> {
     val datePattern = """(\d{1,2}\.\s\d{1,2}\.\s\d{4})""".toRegex()
     val timePattern = """(\d{1,2}:\d{2})""".toRegex()
@@ -267,7 +267,7 @@ fun dateSeparatorVisitMaribor(elements: List<List<DocElement>?>): Triple<String?
 <h3 id="funkcije-strganja">3.1.3 Funkcije strganja</h3>
 
 - `getEvent` funkcija pridobi podrobnosti posameznega dogodka
-```
+```kotlin
 fun getEvent(s: String?): Event? {
     if (s == null) return null
     return skrape(BrowserFetcher) {
@@ -355,7 +355,7 @@ fun getEvent(s: String?): Event? {
 
 - `fetchEvents` funkcija pridobi seznam dogodkov s spletne strani
 
-```
+```kotlin
 fun fetchEvents(maxEvents: Int = 10): List<Event> {
     val events = mutableListOf<Event>()
     skrape(BrowserFetcher) {
@@ -405,7 +405,7 @@ Koda vmesnika je razdeljena na več komponent:
 
 - Razred `User` predstavlja uporabnika z različnimi podrobnostmi
 
-```
+```kotlin
 data class User(
     @Expose(serialize = false, deserialize = false)
     val _id: ObjectId?,
@@ -425,7 +425,7 @@ data class User(
 
 - Razred `Review` predstavlja oceno dogodka.
 
-```
+```kotlin
 data class Review(
     @Expose(serialize = false, deserialize = false)
     val _id: ObjectId?,
@@ -445,7 +445,7 @@ data class Review(
 
 - Razred `Category` predstavlja kategorijo dogodka.
 
-```
+```kotlin
 data class Category(
     @Expose(serialize = false, deserialize = false)
     val _id: ObjectId?,
@@ -459,7 +459,7 @@ data class Category(
 Koda vsebuje 4 fetch funkcije (posebej za vsak podatkovni razred), ki so si med seboj zelo podobne, zato je spodaj primer samo za pridobivanje dogodkov.
 - `fetchEvents`, Pridobi podatke o dogodkih iz API-ja
 
-```
+```kotlin
 fun fetchEvents(onResult: (List<Event>) -> Unit) {
     val client = OkHttpClient()
     val request = Request.Builder()
@@ -482,7 +482,7 @@ fun fetchEvents(onResult: (List<Event>) -> Unit) {
 
 - ker podatke pridobivamo iz JSON formata je potrebno narediti za pretvorbo posebno funkcijo `parseEventsFromJson`, ki razčleni JSON odziv v seznam dogodkov
 
-```
+```kotlin
 fun parseEventsFromJson(jsonResponse: String): List<Event> {
     val gson = GsonBuilder()
         .registerTypeAdapter(ObjectId::class.java, ObjectIdDeserializer())
@@ -500,7 +500,7 @@ Sem spadajo vse funkcije, ki ustvarjajo uporabniški vmesnik za prikaz, urejanje
 
 - funkcija `App`, je glavna funkcije kompozicije, ki upravlja vse komponente kompozicije (sidebar in contentArea)
 
-```
+```kotlin
 @Composable
 @Preview
 fun App() {
@@ -554,7 +554,7 @@ fun App() {
 
 - funkcija `Sidebar` je stranska pokončna vrstica, kjer lahko izbiraš med različnimi zasloni
 
-```
+```kotlin
 @Composable
 fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
     Column(
@@ -587,7 +587,7 @@ fun Sidebar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
 
 - `ContentArea` je glavno območje za prikaz vsebine na podlagi izbranega zaslona v sidebaru
 
-```
+```kotlin
 @Composable
 fun ContentArea(
     selectedScreen: String,
@@ -648,7 +648,7 @@ fun ContentArea(
 
 ![appMain!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/appMain.png)
     
-```
+```kotlin
 @Composable
 fun AddScreen(
     onAddEvent: (Event) -> Unit,
@@ -708,7 +708,7 @@ fun AddScreen(
 
 - Zasloni `EventsScreen`, `UsersScreen`, `ReviewsScreen` in `CategoriesScreen` so namenjeni prikazu vseh elementov, ki se nahajajo v podatkovni bazi in so vsi narejeni po istem principu, zato je spodaj prikazana koda samo za `EventsScreen`.
 
-```
+```kotlin
 @Composable
 fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Event) -> Unit) {
     Column(
@@ -733,7 +733,7 @@ fun EventsScreen(events: List<Event>, onUpdateEvent: (Event) -> Unit, onDeleteEv
 
 ![events!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/events.png)
 
-```
+```kotlin
 @Composable
 fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Event) -> Unit) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -825,7 +825,7 @@ fun EventCard(event: Event, onUpdateEvent: (Event) -> Unit, onDeleteEvent: (Even
 
 - Da lahko znotraj kartice urejamo vse podrobnosti dogodka, naredimo dodamo funkcijo `EditEventDialog`.
 
-```
+```kotlin
 @Composable
 fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit) {
     var name by remember { mutableStateOf(event.name ?: "") }
@@ -949,7 +949,7 @@ fun EditEventDialog(event: Event, onDismiss: () -> Unit, onSave: (Event) -> Unit
 
 ![generator!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/generator.png)
 
-```
+```kotlin
 @Composable
 fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
     var numberOfEvents by remember { mutableStateOf("1") }
@@ -1069,7 +1069,7 @@ fun GeneratorScreen(onAddEvents: (List<Event>) -> Unit) {
 
 ![scraped!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/scraped.png)
 
-```
+```kotlin
 @Composable
 fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
     var events by remember { mutableStateOf(listof<Event>()) }
@@ -1137,7 +1137,7 @@ fun ScraperScreen(onAddEvents: (List<Event>) -> Unit) {
 
 ![about!](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Principi%20programskih%20jezikov/Slike/about.png)
 
-```
+```kotlin
 @Composable
 fun AboutScreen() {
     Column(
@@ -1190,7 +1190,7 @@ So funkcije za pošiljanje podatkov v bazo, brisanje in posodabljanje podatkov v
 
 - Ko podatke v določeni kartici uredimo, se morajo ti tudi poslati in posodobiti v podatkovni bazi, in zato naredimo funkcijo `updateInDatabase`
 
-```
+```kotlin
 fun updateInDatabase(entityId: ObjectId, updateFields: Map<String, Any>, url: String) {
     val client = OkHttpClient()
     val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -1223,7 +1223,7 @@ fun updateInDatabase(entityId: ObjectId, updateFields: Map<String, Any>, url: St
 
 - In podobno kot prej, če želimo določen dogodek izbrisati iz podatkovne baze dodamo funkcijo `deleteFromDatabase`.
 
-```
+```kotlin
 fun deleteFromDatabase(entityId: ObjectId, url: String) {
     val client = OkHttpClient()
     val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -1255,7 +1255,7 @@ fun deleteFromDatabase(entityId: ObjectId, url: String) {
 
 - imamo pa še funkcijo `sendEventsToDatabase`, s katero pošljemo pridobljene dogodke iz spletne strani v podatkovno bazo
 
-```
+```kotlin
 fun sendEventsToDatabase(events: List<Event>, url: String) {
     val client = OkHttpClient()
     val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
