@@ -4,7 +4,7 @@
   <h1 align="center">Prevajanje programskih jezikov</h1>
 
   <p align="center">
-    Projekt pri katerem smo delali načrtovanje, implementacijo in predstavitev svojega jezika.
+    Predstavitev načrtovanja in implementacije svojega jezika za opisovanje in prikazovanje linij in oblik.
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
     ·
@@ -56,23 +56,32 @@
 <!-- O projektu -->
 <h2 id="o-projektu">1. O projektu</h2>
 
-nekineki
+Ta projekt je narejen v sklopu predmeta "Prevajanje programskih jezikov" in se se osredotoča na zasnovo jezika, ki omogoča opisovanje linij in oblik za prikazovanje v GeoJSON formatu.
+
+![Slika](https://github.com/JanNamestnik/Serverless/blob/devel/Dokumentacija/Prevajanje%20programskih%20jezikov/Slike/primer.png)
 
 
 <h3 id="glavne-funkcionalnosti-aplikacije">1.1 Glavne funkcionalnosti aplikacije:</h3>
 
-* neki
-* neki
-* neki
-* neki
+- Definicija osnovnih konstrukcij jezika, kot so enote, realna števila, besedila in točke.
+- Implementacija matematičnih izrazov in boolean izrazov.
+- Podpora za različne oblike (krog, štirikotnik, trikotnik, črta).
+- Uvajanje spremenljivk in ponovitvenih zank (loop).
+- Gradniki za bolj jasen prikaz kode, kot so gozd, reka, ulica, stavba itd.
+- Najvišja komponenta je zemljevid, ki vključuje vse ostale komponente.
 
 
 <br />
 <h2 id="uporabljena-oprema">1.2 Uporabljena oprema</h2>
 
 * [![Kotlin][Kotlin]][Kotlin-url]
-* [![Compose for Desktop][Compose]][Compose-url]
-* [![MongoDB][MongoDB]][MongoDB-url]
+    * Programsko okolje za razvoj aplikacij.
+* [![IntelliJ IDEA][IntelliJ]][IntelliJ-url]
+    * Integrirano razvojno okolje (IDE) za pisanje in testiranje kode. 
+* [![GeoJson][GeoJson]][GeoJson-url]
+    * Format za kodiranje različnih geografskih podatkovnih struktur
+* [![GitHub][GitHub]][GitHub-url]
+    * Platforma za verzioniranje in sodelovanje pri razvoju programske opreme. 
 
 <br />
 
@@ -101,7 +110,13 @@ Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/m
 <!-- ACKNOWLEDGMENTS -->
 <h2 id="viri">5. Viri</h2>
 
-* [Thinking in Compose](https://developer.android.com/jetpack/compose/mental-model)
+* [geojson.io](https://geojson.io/#map=2/0/20)
+* [GeoJSON Wikipedia](https://en.m.wikipedia.org/wiki/GeoJSON)
+* [Izris krožnice](https://ppj.lpm.feri.um.si/tasks/circle.html)
+* [Bezier](https://gist.github.com/brokenpylons/a055457075a5b34866e4ad1a5a56c0df)
+* [Funkcije](https://gist.github.com/brokenpylons/3d4dacd1521b99e8d5a3070a5f5911a5)
+* [Tipi](https://gist.github.com/brokenpylons/2cd318d101223abf97b17544335c2ab6)
+
 
 <p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
 
@@ -109,7 +124,9 @@ Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/m
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [Kotlin]: https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white
 [Kotlin-url]: https://kotlinlang.org/
-[Compose]: https://img.shields.io/badge/Compose%20for%20Desktop-4285F4?style=for-the-badge&logo=compose&logoColor=white
-[Compose-url]: https://www.jetbrains.com/compose/
-[MongoDB]: https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white
-[MongoDB-url]: https://www.mongodb.com/
+[IntelliJ]: https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white
+[IntelliJ-url]: https://www.jetbrains.com/idea/
+[GitHub]: https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white
+[GitHub-url]: https://github.com/
+[GeoJson]: https://img.shields.io/badge/GeoJson-005571?style=for-the-badge&logo=geojson&logoColor=white
+[GeoJson-url]: https://geojson.org/
