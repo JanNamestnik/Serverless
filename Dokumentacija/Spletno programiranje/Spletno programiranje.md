@@ -60,31 +60,27 @@
 
 nekineki
 
-
 <h3 id="glavne-funkcionalnosti-aplikacije">1.1 Glavne funkcionalnosti aplikacije:</h3>
 
-* neki
-* neki
-* neki
-* neki
-
+- Prikaz dogodkov, ki se dogajajo v okolici Maribora
+- Dodajanje in urejanje že obstoječih dogodkov
+- Animiran prikaz dogodkov na mapi
+- Prijava in registracija uporabnikov
 
 <br />
 <h2 id="uporabljena-oprema">1.2 Uporabljena oprema</h2>
 
-* [![CSS][CSS]][CSS-url]
-* [![HTML][HTML]][HTML-url]
-* [![JavaScript][JavaScript]][JavaScript-url]
-* [![TypeScript][TypeScript]][TypeScript-url]
-* [![Handlebars][Handlebars]][Handlebars-url]
-* [![VSCode][VSCode]][VSCode-url]
+- [![TAILWIND][TAILWIND]][TAILWIND-url]
+- [![HTML][HTML]][HTML-url]
+- [![JavaScript][JavaScript]][JavaScript-url]
+- [![TypeScript][TypeScript]][TypeScript-url]
+- [![Handlebars][Handlebars]][Handlebars-url]
+- [![VSCode][VSCode]][VSCode-url]
 
 <br />
 
 <!-- GETTING STARTED -->
 <h2 id="getting-started">2. Getting Started</h2>
-
-
 
 <!-- USAGE EXAMPLES -->
 <h2 id="opis-projekta">3. Opis projekta</h2>
@@ -94,8 +90,6 @@ nekineki
 <h3 id="Backend">3.2 Backend</h3>
 
 <h3 id="Frontend">3.3 Frontend</h3>
-
-
 
 <!-- CONTACT -->
 <h2 id="kontakt">4. Kontakt</h2>
@@ -108,19 +102,20 @@ Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/m
 <!-- ACKNOWLEDGMENTS -->
 <h2 id="viri">5. Viri</h2>
 
-* [Dokumentacija za CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
-* [Dokumentacija za HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
-* [Dokumentacija za JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-* [Dokumentacija za TypeScript](https://www.typescriptlang.org/docs/)
-* [Dokumentacija za Handlebars](https://handlebarsjs.com/guide/)
-* [Visual Studio Code dokumentacija](https://code.visualstudio.com/docs)
+- [Dokumentacija za CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- [Dokumentacija za HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
+- [Dokumentacija za JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+- [Dokumentacija za TypeScript](https://www.typescriptlang.org/docs/)
+- [Dokumentacija za Handlebars](https://handlebarsjs.com/guide/)
+- [Visual Studio Code dokumentacija](https://code.visualstudio.com/docs)
 
 <p align="right">(<a href="#readme-top">nazaj na vrh</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[CSS]: https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white
-[CSS-url]: https://developer.mozilla.org/en-US/docs/Web/CSS
+
+[TAILWIND]: https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=tailwindcss&logoColor=white
+[TAILWIND-url]: https://tailwindcss.com/docs/installation
 [HTML]: https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white
 [HTML-url]: https://developer.mozilla.org/en-US/docs/Web/HTML
 [JavaScript]: https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
