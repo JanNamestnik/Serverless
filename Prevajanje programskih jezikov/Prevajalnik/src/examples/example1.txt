@@ -1,0 +1,16 @@
+map "Map1" :
+(
+    mesto "City Center":
+    {
+        {
+            stavba "Library" :
+            {
+                krog :{[1, 2], 2000}
+            }
+        }
+    ,
+        {
+        ulica "Main Street" : {crt  : {[1, 1], [2, 2], 1}}
+        }
+    }
+)

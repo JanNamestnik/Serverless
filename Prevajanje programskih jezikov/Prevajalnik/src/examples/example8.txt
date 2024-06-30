@@ -1,0 +1,5 @@
+map "Map8" :
+(mesto "Town Center":
+{{plac "Community Center" : {crt : {[1, 1], [2, 2], 1}}} ,
+{ulica "Market Street" : {krog :{[1, 1], 10000}}}
+ , {reka "Town River" : {tri  : {[3, 3], [3, 4], [5, 5]}}}})
