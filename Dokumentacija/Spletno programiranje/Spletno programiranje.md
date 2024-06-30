@@ -4,7 +4,7 @@
   <h1 align="center">Spletno programiranje</h1>
 
   <p align="center">
-    neki na kratko kaj je ta projekt
+    Aplikacija za ogled, prijavo in objavo dogodkov v oklici Maribora.
     <br />
     <a href="https://github.com/JanNamestnik/Serverless/tree/main">Projekt</a>
     ·
@@ -28,27 +28,23 @@
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#osnovna-postavitev">Osnovna postavitev</a>
       <ul>
-        <li><a href="#neki">neki</a></li>
+        <li><a href="#predpogoji-uporabe">Predpogoji uporabe</a></li>
+        <li><a href="#prenos">Prenos projektne kode</a></li>
+        <li><a href="#zagon-zalednega-dela">Zagon zalednega dela</a></li>
+        <li><a href="#zagon-clenega-dela">Zagon členega dela</a></li>
+        <li><a href="#preverjanje-delovanja">Preverjanje delovanja</a></li>
+        <li><a href="#osnovna-uporaba">Osnovna uporaba</a></li>
       </ul>
     </li>
     <li>
-        <a href="#opis-projekta">Opis projekta</a>
-        <ul>
-            <li><a href="#Vzpostavitev-podatkovne-baze">Vzpostavitev podatkovne baze</a></li>
-            <ul>
-                <li><a href="#neki">neki</a></li>
-            </ul>
-            <li><a href="#Backend">Backend</a></li>
-            <ul>
-                <li><a href="#neki">neki</a></li>
-            </ul>
-            <li><a href="#Frontend">Frontend</a></li>
-            <ul>
-                <li><a href="#neki">neki</a></li>
-            </ul>
-        </ul>
+      <a href="#opis-projekta">Opis projekta</a>
+      <ul>
+        <li><a href="#vzpostavitev-podatkovne-baze">Vzpostavitev podatkovne baze</a></li>
+        <li><a href="#backend">Backend</a></li>
+        <li><a href="#frontend">Frontend</a></li>
+      </ul>
     </li>
     <li><a href="#kontakt">Kontakt</a></li>
     <li><a href="#viri">Viri</a></li>
@@ -57,8 +53,7 @@
 
 <!-- O projektu -->
 <h2 id="o-projektu">1. O projektu</h2>
-
-nekineki
+Dobrodošli v dokumentacijo aplikacije za dogodke! Naša aplikacija omogoča enostavno organizacijo, upravljanje in sledenje dogodkom vseh velikosti. Ne glede na to, ali načrtujete manjše srečanje ali veliko konferenco, vam bo naša platforma pomagala doseči vaše cilje.
 
 <h3 id="glavne-funkcionalnosti-aplikacije">1.1 Glavne funkcionalnosti aplikacije:</h3>
 
@@ -78,21 +73,47 @@ nekineki
 - Knjižnica za ustvarjanje pomikajočih se kartic : [![SWIPERJS][SWIPERJS]][SWIPERJS-url]
 - Knjižnica za ikone : [![MUI][MUI]][MUI-url]
 - Knjižnica za mapo (open street maps) : [![LEAFLET][LEAFLET]][LEAFLET-url]
-- Knjižnica ta delo z cookie-ji : [JS-cookies-url]
 - Knjižnica za delo z grafi : [![D3JS][D3JS]][D3js-url]
 - <h3> 1.2.2 Backend oprema </h3>
 
-- [![JavaScript][JavaScript]][JavaScript-url]
-- [![Handlebars][Handlebars]][Handlebars-url]
+- Programski jezik : [![JavaScript][JavaScript]][JavaScript-url]
+- Framework : [![Express][Express]][Express-url]
+
 <h3> 1.2.3 Splošna oprema </h3>
 
 - IDE : [![VSCode][VSCode]][VSCode-url]
 
-<br />
+<h2 id="osnovna postavitev" >2. Osnovna postavitev</h2>
 
-<h2 id="getting-started">2. Getting Started</h2>
+Za najlažji začetek uporabe je smisleno , da kolonirate celoten repozetorij na lastno lokalno napravo, najbolje zadnjo vezijo na release veji, ker je na njej zadnja verzija delujoče aplikacije.Za lažji začetek sledite naslednjim korakom:
 
-Za začetek dela s projektom sledite spodnjim korakom:
+<h3 id="predpogoji uporabe">Predpogoji uporabe</h3>
+Za zagon členega in zalednega dela potrebujmo node.js nameščena na lokalni napravi. Za lažje delo z verzijami node.js priporočam uporabo NVM ( node version maneger).
+
+Več informacij o namestitvi najdemo na : <a>https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/</a>
+
+Za členi in zadeldni del je potrebna uporaba `node 18.14.0` , ki ga namestimo z ukazom:
+
+```bash
+nvm install 18.14.00
+```
+
+Preverjanje namestitve:
+Po namestitvi preverite, ali je Node.js uspešno nameščen, tako da zaženete naslednja ukaza:
+
+```bash
+node -v
+npm -v
+```
+
+Ti ukazi naj bi prikazali različici Node.js in npm, kar potrjuje uspešno namestitev.
+Nato ga še omogočimo uporabo ukaza:
+
+```bash
+nvm use 18.14.0
+```
+
+Tako bi moral biti nameščena prava različica node strežnika.
 
 <h3 id="Prenos">2.1 Prenos projektne kode</h3>
 
@@ -104,6 +125,7 @@ git clone https://github.com/JanNamestnik/Serverless.git
 ```
 
 <h3 id="Zagon">2.2 Zagon zalednega dela</h3>
+
 - Premaknite se v imenik projekta:
 
 ```
@@ -154,8 +176,22 @@ http://localhost:5173/
 
 - na kar bi se vam morala prikazati spletna stran
 
+<h3 id="osnovna uporaba"> 2.5 Osnovna uporaba </h3>
+
+Za uporabo naše aplikacije se je potrebno v aplikacijo prijaviti, kar je potrebno storiti, ko se odpravi v aplikacijo.
+
+![alt text](image.png)
+
+Če naš račun še en obsaja, potem pritisnemo na registracijo in se tako registriramo.
+
+![alt text](image1.png)
+
+Po uspešni prijavi bi vam morale biti na voljo vse funkcijonalnosti naše aplikacije.
+
+![alt text](image2.png)
+
 <!-- USAGE EXAMPLES -->
-<h2 id="opis-projekta">3. Opis projekta</h2>
+<h2 id="opis-projekta">3. Opis projekta</h2> Za osnovno uporabo aplikacije se je potrebno prijaviti v aplikacijo
 
 <h3 id="Vzpostavitev-podatkovne-baze">3.1 Vzpostavitev podatkovne baze</h3>
 
@@ -1531,7 +1567,5 @@ Link do projketa: [Serverless](https://github.com/JanNamestnik/Serverless/tree/m
 [JS-cookies-url]: https://www.npmjs.com/package/js-cookie/
 [D3JS]: https://img.shields.io/badge/D3js-F9A03C?style=for-the-badge&logo=d3dotjs&logoColor=white
 [D3js-url]: https://d3js.org/getting-started
-
-```
-
-```
+[EXPRESS]: https://img.shields.io/badge/expressjs-000000?style=for-the-badge&logo=express&logoColor=white
+[EXPRESS-url]: https://expressjs.com/

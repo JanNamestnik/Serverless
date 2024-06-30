@@ -59,7 +59,6 @@ class Reka(private val besedilo: Besedilo, private val ukazi: List<Ukaz>) : Nara
         ukaziGeoJson = ukaziGeoJson.substring(0, ukaziGeoJson.length - 1)
 
         var returnString = ""
-        //i want to search ukaziGeoJson to find if there is more then one ,
         val regex = Regex("\"type\"")
 
         if( regex.findAll(ukaziGeoJson).count() != 1){
@@ -586,7 +585,7 @@ class BooleanIzraz(izraz1: Izraz, operator :Token , izraz2: Izraz ) : BooleanSen
         }
     }
 }
-class Tocka(val x: Izraz, val y: Izraz)
+data class Tocka(val x: Izraz, val y: Izraz)
 
 class Besedilo(val besedilo: String)
 
