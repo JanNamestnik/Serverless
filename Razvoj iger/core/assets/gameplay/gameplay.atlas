@@ -1,0 +1,34 @@
+
+gameplay.png
+size: 1024, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+HUD
+  rotate: false
+  xy: 269, 168
+  size: 239, 339
+  orig: 239, 339
+  offset: 0, 0
+  index: -1
+HUD_alternative
+  rotate: false
+  xy: 2, 2
+  size: 265, 505
+  orig: 265, 505
+  offset: 0, 0
+  index: -1
+bomb
+  rotate: false
+  xy: 510, 388
+  size: 121, 119
+  orig: 121, 119
+  offset: 0, 0
+  index: -1
+diamond
+  rotate: false
+  xy: 269, 47
+  size: 122, 119
+  orig: 122, 119
+  offset: 0, 0
+  index: -1
