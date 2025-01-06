@@ -1,0 +1,30 @@
+building "stadion" begin
+    let leftBottom = (46.56226, 15.63989);
+    let leftTop = (46.56315, 15.64031);
+    let rightTop = (46.56297, 15.64115);
+    let rightBottom = (46.56206, 15.64071);
+
+    line(leftBottom, leftTop);
+    line(leftTop, rightTop);
+    line(rightTop, rightBottom);
+    line(rightBottom, leftBottom);
+end
+
+road "river" begin
+    let pointA = (46.56084, 15.62495);
+    let pointB = (46.55945, 15.63117);
+    let pointC = (46.55714, 15.63736);
+    let pointD = (46.55625, 15.64526);
+
+    bend(pointA, pointB, -10);
+    bend(pointB, pointC, 5);
+    bend(pointC, pointD, 3);
+end
+
+marker "riverPointA" (46.56084, 15.62495)
+
+marker "riverPointB" (46.55945, 15.63117)
+
+marker "riverPointC" (46.55714, 15.63736)
+
+marker "riverPointD" (46.55625, 15.64526)
