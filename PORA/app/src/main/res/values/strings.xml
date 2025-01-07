@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Serverless</string>
+    <!--Main activity-->
+    <string name="dataBtn">View data</string>
+    <string name="exitBtn">Exit</string>
+    <string name="messageBtn">Post a message</string>
+    <string name="pictureBtn">Take a picture</string>
+    <string name="image">Serverless logo</string>
+
 </resources>
