@@ -16,6 +16,7 @@ dependencies {
   implementation 'com.github.filosganga:geogson-core:1.2.21' // GeoGson library
   implementation 'org.wololo:jts2geojson:0.18.1' // JTS to GeoJSON
   implementation "org.json:json:20220320" // JSON library
+  implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
   // Additional dependency for Graal Native compilation if enabled
   if (enableGraalNative == 'true') {

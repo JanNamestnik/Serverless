@@ -26,15 +26,25 @@ import si.um.feri.serverless.utils.Geolocation;
 import si.um.feri.serverless.utils.MapRasterTiles;
 import si.um.feri.serverless.utils.ZoomXY;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiscountGame extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
     private Vector3 touchPosition;
+
+    private List<Geolocation> eventLocations;
 
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
@@ -45,9 +55,6 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
 
     // center geolocation
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
-
-    // test marker
-    private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
 
     @Override
     public void create() {
@@ -89,6 +96,76 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         layers.add(layer);
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+        fetchEvents(events -> {
+            eventLocations = events;
+        });
+    }
+
+    // Fetch events from MongoDB
+    private void fetchEvents(OnResultCallback<List<Geolocation>> callback) {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+            .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/events")
+            .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.body() != null) {
+                    String jsonResponse = response.body().string();
+                    List<Geolocation> events = parseEventsFromJson(jsonResponse);
+                    callback.onResult(events);
+                }
+            }
+        });
+    }
+
+
+    // Parse events from JSON, extract latitude and longitude
+    private List<Geolocation> parseEventsFromJson(String jsonResponse) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Event>>() {}.getType();
+        List<Event> events = gson.fromJson(jsonResponse, listType);
+
+        List<Geolocation> geolocations = new ArrayList<>();
+        for (Event event : events) {
+            double lat = event.location.coordinates.get(1);
+            double lng = event.location.coordinates.get(0);
+            geolocations.add(new Geolocation(lat, lng));
+        }
+        return geolocations;
+    }
+
+    class Event {
+        Location location;
+
+        class Location {
+            List<Double> coordinates;
+        }
+    }
+
+    private void drawMarkers() {
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        // Draw markers on the map for ALL events fetched from MongoDB
+
+        if (eventLocations != null) {
+            for (Geolocation location : eventLocations) {
+                Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
+                shapeRenderer.circle(marker.x, marker.y, 10);
+            }
+        }
+
+        shapeRenderer.end();
     }
 
     @Override
@@ -103,16 +180,6 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         tiledMapRenderer.render();
 
         drawMarkers();
-    }
-
-    private void drawMarkers() {
-        Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(marker.x, marker.y, 10);
-        shapeRenderer.end();
     }
 
     @Override
@@ -199,5 +266,10 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
 
         camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, Constants.MAP_WIDTH - effectiveViewportWidth / 2f);
         camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, Constants.MAP_HEIGHT - effectiveViewportHeight / 2f);
+    }
+
+    @FunctionalInterface
+    interface OnResultCallback<T> {
+        void onResult(T result);
     }
 }
