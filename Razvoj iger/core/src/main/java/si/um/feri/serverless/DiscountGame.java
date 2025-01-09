@@ -3,11 +3,10 @@ package si.um.feri.serverless;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -21,6 +20,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import si.um.feri.serverless.assets.AssetManager;
+import si.um.feri.serverless.assets.RegionNames;
 import si.um.feri.serverless.utils.Constants;
 import si.um.feri.serverless.utils.Geolocation;
 import si.um.feri.serverless.utils.MapRasterTiles;
@@ -42,6 +44,16 @@ import java.util.List;
 public class DiscountGame extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
+
+    private float rotationAngle = 0f;
+
+    private Vector3 mousePosition = new Vector3();
+
+    private TextureAtlas gameplayAtlas;
+
+    private SpriteBatch spriteBatch;
+    private TextureRegion pinRegion;
+    private AssetManager assetManager;
     private Vector3 touchPosition;
 
     private List<Geolocation> eventLocations;
@@ -58,7 +70,18 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
 
     @Override
     public void create() {
+
         shapeRenderer = new ShapeRenderer();
+
+        spriteBatch = new SpriteBatch();
+
+        AssetManager assetManager = new AssetManager();
+        assetManager.loadAllAssets();
+        assetManager.finishLoading();
+        gameplayAtlas = assetManager.getGameplayAtlas();
+
+        pinRegion = gameplayAtlas.findRegion(RegionNames.PIN);
+
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
@@ -152,20 +175,52 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
     }
 
     private void drawMarkers() {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Draw markers on the map for ALL events fetched from MongoDB
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
 
         if (eventLocations != null) {
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
-                shapeRenderer.circle(marker.x, marker.y, 10);
+
+                if (isMouseOverMarker(marker)) {
+                    rotationAngle += 3f; // Hitrost vrtenja
+
+                    float bounceOffset = MathUtils.sinDeg(rotationAngle * 2) * 5; // Poskakovanje gor in dol
+
+                    // Prikaz pina z rotacijo okoli lastnega središča
+                    spriteBatch.draw(pinRegion,
+                        marker.x - pinRegion.getRegionWidth() / 2, // X začetne pozicije
+                        marker.y - pinRegion.getRegionHeight() / 2 + bounceOffset, // Y z dodatkom za poskakovanje
+                        pinRegion.getRegionWidth() / 2, // X središča rotacije
+                        pinRegion.getRegionHeight() / 2, // Y središča rotacije
+                        pinRegion.getRegionWidth(), // Širina slike
+                        pinRegion.getRegionHeight(), // Višina slike
+                        1f, // Merilo po X
+                        1f, // Merilo po Y
+                        rotationAngle // Kot rotacije
+                    );
+                } else {
+                    spriteBatch.draw(pinRegion,
+                        marker.x - pinRegion.getRegionWidth() / 2,
+                        marker.y - pinRegion.getRegionHeight() / 2);
+                }
             }
         }
 
-        shapeRenderer.end();
+        spriteBatch.end();
+    }
+
+
+    private void updateMousePosition() {
+        mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePosition);
+    }
+
+    private boolean isMouseOverMarker(Vector2 marker) {
+        float markerWidth = pinRegion.getRegionWidth();
+        float markerHeight = pinRegion.getRegionHeight();
+        return mousePosition.x >= marker.x - markerWidth / 2 && mousePosition.x <= marker.x + markerWidth / 2 &&
+            mousePosition.y >= marker.y - markerHeight / 2 && mousePosition.y <= marker.y + markerHeight / 2;
     }
 
     @Override
@@ -179,12 +234,15 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
+        updateMousePosition();
         drawMarkers();
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        spriteBatch.dispose();
+        assetManager.dispose();
     }
 
     @Override

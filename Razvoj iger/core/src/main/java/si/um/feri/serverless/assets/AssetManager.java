@@ -15,7 +15,7 @@ public class AssetManager {
         this.assetManager = new com.badlogic.gdx.assets.AssetManager();
     }
 
-    private void loadAllAssets(){
+    public void loadAllAssets(){
         assetManager.load(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
         assetManager.load(AssetPaths.UI_SKIN, Skin.class);
         assetManager.load(AssetPaths.UI_SKIN_ALTERNATIVE, Skin.class);
@@ -52,4 +52,7 @@ public class AssetManager {
         assetManager.dispose();
     }
 
+    public void finishLoading() {
+        assetManager.finishLoading();
+    }
 }

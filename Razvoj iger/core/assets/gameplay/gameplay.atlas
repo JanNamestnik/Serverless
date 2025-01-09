@@ -20,15 +20,29 @@ HUD_alternative
   index: -1
 bomb
   rotate: false
-  xy: 510, 388
+  xy: 510, 258
   size: 121, 119
   orig: 121, 119
   offset: 0, 0
   index: -1
 diamond
   rotate: false
-  xy: 269, 47
-  size: 122, 119
-  orig: 122, 119
+  xy: 269, 38
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pin
+  rotate: false
+  xy: 399, 102
+  size: 49, 64
+  orig: 49, 64
+  offset: 0, 0
+  index: -1
+skull
+  rotate: false
+  xy: 510, 379
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
