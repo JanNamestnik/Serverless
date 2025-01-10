@@ -1,0 +1,227 @@
+2025-01-10 08:55:20,572 - Rank 0 started
+2025-01-10 08:55:20,572 - aaaaaaaaaaaaaa
+2025-01-10 08:55:20,679 - Mined block found:
+2025-01-10 08:55:20,679 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495720.576735, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431677847, 'hash': '00000af4b5c6d03f2a97d149eaa8fc811e89cbe4906a473f0394a5fad8bef0aa'}
+2025-01-10 08:55:20,679 - Mined block found:
+2025-01-10 08:55:20,679 - Adding block to blockchain
+2025-01-10 08:55:20,679 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495720.576735, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431677847, 'hash': '00000af4b5c6d03f2a97d149eaa8fc811e89cbe4906a473f0394a5fad8bef0aa'}
+2025-01-10 08:55:20,679 - Validating block
+2025-01-10 08:55:20,679 - Previous hash does not match
+2025-01-10 08:55:20,680 - False
+2025-01-10 08:55:20,680 - Previous hash does not match
+2025-01-10 08:55:20,680 - Block added to blockchain
+2025-01-10 08:55:20,680 - 1
+2025-01-10 08:55:20,680 - Blockchain valid
+2025-01-10 08:55:20,680 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:20,680 - ====================================
+2025-01-10 08:55:20,680 - aaaaaaaaaaaaaa
+2025-01-10 08:55:34,915 - Mined block found:
+2025-01-10 08:55:34,915 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495720.6819274, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1434402436, 'hash': '00000748f66c7495281e15f9088d8c2ac6e839a93021199e8b2032cf4924ed3d'}
+2025-01-10 08:55:34,916 - Mined block found:
+2025-01-10 08:55:34,916 - Adding block to blockchain
+2025-01-10 08:55:34,916 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495720.6819274, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1434402436, 'hash': '00000748f66c7495281e15f9088d8c2ac6e839a93021199e8b2032cf4924ed3d'}
+2025-01-10 08:55:34,916 - Validating block
+2025-01-10 08:55:34,916 - Previous hash does not match
+2025-01-10 08:55:34,916 - False
+2025-01-10 08:55:34,916 - Previous hash does not match
+2025-01-10 08:55:34,916 - Block added to blockchain
+2025-01-10 08:55:34,916 - 1
+2025-01-10 08:55:34,916 - Blockchain valid
+2025-01-10 08:55:34,916 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:34,916 - ====================================
+2025-01-10 08:55:34,916 - aaaaaaaaaaaaaa
+2025-01-10 08:55:46,093 - Mined block found:
+2025-01-10 08:55:46,093 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495734.9175804, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433628860, 'hash': '00000bc4093cb863a832f807cb81085dfd314fe09c61d7d43f057adf58a09c6a'}
+2025-01-10 08:55:46,093 - Mined block found:
+2025-01-10 08:55:46,093 - Adding block to blockchain
+2025-01-10 08:55:46,093 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495734.9175804, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433628860, 'hash': '00000bc4093cb863a832f807cb81085dfd314fe09c61d7d43f057adf58a09c6a'}
+2025-01-10 08:55:46,093 - Validating block
+2025-01-10 08:55:46,094 - Previous hash does not match
+2025-01-10 08:55:46,094 - False
+2025-01-10 08:55:46,094 - Previous hash does not match
+2025-01-10 08:55:46,094 - Block added to blockchain
+2025-01-10 08:55:46,094 - 1
+2025-01-10 08:55:46,094 - Blockchain valid
+2025-01-10 08:55:46,094 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:46,094 - ====================================
+2025-01-10 08:55:46,094 - aaaaaaaaaaaaaa
+2025-01-10 08:55:54,489 - Mined block found:
+2025-01-10 08:55:54,490 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495746.0958488, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433357549, 'hash': '00000170f52cf6e73546aad924fbd06b7505a3f9fcebe13d5d65b0955ad7257a'}
+2025-01-10 08:55:54,490 - Mined block found:
+2025-01-10 08:55:54,490 - Adding block to blockchain
+2025-01-10 08:55:54,490 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495746.0958488, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433357549, 'hash': '00000170f52cf6e73546aad924fbd06b7505a3f9fcebe13d5d65b0955ad7257a'}
+2025-01-10 08:55:54,490 - Validating block
+2025-01-10 08:55:54,490 - Previous hash does not match
+2025-01-10 08:55:54,490 - False
+2025-01-10 08:55:54,490 - Previous hash does not match
+2025-01-10 08:55:54,490 - Block added to blockchain
+2025-01-10 08:55:54,490 - 1
+2025-01-10 08:55:54,490 - Blockchain valid
+2025-01-10 08:55:54,490 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:54,490 - ====================================
+2025-01-10 08:55:54,490 - aaaaaaaaaaaaaa
+2025-01-10 08:55:55,450 - Mined block found:
+2025-01-10 08:55:55,450 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495754.4947278, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431921273, 'hash': '0000095592fea84f96efee4ef240f6fa172de939fd4e1080ea00b9e8817eb5a0'}
+2025-01-10 08:55:55,450 - Mined block found:
+2025-01-10 08:55:55,450 - Adding block to blockchain
+2025-01-10 08:55:55,450 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495754.4947278, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431921273, 'hash': '0000095592fea84f96efee4ef240f6fa172de939fd4e1080ea00b9e8817eb5a0'}
+2025-01-10 08:55:55,450 - Validating block
+2025-01-10 08:55:55,450 - Previous hash does not match
+2025-01-10 08:55:55,450 - False
+2025-01-10 08:55:55,450 - Previous hash does not match
+2025-01-10 08:55:55,450 - Block added to blockchain
+2025-01-10 08:55:55,450 - 1
+2025-01-10 08:55:55,450 - Blockchain valid
+2025-01-10 08:55:55,450 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:55,450 - ====================================
+2025-01-10 08:55:55,451 - aaaaaaaaaaaaaa
+2025-01-10 08:55:56,517 - Mined block found:
+2025-01-10 08:55:56,517 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495755.4519036, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431935312, 'hash': '00000094cb7b4a67869a0c9f8956b2fdd6e12754072062dee2aac66a69e2df76'}
+2025-01-10 08:55:56,517 - Mined block found:
+2025-01-10 08:55:56,517 - Adding block to blockchain
+2025-01-10 08:55:56,517 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495755.4519036, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431935312, 'hash': '00000094cb7b4a67869a0c9f8956b2fdd6e12754072062dee2aac66a69e2df76'}
+2025-01-10 08:55:56,517 - Validating block
+2025-01-10 08:55:56,517 - Previous hash does not match
+2025-01-10 08:55:56,517 - False
+2025-01-10 08:55:56,517 - Previous hash does not match
+2025-01-10 08:55:56,517 - Block added to blockchain
+2025-01-10 08:55:56,517 - 1
+2025-01-10 08:55:56,517 - Blockchain valid
+2025-01-10 08:55:56,517 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:55:56,517 - ====================================
+2025-01-10 08:55:56,517 - aaaaaaaaaaaaaa
+2025-01-10 08:56:13,597 - Mined block found:
+2025-01-10 08:56:13,597 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495756.5186768, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1435769746, 'hash': '000005856935bb474434a0ef6f3ceff59991a391ceed4cb0141eaed06af733ac'}
+2025-01-10 08:56:13,597 - Mined block found:
+2025-01-10 08:56:13,597 - Adding block to blockchain
+2025-01-10 08:56:13,597 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495756.5186768, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1435769746, 'hash': '000005856935bb474434a0ef6f3ceff59991a391ceed4cb0141eaed06af733ac'}
+2025-01-10 08:56:13,597 - Validating block
+2025-01-10 08:56:13,597 - Previous hash does not match
+2025-01-10 08:56:13,598 - False
+2025-01-10 08:56:13,598 - Previous hash does not match
+2025-01-10 08:56:13,598 - Block added to blockchain
+2025-01-10 08:56:13,598 - 1
+2025-01-10 08:56:13,598 - Blockchain valid
+2025-01-10 08:56:13,598 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:13,598 - ====================================
+2025-01-10 08:56:13,598 - aaaaaaaaaaaaaa
+2025-01-10 08:56:19,829 - Mined block found:
+2025-01-10 08:56:19,829 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495773.5998194, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433414679, 'hash': '000003a01774e4e0f4ea31b5de30704819087743a30737f0e641bf70802f1cb9'}
+2025-01-10 08:56:19,829 - Mined block found:
+2025-01-10 08:56:19,829 - Adding block to blockchain
+2025-01-10 08:56:19,829 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495773.5998194, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433414679, 'hash': '000003a01774e4e0f4ea31b5de30704819087743a30737f0e641bf70802f1cb9'}
+2025-01-10 08:56:19,829 - Validating block
+2025-01-10 08:56:19,829 - Previous hash does not match
+2025-01-10 08:56:19,829 - False
+2025-01-10 08:56:19,829 - Previous hash does not match
+2025-01-10 08:56:19,829 - Block added to blockchain
+2025-01-10 08:56:19,829 - 1
+2025-01-10 08:56:19,829 - Blockchain valid
+2025-01-10 08:56:19,829 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:19,829 - ====================================
+2025-01-10 08:56:19,829 - aaaaaaaaaaaaaa
+2025-01-10 08:56:21,059 - Mined block found:
+2025-01-10 08:56:21,059 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495779.830867, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432007278, 'hash': '0000085c73df25ee52b576ce735ff7eef48c8dd65e16a0834cd3a9a4ae1db7fe'}
+2025-01-10 08:56:21,059 - Mined block found:
+2025-01-10 08:56:21,059 - Adding block to blockchain
+2025-01-10 08:56:21,059 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495779.830867, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432007278, 'hash': '0000085c73df25ee52b576ce735ff7eef48c8dd65e16a0834cd3a9a4ae1db7fe'}
+2025-01-10 08:56:21,059 - Validating block
+2025-01-10 08:56:21,059 - Previous hash does not match
+2025-01-10 08:56:21,059 - False
+2025-01-10 08:56:21,059 - Previous hash does not match
+2025-01-10 08:56:21,059 - Block added to blockchain
+2025-01-10 08:56:21,059 - 1
+2025-01-10 08:56:21,059 - Blockchain valid
+2025-01-10 08:56:21,060 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:21,060 - ====================================
+2025-01-10 08:56:21,060 - aaaaaaaaaaaaaa
+2025-01-10 08:56:26,719 - Mined block found:
+2025-01-10 08:56:26,720 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495781.0606575, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433006677, 'hash': '000008f4e408814c83976aeab577f48e6ffd806cd58efc2b10bf9506db429143'}
+2025-01-10 08:56:26,720 - Mined block found:
+2025-01-10 08:56:26,720 - Adding block to blockchain
+2025-01-10 08:56:26,720 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495781.0606575, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433006677, 'hash': '000008f4e408814c83976aeab577f48e6ffd806cd58efc2b10bf9506db429143'}
+2025-01-10 08:56:26,720 - Validating block
+2025-01-10 08:56:26,720 - Previous hash does not match
+2025-01-10 08:56:26,720 - False
+2025-01-10 08:56:26,720 - Previous hash does not match
+2025-01-10 08:56:26,720 - Block added to blockchain
+2025-01-10 08:56:26,720 - 1
+2025-01-10 08:56:26,720 - Blockchain valid
+2025-01-10 08:56:26,720 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:26,720 - ====================================
+2025-01-10 08:56:26,720 - aaaaaaaaaaaaaa
+2025-01-10 08:56:28,906 - Mined block found:
+2025-01-10 08:56:28,906 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495786.7212498, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432229135, 'hash': '000001f3d613c125709ff1f53099b71c7f6c99e116cbe53e521836b0a3cf6e63'}
+2025-01-10 08:56:28,906 - Mined block found:
+2025-01-10 08:56:28,906 - Adding block to blockchain
+2025-01-10 08:56:28,906 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495786.7212498, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432229135, 'hash': '000001f3d613c125709ff1f53099b71c7f6c99e116cbe53e521836b0a3cf6e63'}
+2025-01-10 08:56:28,906 - Validating block
+2025-01-10 08:56:28,906 - Previous hash does not match
+2025-01-10 08:56:28,906 - False
+2025-01-10 08:56:28,906 - Previous hash does not match
+2025-01-10 08:56:28,906 - Block added to blockchain
+2025-01-10 08:56:28,906 - 1
+2025-01-10 08:56:28,906 - Blockchain valid
+2025-01-10 08:56:28,906 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:28,907 - ====================================
+2025-01-10 08:56:28,907 - aaaaaaaaaaaaaa
+2025-01-10 08:56:34,161 - Mined block found:
+2025-01-10 08:56:34,161 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495788.9083717, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433141281, 'hash': '000004e19787ac566e3e93fe0b5f1afccfec622799e9fe25cdcb62ba50a65746'}
+2025-01-10 08:56:34,162 - Mined block found:
+2025-01-10 08:56:34,162 - Adding block to blockchain
+2025-01-10 08:56:34,162 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495788.9083717, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1433141281, 'hash': '000004e19787ac566e3e93fe0b5f1afccfec622799e9fe25cdcb62ba50a65746'}
+2025-01-10 08:56:34,162 - Validating block
+2025-01-10 08:56:34,162 - Previous hash does not match
+2025-01-10 08:56:34,162 - False
+2025-01-10 08:56:34,162 - Previous hash does not match
+2025-01-10 08:56:34,162 - Block added to blockchain
+2025-01-10 08:56:34,162 - 1
+2025-01-10 08:56:34,162 - Blockchain valid
+2025-01-10 08:56:34,162 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:34,162 - ====================================
+2025-01-10 08:56:34,162 - aaaaaaaaaaaaaa
+2025-01-10 08:56:34,696 - Mined block found:
+2025-01-10 08:56:34,696 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495794.1634684, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431806231, 'hash': '000005a7b4464a89958a0deeccf93d993bc7dd9d1dd1671d0a4c5e462ec8425a'}
+2025-01-10 08:56:34,696 - Mined block found:
+2025-01-10 08:56:34,696 - Adding block to blockchain
+2025-01-10 08:56:34,697 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495794.1634684, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1431806231, 'hash': '000005a7b4464a89958a0deeccf93d993bc7dd9d1dd1671d0a4c5e462ec8425a'}
+2025-01-10 08:56:34,697 - Validating block
+2025-01-10 08:56:34,697 - Previous hash does not match
+2025-01-10 08:56:34,697 - False
+2025-01-10 08:56:34,697 - Previous hash does not match
+2025-01-10 08:56:34,697 - Block added to blockchain
+2025-01-10 08:56:34,697 - 1
+2025-01-10 08:56:34,697 - Blockchain valid
+2025-01-10 08:56:34,697 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:34,697 - ====================================
+2025-01-10 08:56:34,697 - aaaaaaaaaaaaaa
+2025-01-10 08:56:36,540 - Mined block found:
+2025-01-10 08:56:36,540 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495794.6981215, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432178322, 'hash': '00000e41e9ef8f212f21c40b534681f06223cc218376168011310099321a18c2'}
+2025-01-10 08:56:36,540 - Mined block found:
+2025-01-10 08:56:36,540 - Adding block to blockchain
+2025-01-10 08:56:36,540 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495794.6981215, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432178322, 'hash': '00000e41e9ef8f212f21c40b534681f06223cc218376168011310099321a18c2'}
+2025-01-10 08:56:36,540 - Validating block
+2025-01-10 08:56:36,540 - Previous hash does not match
+2025-01-10 08:56:36,541 - False
+2025-01-10 08:56:36,541 - Previous hash does not match
+2025-01-10 08:56:36,541 - Block added to blockchain
+2025-01-10 08:56:36,541 - 1
+2025-01-10 08:56:36,541 - Blockchain valid
+2025-01-10 08:56:36,541 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:36,541 - ====================================
+2025-01-10 08:56:36,541 - aaaaaaaaaaaaaa
+2025-01-10 08:56:39,068 - Mined block found:
+2025-01-10 08:56:39,068 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495796.5417278, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432282195, 'hash': '00000fd8c92b638a7aaada879cbd55521e19936d85eb9e25b5446b14366ef6ec'}
+2025-01-10 08:56:39,068 - Mined block found:
+2025-01-10 08:56:39,068 - Adding block to blockchain
+2025-01-10 08:56:39,068 - {'index': 1, 'data': 'New Block Data', 'timestamp': 1736495796.5417278, 'prev_hash': '52aaf85943d28a4523180e1123194054610a02202ae89de629af480505ca7cbd', 'difficulty': 5, 'nonce': 1432282195, 'hash': '00000fd8c92b638a7aaada879cbd55521e19936d85eb9e25b5446b14366ef6ec'}
+2025-01-10 08:56:39,068 - Validating block
+2025-01-10 08:56:39,068 - Previous hash does not match
+2025-01-10 08:56:39,068 - False
+2025-01-10 08:56:39,068 - Previous hash does not match
+2025-01-10 08:56:39,068 - Block added to blockchain
+2025-01-10 08:56:39,068 - 1
+2025-01-10 08:56:39,069 - Blockchain valid
+2025-01-10 08:56:39,069 - {'index': 0, 'data': 'Genesis Block', 'timestamp': 1736495720.571535, 'prev_hash': '0', 'difficulty': 5, 'nonce': 0, 'hash': 'f80d296d5bd8f04c1410e505a512822a39cc4e1803c4ff7c743dc103b6e62a24'}
+2025-01-10 08:56:39,069 - ====================================
+2025-01-10 08:56:39,069 - aaaaaaaaaaaaaa
