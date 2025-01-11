@@ -17,6 +17,7 @@ public class AssetManager {
 
     public void loadAllAssets(){
         assetManager.load(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
+        assetManager.load(AssetDescriptors.UI_FONT);
         assetManager.load(AssetPaths.UI_SKIN, Skin.class);
         assetManager.load(AssetPaths.UI_SKIN_ALTERNATIVE, Skin.class);
         assetManager.load(AssetPaths.DIAMOND_SOUND, Sound.class);
@@ -28,14 +29,17 @@ public class AssetManager {
         return assetManager.get(AssetPaths.GAMEPLAY_ATLAS);
     }
 
-    public Skin getSkin() {
-        return assetManager.get(AssetPaths.UI_SKIN);
+    public BitmapFont get(AssetDescriptor<BitmapFont> uiFont) {
+        return assetManager.get(uiFont);
     }
 
-    public Skin getAlternativeSkin() {
-        return assetManager.get(AssetPaths.UI_SKIN_ALTERNATIVE);
+    public Skin getSkin(AssetDescriptor<Skin> uiSkin) {
+        return assetManager.get(uiSkin);
     }
 
+    public Skin getAlternativeSkin(AssetDescriptor<Skin> uiSkinAlternative) {
+        return assetManager.get(uiSkinAlternative);
+    }
     public Sound getDiamondSound() {
         return assetManager.get(AssetPaths.DIAMOND_SOUND);
     }

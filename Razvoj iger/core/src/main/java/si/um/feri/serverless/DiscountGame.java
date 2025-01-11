@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,8 +20,12 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import si.um.feri.serverless.assets.AssetDescriptors;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
 import si.um.feri.serverless.utils.Constants;
@@ -47,6 +52,13 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
 
     private float rotationAngle = 0f;
 
+    private Skin skin;
+
+    private Skin skin_alternative;
+
+    private Vector2 selectedMarkerPosition = null; // Pozicija kliknjenega markerja
+    private boolean isFieldVisible = false; // Ali je polje prikazano
+
     private Vector3 mousePosition = new Vector3();
 
     private TextureAtlas gameplayAtlas;
@@ -65,23 +77,34 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
     private Texture[] mapTiles;
     private ZoomXY beginTile;   // top left tile
 
+    private Label clickMeLabel;
+
     // center geolocation
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
 
     @Override
     public void create() {
-
         shapeRenderer = new ShapeRenderer();
-
         spriteBatch = new SpriteBatch();
 
-        AssetManager assetManager = new AssetManager();
+        assetManager = new AssetManager();
         assetManager.loadAllAssets();
         assetManager.finishLoading();
         gameplayAtlas = assetManager.getGameplayAtlas();
 
         pinRegion = gameplayAtlas.findRegion(RegionNames.PIN);
 
+        BitmapFont uiFont = assetManager.get(AssetDescriptors.UI_FONT); // Load the UI_FONT
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = uiFont; // Set the font to the label style
+
+        clickMeLabel = new Label("Click me!", labelStyle); // Use the label style
+
+        skin_alternative = assetManager.getAlternativeSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
+
+        GestureDetector gestureDetector = new GestureDetector(this);
+        Gdx.input.setInputProcessor(gestureDetector);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
@@ -94,10 +117,8 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         touchPosition = new Vector3();
 
         try {
-            //in most cases, geolocation won't be in the center of the tile because tile borders are predetermined (geolocation can be at the corner of a tile)
             ZoomXY centerTile = MapRasterTiles.getTileNumber(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, Constants.ZOOM);
             mapTiles = MapRasterTiles.getRasterTileZone(centerTile, Constants.NUM_TILES);
-            //you need the beginning tile (tile on the top left corner) to convert geolocation to a location in pixels.
             beginTile = new ZoomXY(Constants.ZOOM, centerTile.x - ((Constants.NUM_TILES - 1) / 2), centerTile.y - ((Constants.NUM_TILES - 1) / 2));
         } catch (IOException e) {
             e.printStackTrace();
@@ -178,14 +199,15 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
+        // Update rotation angle once per frame
+        rotationAngle += 3f; // Hitrost vrtenja
+
         if (eventLocations != null) {
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
 
                 if (isMouseOverMarker(marker)) {
-                    rotationAngle += 3f; // Hitrost vrtenja
-
-                    float bounceOffset = MathUtils.sinDeg(rotationAngle * 2) * 5; // Poskakovanje gor in dol
+                    float bounceOffset = MathUtils.sinDeg(rotationAngle * 2) * 10; // Poskakovanje gor in dol
 
                     // Prikaz pina z rotacijo okoli lastnega središča
                     spriteBatch.draw(pinRegion,
@@ -208,6 +230,21 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         }
 
         spriteBatch.end();
+    }
+
+    private void drawHoverText(Vector2 marker) {
+        spriteBatch.begin();
+        // Draw label
+        clickMeLabel.setPosition(marker.x - clickMeLabel.getWidth() / 2, marker.y + 20);
+        clickMeLabel.draw(spriteBatch, 1);
+        spriteBatch.end();
+    }
+
+    private boolean isClickOnMarker(Vector2 marker, float x, float y) {
+        float markerWidth = pinRegion.getRegionWidth();
+        float markerHeight = pinRegion.getRegionHeight();
+        return x >= marker.x - markerWidth / 2 && x <= marker.x + markerWidth / 2 &&
+            y >= marker.y - markerHeight / 2 && y <= marker.y + markerHeight / 2;
     }
 
 
@@ -236,6 +273,18 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
 
         updateMousePosition();
         drawMarkers();
+        drawInfoField();
+
+        // Only execute hover functions if the white field is not visible
+        if (!isFieldVisible && eventLocations != null) {
+            for (Geolocation location : eventLocations) {
+                Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
+                if (isMouseOverMarker(marker)) {
+                    drawHoverText(marker);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -252,8 +301,63 @@ public class DiscountGame extends ApplicationAdapter implements GestureDetector.
         return false;
     }
 
+    private void drawInfoField() {
+        if (isFieldVisible && selectedMarkerPosition != null) {
+            float fieldWidth = 150;  // Širina polja
+            float fieldHeight = 100; // Višina polja
+            float offsetY = 20;      // Odmik od markerja
+
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+            // Nariši belo pravokotno polje
+            shapeRenderer.setColor(1, 1, 1, 1); // Bela barva
+            shapeRenderer.rect(
+                selectedMarkerPosition.x - fieldWidth / 2,
+                selectedMarkerPosition.y + offsetY,
+                fieldWidth,
+                fieldHeight
+            );
+
+            shapeRenderer.end();
+
+            // Nariši obrobo (opcijsko)
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(0, 0, 0, 1); // Črna barva za obrobo
+            shapeRenderer.rect(
+                selectedMarkerPosition.x - fieldWidth / 2,
+                selectedMarkerPosition.y + offsetY,
+                fieldWidth,
+                fieldHeight
+            );
+
+            shapeRenderer.end();
+        }
+    }
+
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        touchPosition.set(x, y, 0);
+        camera.unproject(touchPosition);
+
+        if (eventLocations != null) {
+            for (Geolocation location : eventLocations) {
+                Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
+                if (isClickOnMarker(marker, touchPosition.x, touchPosition.y)) {
+
+                    // Shrani pozicijo markerja in omogoči prikaz polja
+                    selectedMarkerPosition = marker;
+                    isFieldVisible = true;
+
+                    return true;
+                }
+            }
+        }
+
+        // Če kliknemo drugje, skrijemo polje
+        isFieldVisible = false;
+        selectedMarkerPosition = null;
+
         return false;
     }
 

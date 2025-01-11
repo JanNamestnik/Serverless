@@ -9,6 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class AssetDescriptors {
 
+    public static final AssetDescriptor<BitmapFont> UI_FONT =
+        new AssetDescriptor<>(AssetPaths.UI_FONT, BitmapFont.class);
+
     public static final AssetDescriptor<TextureAtlas> GAMEPLAY_ATLAS =
         new AssetDescriptor<>(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
 
