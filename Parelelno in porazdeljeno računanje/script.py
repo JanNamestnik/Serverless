@@ -32,12 +32,15 @@ def setup_logger(rank):
 
 
 class Blockchain:
-    def __init__(self, difficulty):
-        self.chain = [self.create_genesis_block(difficulty)]
+    def __init__(self, difficulty, logger):
+        self.chain = [self.create_genesis_block(difficulty,logger)]
         self.difficulty = difficulty
 
-    def create_genesis_block(self, difficulty):
-        return Block(0, "Genesis Block", "0", difficulty)
+    def create_genesis_block(self, difficulty,logger):
+        block = Block(0, "Genesis Block", "0", difficulty)
+        logger.info("Genesis block created")
+        logger.info(vars(block))
+        return block
 
     def get_last_block(self):
         return self.chain[-1]
@@ -52,6 +55,8 @@ class Blockchain:
 
     def validate_block(self, block ,logger):
         last_block = self.get_last_block()
+        logger.info("Validating block  to last block in blockchain")
+        logger.info(vars(last_block))
         if block.index != last_block.index + 1:
             logger.info("Invalid block index")
             logger.info(block.index) 
@@ -60,6 +65,8 @@ class Blockchain:
             return False
         if block.prev_hash != last_block.hash:
             logger.info("Previous hash does not match")
+            logger.info(block.prev_hash)
+            logger.info(last_block.hash)
             return False
         if not block.is_valid():
             logger.info("Block hash is invalid")
@@ -82,9 +89,16 @@ class Blockchain:
         return True
 
 
-def mine_block(block, start_nonce, end_nonce):
-    """Mine a block within the given nonce range."""
+def mine_block(block, start_nonce, end_nonce, comm,logger, rank):
+    """Mine a block within the given nonce range, checking for a stop signal."""
     for nonce in range(start_nonce, end_nonce):
+        # Periodically check for a stop signal
+        if comm.Iprobe(source=0):
+            message = comm.recv(source=0)
+            if message == "stop":
+                logger.info(f"{rank} Stop signal received. Stopping mining.")
+                return None  # Stop mining and return
+
         block.nonce = nonce
         block.hash = block.calculate_hash()
         if block.is_valid():
@@ -99,50 +113,50 @@ def main():
     logger = setup_logger(rank)
 
     logger.info(f"Rank {rank} started")
-    difficulty = 5
-    blockchain = Blockchain(difficulty)
+    difficulty = 6
+    blockchain = Blockchain(difficulty, logger)
+
     log_filename = f"process_{rank}.log"
 
     # Rank 0 is the master
     with open(log_filename, "w") as log_file:
         os.dup2(log_file.fileno(), 1)  # Redirect stdout to the log file
         logger.info(f"Rank {rank} started")
+        logger.info(vars(blockchain.get_last_block()))
         while True:
             if rank == 0:
-                
-                logger.info("aaaaaaaaaaaaaa")
                 last_block = blockchain.get_last_block()
                 new_block = Block(
-                    len(blockchain.chain), "New Block Data", last_block.hash, difficulty
+                    len(blockchain.chain),
+                    "New Block Data",
+                    last_block.hash,
+                    difficulty,
                 )
-
-                total_nonce_range = 2**32
-                range_per_process = total_nonce_range // size
-
-                # Distribute work to all processes
+                logger.info("Block sent to workers:")
+                logger.info(vars(new_block))
+                
+                # Send new block to workers
                 for i in range(1, size):
-                    start_nonce = i * range_per_process
-                    end_nonce = (i + 1) * range_per_process
-                    comm.send((new_block, start_nonce, end_nonce), dest=i)
+                    comm.send(new_block, dest=i)
 
-                # # Master mines its range
-                # start_nonce = 0
-                # end_nonce = range_per_process
-                # mined_block = mine_block(new_block, start_nonce, end_nonce)
-                for i in range(1, size):
-                    comm.send("new_block", dest=i)
-                # Collect results from workers
+                mined_block = None
                 for i in range(1, size):
                     worker_block = comm.recv(source=i)
                     if worker_block is not None:
                         mined_block = worker_block
                         logger.info("Mined block found:", vars(mined_block))
-                        logger.info(vars(mined_block))
                         break
 
+                # Broadcast stop signal to all workers
+                if(mined_block):
+                    comm.bcast("stop", root=0)
+                    logger.info("Stop signal sent to workers")
+                else:
+                    comm.bcast("continue", root=0)
+                
+
                 if mined_block:
-                    logger.info("Mined block found:", vars(mined_block))
-                    blockchain.add_block(block = mined_block ,logger =logger) ## this is the problem
+                    blockchain.add_block(block=mined_block, logger=logger)
                     logger.info("Block added to blockchain")
                     logger.info(len(blockchain.chain))
                     if blockchain.validate_chain():
@@ -162,29 +176,37 @@ def main():
                     logger.info("No valid block found.")
             else:
                 while True:
-                    # Workers receive tasks and mine
-                    logger.info("Waiting for task from master")
-                    message = comm.recv(source=0)
-                    logger.info("Received task from master")
-                    if message == "new_block":
-                        logger.info("Status: New block")
-                        last_block = blockchain.get_last_block()
-                        logger.info(vars(last_block))
-                        new_block = Block(
-                            len(blockchain.chain),
-                            "New Block Data",
-                            last_block.hash,
-                            difficulty,
-                        )
+                    # Check if a new message is available from the master
+                    if comm.Iprobe(source=0):
+                        message = comm.recv(source=0)
 
-                        start_nonce = rank * (2**32 // size)
-                        end_nonce = (rank + 1) * (2**32 // size)
+                        # If it's a new block, start mining
+                        if isinstance(message, Block):
+                            new_block = message
+                            logger.info("Received new block:")
+                            logger.info(vars(new_block))
 
-                        mined_block = mine_block(new_block, start_nonce, end_nonce)
-                        comm.send(mined_block, dest=0)
-                        if(mined_block):
-                            logger.info("Mined block found:", vars(mined_block))
-                        break
+                            start_nonce = rank * (2**32 // size)
+                            end_nonce = (rank + 1) * (2**32 // size)
+
+                            mined_block = mine_block(new_block, start_nonce, end_nonce,comm,logger,rank)
+                            comm.send(mined_block, dest=0)
+
+                            if mined_block:
+                                logger.info("Mined block found:")
+                                logger.info(vars(mined_block))
+
+                        # If a stop signal is received, break and await new instructions
+                        elif message == "stop":
+                            logger.info("Stop signal received. Waiting for new block.")
+                            break
+
+                    # Perform other tasks or idle
+                    # Optional: Add a small sleep to reduce CPU usage during idle
+                    logger.info("Idle")
+                    time.sleep(0.1)
+
+
 
 
 if __name__ == "__main__":
