@@ -72,8 +72,6 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
 		font: font
-        fontColor: black
-
 	}
 	year199x: {
 		font: year199x

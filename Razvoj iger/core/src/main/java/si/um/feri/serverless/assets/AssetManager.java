@@ -44,6 +44,10 @@ public class AssetManager {
         return assetManager.get(AssetPaths.DIAMOND_SOUND);
     }
 
+    public Logger getLogger() {
+        return assetManager.getLogger();
+    }
+
     public Sound getMenuPickSound() {
         return assetManager.get(AssetPaths.MENU_PICK_SOUND);
     }
