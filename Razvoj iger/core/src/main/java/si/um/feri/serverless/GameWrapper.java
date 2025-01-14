@@ -58,8 +58,6 @@ public class GameWrapper implements ApplicationListener {
         currentListener = initialAdapter; // Nastavi Map kot trenutni listener
         currentListener.create(); // Inicializacija Map
     }
-
-
     public Game getGame() {
         return game;
     }

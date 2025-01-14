@@ -1,8 +1,6 @@
 package si.um.feri.serverless;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,7 +22,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -32,12 +29,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import si.um.feri.serverless.assets.AssetDescriptors;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
-import si.um.feri.serverless.screen.IntroScreen;
+import si.um.feri.serverless.screen.ContinueScreen;
 import si.um.feri.serverless.utils.Constants;
 import si.um.feri.serverless.utils.Geolocation;
 import si.um.feri.serverless.utils.MapRasterTiles;
 import si.um.feri.serverless.utils.ZoomXY;
 
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Call;
@@ -54,6 +52,8 @@ import java.util.List;
 public class Map extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
+
+    private Viewport viewport;
 
     private float rotationAngle = 0f;
 
@@ -126,6 +126,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         Gdx.input.setInputProcessor(gestureDetector);
 
         camera = new OrthographicCamera();
+
         camera.setToOrtho(false, Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
         camera.position.set(Constants.MAP_WIDTH / 2f, Constants.MAP_HEIGHT / 2f, 0);
         camera.viewportWidth = Constants.MAP_WIDTH / 2f;
@@ -330,7 +331,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
                     // Preklop na DiscountGame
                     GameWrapper gameWrapper = (GameWrapper) Gdx.app.getApplicationListener();
                     gameWrapper.switchToGame(); // Preklopi na DiscountGame
-                    ((DiscountGame) gameWrapper.getGame()).setScreen(new IntroScreen((DiscountGame) gameWrapper.getGame()));
+                    ((DiscountGame) gameWrapper.getGame()).setScreen(new ContinueScreen((DiscountGame) gameWrapper.getGame()));
                     return true;
                 }
             }

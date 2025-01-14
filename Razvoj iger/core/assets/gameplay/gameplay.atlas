@@ -32,6 +32,13 @@ diamond
   orig: 128, 128
   offset: 0, 0
   index: -1
+leafClover
+  rotate: false
+  xy: 640, 457
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
 pin
   rotate: false
   xy: 399, 102
