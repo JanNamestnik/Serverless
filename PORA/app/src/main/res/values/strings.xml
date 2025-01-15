@@ -9,7 +9,7 @@
 
     <!--Picture activity-->
     <string name="takePictureBtn">Take a picture</string>
-    <string name="textView4">List of scaned people</string>
+    <string name="textView4">List of people</string>
 
     <!--Person record-->
     <string name="nameTxt">Person 1</string>
@@ -18,8 +18,7 @@
     <string name="gender">male</string>
     <string name="age">above 21</string>
     <string name="personLogo">personLogo</string>
-
-
+    <string name="back_button_description">backButton</string>
 
 
 </resources>
