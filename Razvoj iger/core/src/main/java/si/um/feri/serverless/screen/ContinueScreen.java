@@ -1,4 +1,3 @@
-// ContinueScreen.java
 package si.um.feri.serverless.screen;
 
 import com.badlogic.gdx.Gdx;
@@ -53,17 +52,20 @@ public class ContinueScreen extends ScreenAdapter {
         backgroundIntro = new Texture(Gdx.files.internal("assets/backgroundIntro.png"));
         gameplayAtlas = assetManager.getGameplayAtlas();
 
-        // Load the particle effect
         particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("assets/sparkle.p"), Gdx.files.internal("assets"));
-        particleEffect.scaleEffect(0.3f); // Scale the particle effect to make it smaller
+        particleEffect.scaleEffect(0.3f);
         particleEffect.start();
 
         Table table = createUi();
         stage.addActor(table);
 
+        // Dodaj animacijo naslova
+        addTitleAnimation();
+
         Gdx.input.setInputProcessor(stage);
     }
+
 
     private Table createUi() {
         Table table = new Table(skin);
@@ -93,7 +95,6 @@ public class ContinueScreen extends ScreenAdapter {
             )
         ));
 
-        Label titleLabel = new Label("Welcome to our game!", titleStyle);
 
         TextButton.TextButtonStyle startButtonStyle = new TextButton.TextButtonStyle();
         startButtonStyle.font = customFont;
@@ -133,8 +134,6 @@ public class ContinueScreen extends ScreenAdapter {
         );
         descriptionLabel.setWrap(true); // Enable text wrapping if too wide
 
-        // Add title, buttons, and description to the table
-        table.add(titleLabel).colspan(2).center().padBottom(10).row();
         table.add(descriptionLabel).colspan(2).center().width(400).padBottom(20).row();
         table.add(startButton).padRight(20);
         table.add(backButton).row();
@@ -142,6 +141,29 @@ public class ContinueScreen extends ScreenAdapter {
 
         return table;
     }
+
+    private void addTitleAnimation() {
+        String title = "Welcome to our game!";
+        float startX = GameConfig.WIDTH / 2 - (title.length() * 20) / 2;
+        float startY = GameConfig.HEIGHT / 2 + 150; // Postavite naslov višje
+
+        for (int i = 0; i < title.length(); i++) {
+            char letter = title.charAt(i);
+            Label label = new Label(String.valueOf(letter), new Label.LabelStyle(assetManager.get(AssetDescriptors.UI_FONT_INTRO), null));
+            label.setPosition(startX + i * 20, startY);
+            label.getColor().a = 0; // Začetno nevidno
+
+            // Dodajte fade-in učinek za vsako črko
+            label.addAction(Actions.sequence(
+                Actions.delay(i * 0.1f), // Zamuda za vsako naslednjo črko
+                Actions.fadeIn(0.5f)
+            ));
+
+            stage.addActor(label);
+        }
+    }
+
+
 
     @Override
     public void render(float delta) {

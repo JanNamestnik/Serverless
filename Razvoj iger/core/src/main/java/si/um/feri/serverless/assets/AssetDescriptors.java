@@ -17,7 +17,6 @@ public class AssetDescriptors {
 
     public static final AssetDescriptor<TextureAtlas> GAMEPLAY_ATLAS =
         new AssetDescriptor<>(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
-
     public static final AssetDescriptor<Skin> UI_SKIN =
         new AssetDescriptor<Skin>(AssetPaths.UI_SKIN, Skin.class);
     public static final AssetDescriptor<Skin> UI_SKIN_ALTERNATIVE =

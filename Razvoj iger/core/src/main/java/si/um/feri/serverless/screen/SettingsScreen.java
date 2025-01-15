@@ -4,11 +4,12 @@ import com.badlogic.gdx.ScreenAdapter;
 
 import si.um.feri.serverless.DiscountGame;
 
-public class GameScreen extends ScreenAdapter {
+public class SettingsScreen extends ScreenAdapter {
 
     private final DiscountGame game;
 
-    public GameScreen(DiscountGame game) {
+    public SettingsScreen(DiscountGame game) {
         this.game = game;
     }
+
 }

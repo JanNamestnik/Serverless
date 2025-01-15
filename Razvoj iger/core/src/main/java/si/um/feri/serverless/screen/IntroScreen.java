@@ -62,8 +62,8 @@ public class IntroScreen extends ScreenAdapter {
 
         bomb.addAction(Actions.sequence(
             Actions.parallel(
-                Actions.moveTo(GameConfig.WIDTH / 2 - bomb.getWidth() / 2, GameConfig.HEIGHT / 2 - bomb.getHeight() / 2, 1.5f),
-                Actions.rotateBy(360, 1.5f)
+                Actions.moveTo(GameConfig.WIDTH / 2 - bomb.getWidth() / 2, GameConfig.HEIGHT / 2 - bomb.getHeight() / 2, 2f),
+                Actions.rotateBy(360, 2f)
             ),
             Actions.run(() -> {
                 bomb.remove();
@@ -92,8 +92,8 @@ public class IntroScreen extends ScreenAdapter {
         ));
 
         diamond.addAction(Actions.parallel(
-            Actions.moveTo(GameConfig.WIDTH / 2 - diamond.getWidth() / 2, GameConfig.HEIGHT / 2 - diamond.getHeight() / 2, 1.5f),
-            Actions.rotateBy(360, 1.5f)
+            Actions.moveTo(GameConfig.WIDTH / 2 - diamond.getWidth() / 2, GameConfig.HEIGHT / 2 - diamond.getHeight() / 2, 2f),
+            Actions.rotateBy(360, 2f)
         ));
 
         // Add actors to the stage
@@ -106,30 +106,45 @@ public class IntroScreen extends ScreenAdapter {
     }
 
     private void addTitleAnimation() {
-
-        String title = "Loading...";
+        String title = "Loading";
         float startX = GameConfig.WIDTH / 2 - (title.length() * 20) / 2;
         float startY = GameConfig.HEIGHT / 2 + 100;
 
+        // Ustvari "Loading" besedilo
         for (int i = 0; i < title.length(); i++) {
             char letter = title.charAt(i);
             Label label = new Label(String.valueOf(letter), new LabelStyle(uiFont, null));
             label.setPosition(startX + i * 20, startY);
-            label.getColor().a = 0;
+            label.getColor().a = 1; // Vidno
+            stage.addActor(label);
+        }
 
-            // Add fade-in action
-            label.addAction(Actions.sequence(
-                Actions.delay(i * 0.1f),
-                Actions.fadeIn(0.5f)
+        // Dodaj pikice, ki fade-in in fade-out zaporedoma
+        float dotsStartX = startX + title.length() * 20 + 10;
+        for (int i = 0; i < 3; i++) {
+            Label dot = new Label(".", new LabelStyle(uiFont, null));
+            dot.setPosition(dotsStartX + i * 15, startY);
+            dot.getColor().a = 0; // Začni kot nevidno
+
+            // Dodaj fade-in in fade-out učinek
+            dot.addAction(Actions.forever(
+                Actions.sequence(
+                    Actions.delay(i * 0.5f), // Časovna zamuda za vsak dot
+                    Actions.fadeIn(0.5f),
+                    Actions.fadeOut(0.5f),
+                    Actions.delay(0.5f) // Odmor med cikli
+                )
             ));
 
-            stage.addActor(label);
+            stage.addActor(dot);
         }
     }
 
+
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0f, 0f, 0f, 1f);
+        ScreenUtils.clear(34 / 255f, 100 / 255f, 57 / 255f, 1);
+
 
         stage.act(delta);
         stage.draw();

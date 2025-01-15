@@ -25,6 +25,13 @@ bomb
   orig: 121, 119
   offset: 0, 0
   index: -1
+coin
+  rotate: false
+  xy: 269, 6
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
 diamond
   rotate: false
   xy: 269, 38
