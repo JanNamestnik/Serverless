@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -114,8 +115,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         playLabel.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Handle the click event
-                System.out.println("Play label clicked!");
+               addHoverAnimation(playLabel);
                 return true;
             }
         });
@@ -164,6 +164,14 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         fetchEvents(events -> {
             eventLocations = events;
         });
+    }
+
+    private void addHoverAnimation(Label label) {
+        label.clearActions(); // Clear any existing actions
+        label.addAction(Actions.sequence(
+            Actions.alpha(0),
+            Actions.fadeIn(0.5f)
+        ));
     }
 
     // Fetch events from MongoDB

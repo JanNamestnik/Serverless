@@ -93,14 +93,11 @@ public class ContinueScreen extends ScreenAdapter {
             )
         ));
 
-        // Create a Label with the text "Welcome to our game!" and the custom LabelStyle
         Label titleLabel = new Label("Welcome to our game!", titleStyle);
 
-        // Create a custom TextButtonStyle with the custom font for "Start the Game" button
         TextButton.TextButtonStyle startButtonStyle = new TextButton.TextButtonStyle();
         startButtonStyle.font = customFont;
 
-        // Create the "Start the Game" button with the custom style
         TextButton startButton = new TextButton("Start the Game", startButtonStyle);
         startButton.addListener(new ClickListener() {
             @Override
@@ -109,7 +106,6 @@ public class ContinueScreen extends ScreenAdapter {
             }
         });
 
-        // Add bouncing animation to the "Start the Game" button
         startButton.addAction(Actions.forever(
             Actions.sequence(
                 Actions.moveBy(0, 10, 0.5f),
@@ -117,11 +113,9 @@ public class ContinueScreen extends ScreenAdapter {
             )
         ));
 
-        // Create a custom TextButtonStyle with the custom font for "Back to Map" button
         TextButton.TextButtonStyle mapButtonStyle = new TextButton.TextButtonStyle();
         mapButtonStyle.font = customFont;
 
-        // Create the "Back to Map" button with the custom style
         TextButton backButton = new TextButton("Back to Map", mapButtonStyle);
         backButton.addListener(new ClickListener() {
             @Override
