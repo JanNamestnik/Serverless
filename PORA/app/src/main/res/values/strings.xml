@@ -7,4 +7,19 @@
     <string name="pictureBtn">Take a picture</string>
     <string name="image">Serverless logo</string>
 
+    <!--Picture activity-->
+    <string name="takePictureBtn">Take a picture</string>
+    <string name="textView4">List of scaned people</string>
+
+    <!--Person record-->
+    <string name="nameTxt">Person 1</string>
+    <string name="genderTxt">Gender:</string>
+    <string name="ageTxt">Age:</string>
+    <string name="gender">male</string>
+    <string name="age">above 21</string>
+    <string name="personLogo">personLogo</string>
+
+
+
+
 </resources>
