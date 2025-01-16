@@ -2,6 +2,7 @@ package si.um.feri.serverless.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -24,6 +25,7 @@ import si.um.feri.serverless.GameWrapper;
 import si.um.feri.serverless.assets.AssetDescriptors;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
+import si.um.feri.serverless.common.GameManager;
 import si.um.feri.serverless.config.GameConfig;
 
 public class ContinueScreen extends ScreenAdapter {
@@ -37,6 +39,7 @@ public class ContinueScreen extends ScreenAdapter {
     private TextureAtlas gameplayAtlas;
     private ParticleEffect particleEffect;
     private Image leafClover;
+    private Sound continuePick;
 
     public ContinueScreen(DiscountGame game) {
         this.game = game;
@@ -51,6 +54,8 @@ public class ContinueScreen extends ScreenAdapter {
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
         backgroundIntro = new Texture(Gdx.files.internal("assets/backgroundIntro.png"));
         gameplayAtlas = assetManager.getGameplayAtlas();
+
+        continuePick = assetManager.getPickSound(AssetDescriptors.MENU_PICK);
 
         particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("assets/sparkle.p"), Gdx.files.internal("assets"));
@@ -103,6 +108,7 @@ public class ContinueScreen extends ScreenAdapter {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 game.setScreen(new IntroScreen(game));
             }
         });
@@ -121,7 +127,7 @@ public class ContinueScreen extends ScreenAdapter {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Switch back to Map
+                playButtonSound();
                 GameWrapper wrapper = (GameWrapper) Gdx.app.getApplicationListener();
                 wrapper.switchToApplicationAdapter();
             }
@@ -203,4 +209,11 @@ public class ContinueScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
     }
+
+    private void playButtonSound() {
+        if (GameManager.getInstance().isSoundEffectsEnabled()) {
+            continuePick.play(0.3f); // Nastavite glasnost, če je potrebno
+        }
+    }
+
 }

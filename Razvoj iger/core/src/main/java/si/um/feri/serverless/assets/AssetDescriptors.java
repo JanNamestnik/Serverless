@@ -21,12 +21,14 @@ public class AssetDescriptors {
         new AssetDescriptor<Skin>(AssetPaths.UI_SKIN, Skin.class);
     public static final AssetDescriptor<Skin> UI_SKIN_ALTERNATIVE =
         new AssetDescriptor<Skin>(AssetPaths.UI_SKIN_ALTERNATIVE, Skin.class);
-
     public static final AssetDescriptor<Sound> DIAMOND_SOUND =
         new AssetDescriptor<>(AssetPaths.DIAMOND_SOUND, Sound.class);
 
-    public static final AssetDescriptor<Sound> MENU_PICK_SOUND =
-        new AssetDescriptor<>(AssetPaths.MENU_PICK_SOUND, Sound.class);
+    public static final AssetDescriptor<Sound> MENU_PICK =
+        new AssetDescriptor<>(AssetPaths.MENU_PICK, Sound.class);
+
+    public static final AssetDescriptor<Sound> MOUSE_CLICK =
+        new AssetDescriptor<>(AssetPaths.MOUSE_CLICK, Sound.class);
 
     public static final AssetDescriptor<Sound> BOMB_SOUND =
         new AssetDescriptor<>(AssetPaths.BOMB_SOUND, Sound.class);

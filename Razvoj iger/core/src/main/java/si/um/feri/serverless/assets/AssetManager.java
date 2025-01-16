@@ -22,7 +22,8 @@ public class AssetManager {
         assetManager.load(AssetPaths.UI_SKIN, Skin.class);
         assetManager.load(AssetPaths.UI_SKIN_ALTERNATIVE, Skin.class);
         assetManager.load(AssetPaths.DIAMOND_SOUND, Sound.class);
-        assetManager.load(AssetPaths.MENU_PICK_SOUND, Sound.class);
+        assetManager.load(AssetPaths.MENU_PICK, Sound.class);
+        assetManager.load(AssetPaths.MOUSE_CLICK, Sound.class);
         assetManager.load(AssetPaths.BOMB_SOUND, Sound.class);
     }
 
@@ -53,8 +54,12 @@ public class AssetManager {
         return assetManager.getLogger();
     }
 
-    public Sound getMenuPickSound() {
-        return assetManager.get(AssetPaths.MENU_PICK_SOUND);
+    public Sound getPickSound(AssetDescriptor<Sound> menuPick) {
+        return assetManager.get(menuPick);
+    }
+
+    public Sound getMouseClickSound(AssetDescriptor<Sound> mouseClick) {
+        return assetManager.get(mouseClick);
     }
 
     public Sound getBombSound() {

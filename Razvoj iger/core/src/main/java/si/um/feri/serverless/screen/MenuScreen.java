@@ -2,6 +2,7 @@ package si.um.feri.serverless.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -23,6 +24,7 @@ import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
 import si.um.feri.serverless.common.FallingCoin;
 import si.um.feri.serverless.common.FallingCoinPool;
+import si.um.feri.serverless.common.GameManager;
 import si.um.feri.serverless.config.GameConfig;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -38,6 +40,7 @@ public class MenuScreen extends ScreenAdapter {
     private Texture backgroundTexture;
     private Array<FallingCoin> coins;
     private Pool<FallingCoin> coinPool;
+    private Sound menuPick;
 
     private static final int MAX_COINS = 4;
 
@@ -53,6 +56,8 @@ public class MenuScreen extends ScreenAdapter {
 
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
         skin_alternative = assetManager.getSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
+
+        menuPick = assetManager.getPickSound(AssetDescriptors.MENU_PICK);
 
         backgroundTexture = new Texture(Gdx.files.internal("assets/backgroundMenu.png"));
 
@@ -145,6 +150,7 @@ public class MenuScreen extends ScreenAdapter {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 game.setScreen(new GameScreen(game));
             }
         });
@@ -153,6 +159,7 @@ public class MenuScreen extends ScreenAdapter {
         collectionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 game.setScreen(new CollectionScreen(game));
             }
         });
@@ -161,6 +168,7 @@ public class MenuScreen extends ScreenAdapter {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 game.setScreen(new SettingsScreen(game));
             }
         });
@@ -169,6 +177,7 @@ public class MenuScreen extends ScreenAdapter {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 GameWrapper gameWrapper = (GameWrapper) Gdx.app.getApplicationListener();
                 gameWrapper.switchToApplicationAdapter();
             }
@@ -178,6 +187,7 @@ public class MenuScreen extends ScreenAdapter {
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                playButtonSound();
                 Gdx.app.exit();
             }
         });
@@ -201,4 +211,11 @@ public class MenuScreen extends ScreenAdapter {
 
         return table;
     }
+
+    private void playButtonSound() {
+        if (GameManager.getInstance().isSoundEffectsEnabled()) {
+            menuPick.play(0.3f); // Nastavite glasnost, če je potrebno
+        }
+    }
+
 }
