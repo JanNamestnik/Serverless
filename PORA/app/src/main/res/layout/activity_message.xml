@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/roboto_bold"
-        android:text="Messages / Alert"
+        android:text="Messages"
         android:textColor="@color/blue"
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold"
@@ -78,11 +78,11 @@
         android:id="@+id/eventNameTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:text="Event name"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -91,11 +91,11 @@
         android:id="@+id/messageTypeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="Message Type"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner1" />
@@ -104,12 +104,13 @@
         android:id="@+id/editMessage"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:ems="10"
         android:hint="Message"
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
         android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner2" />
@@ -119,7 +120,7 @@
         style="@style/CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:drawableEnd="@drawable/baseline_outgoing_mail_24"
         android:fontFamily="@font/roboto_bold"
         android:insetLeft="@dimen/inset_right"
@@ -135,4 +136,91 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="24dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:foregroundTint="@color/white"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendBtn" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send message if extreme temp:"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/temperatureInput"
+        app:layout_constraintEnd_toStartOf="@+id/temperatureInput"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/temperatureInput"
+        android:layout_width="48dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/white"
+        android:ems="10"
+        android:hint="°C"
+        android:inputType="numberDecimal"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/saveTempButton"
+        style="@style/CustomButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:drawableEnd="@drawable/baseline_save_24"
+        android:fontFamily="@font/roboto_bold"
+        android:insetLeft="@dimen/inset_right"
+        android:insetRight="@dimen/inset_right"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureInput" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="Alert"
+        android:textAllCaps="false"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/text_size_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="24dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:foregroundTint="@color/white"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveTempButton" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
