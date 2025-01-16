@@ -89,22 +89,20 @@ class Blockchain:
         return True
 
 
-def mine_block(block, start_nonce, end_nonce, comm,logger, rank):
+def mine_block(block, start_nonce, end_nonce, comm, logger, rank):
     """Mine a block within the given nonce range, checking for a stop signal."""
     for nonce in range(start_nonce, end_nonce):
         # Periodically check for a stop signal
         if comm.Iprobe(source=0):
             message = comm.recv(source=0)
-            if message == "stop":
-                logger.info(f"{rank} Stop signal received. Stopping mining.")
-                return None  # Stop mining and return
+            logger.info(f"Received message from master:{vars(message)}")
+            return None  # Stop mining and return
 
         block.nonce = nonce
         block.hash = block.calculate_hash()
         if block.is_valid():
             return block
     return None
-
 
 def main():
     comm = MPI.COMM_WORLD
@@ -140,15 +138,21 @@ def main():
                     comm.send(new_block, dest=i)
 
                 mined_block = None
-                for i in range(1, size):
-                    worker_block = comm.recv(source=i)
-                    if worker_block is not None:
-                        mined_block = worker_block
-                        logger.info("Mined block found:", vars(mined_block))
-                        break
+                received_workers = set()
+
+                # Listen to all workers simultaneously
+                while len(received_workers) < (size - 1):
+                    if comm.Iprobe(source=MPI.ANY_SOURCE):
+                        worker_block = comm.recv(source=MPI.ANY_SOURCE)
+                        received_workers.add(worker_block)
+                        if worker_block is not None:
+                            mined_block = worker_block
+                            comm.bcast("stop", root=0)
+                            logger.info("Mined block found:", vars(mined_block))
+                            break
 
                 # Broadcast stop signal to all workers
-                if(mined_block):
+                if mined_block:
                     comm.bcast("stop", root=0)
                     logger.info("Stop signal sent to workers")
                 else:
@@ -189,12 +193,13 @@ def main():
                             start_nonce = rank * (2**32 // size)
                             end_nonce = (rank + 1) * (2**32 // size)
 
-                            mined_block = mine_block(new_block, start_nonce, end_nonce,comm,logger,rank)
+                            mined_block = mine_block(new_block, start_nonce, end_nonce, comm, logger, rank)
                             comm.send(mined_block, dest=0)
 
                             if mined_block:
                                 logger.info("Mined block found:")
                                 logger.info(vars(mined_block))
+                                break
 
                         # If a stop signal is received, break and await new instructions
                         elif message == "stop":
@@ -203,8 +208,8 @@ def main():
 
                     # Perform other tasks or idle
                     # Optional: Add a small sleep to reduce CPU usage during idle
-                    logger.info("Idle")
                     time.sleep(0.1)
+
 
 
 
