@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Serverless</string>
     <!--Main activity-->
-    <string name="dataBtn">View data</string>
+    <string name="dataBtn">Sensors</string>
     <string name="exitBtn">Exit</string>
     <string name="messageBtn">Post a message</string>
     <string name="pictureBtn">Prediction API</string>

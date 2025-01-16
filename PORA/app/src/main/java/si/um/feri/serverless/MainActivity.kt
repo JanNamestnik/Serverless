@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.dataBtn.setOnClickListener {
-            val intent = Intent(this, DataActivity::class.java)
+        binding.sensorBtn.setOnClickListener {
+            val intent = Intent(this, SensorsActivity::class.java)
             startActivity(intent)
         }
 

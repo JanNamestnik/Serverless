@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -135,7 +136,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
     private fun fetchEventNames() {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/events") // Replace with your API URL
+            .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/events")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -193,7 +194,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
 
         val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
             com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
-            1000 // Request location every 1 second (adjust as needed)
+            1000 // Request location every 1 second
         ).build()
 
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
@@ -293,6 +294,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             val currentTemperature = event.values[0] // Get the current temperature
+            Log.d("TemperatureSensor", "Current temperature: $currentTemperature")
             desiredTemperature?.let {
                 if (currentTemperature >= it) {
                     sendTemperatureAlert(currentTemperature)

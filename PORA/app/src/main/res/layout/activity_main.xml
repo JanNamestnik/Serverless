@@ -16,11 +16,11 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <Button
-        android:id="@+id/dataBtn"
+        android:id="@+id/sensorBtn"
         style="@style/CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/baseline_list_24"
+        android:drawableEnd="@drawable/baseline_sensors_24"
         android:fontFamily="@font/roboto_bold"
         android:insetLeft="@dimen/inset_right"
         android:insetRight="@dimen/inset_right"
@@ -41,7 +41,7 @@
         android:insetLeft="@dimen/inset_right"
         android:insetRight="@dimen/inset_right"
         android:text="@string/pictureBtn"
-        app:layout_constraintBottom_toTopOf="@+id/dataBtn"
+        app:layout_constraintBottom_toTopOf="@+id/sensorBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dataBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/sensorBtn" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
