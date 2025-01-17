@@ -1,9 +1,8 @@
 from mpi4py import MPI
-import hashlib
+import queue
 import time
 import os
 import logging
-import threading
 from threading import Event 
 from block import Block, Blockchain
 from mining import mine_block
@@ -23,10 +22,15 @@ def main():
     logger = setup_logger(rank)
     stop_event = Event()
     logger.info(f"Rank {rank} started")
-    difficulty = 6
+    difficulty = 5
     blockchain = Blockchain(difficulty, logger)
 
     log_filename = f"process_{rank}.log"
+    # create queue for data, that will be stored in blockchain
+    data_queue = queue.Queue()
+    for i  in range( 8080, 8085):
+        data_queue.put(f"Data {i}")
+ 
 
     # Rank 0 is the master
     with open(log_filename, "w") as log_file:
@@ -42,6 +46,8 @@ def main():
                     last_block.hash,
                     difficulty,
                 )
+                if(not data_queue.empty()):
+                    new_block.data = data_queue.get()   
                 logger.info("Block sent to workers:")
                 logger.info(vars(new_block))
                 
@@ -50,16 +56,16 @@ def main():
                     comm.send(new_block, dest=i)
 
                 mined_block = None
-                received_workers = set()
-
                 # Listen to all workers simultaneously
                 worker_block = comm.recv(source=MPI.ANY_SOURCE)
-                received_workers.add(worker_block)
                 if worker_block is not None:
                     mined_block = worker_block
                     comm.bcast("stop", root=0)
-                    logger.info("Mined block found:", vars(mined_block))
-                    break
+                    logger.info("Mined block found:")
+                    logger.info(vars(mined_block))
+                else:
+                    logger.info(f"Worker block is None {worker_block}")
+                    
 
                 if mined_block:
                     blockchain.add_block(block=mined_block, logger=logger)
@@ -85,7 +91,7 @@ def main():
                     # Check if a new message is available from the master
                     if comm.Iprobe(source=0):
                         message = comm.recv(source=0)
-
+                        stop_event = Event()
                         # If it's a new block, start mining
                         if isinstance(message, Block):
                             new_block = message
@@ -96,7 +102,8 @@ def main():
                             end_nonce = (rank + 1) * (2**32 // size)
 
                             mined_block = mine_block(new_block, start_nonce, end_nonce,stop_event, comm, logger)
-                            comm.send(mined_block, dest=0)
+                            if(mined_block is not None):
+                                comm.send(mined_block, dest=0)
 
                             if mined_block:
                                 logger.info("Mined block found:")

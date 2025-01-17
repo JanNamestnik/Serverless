@@ -8,6 +8,7 @@ def mine_block(block, start_nonce, end_nonce, stop_event,comm, logger):
         """Listen for the stop signal and set the event."""
         signal = comm.bcast(None, root=0)  # Receive broadcast
         if signal == "stop":
+            logger.info("mining stopped")
             stop_event.set()
 
     # Create a thread to listen for the stop signal
@@ -25,5 +26,5 @@ def mine_block(block, start_nonce, end_nonce, stop_event,comm, logger):
         if block.is_valid():
             stop_event.set()  # Notify others that mining is done
             return block
-
+    logger.info("Existing mining")
     return None
