@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_restx import Api, Resource, reqparse
+from flask_restx import Api, Resource, reqparse, fields
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
@@ -16,14 +16,46 @@ api = Api(
     title="Age Prediction API",
     version="1.0",
     description="API to predict age category ('under 21' or 'over 21') from an image",
-    doc="/docs"  # This sets the Swagger UI at /docs route
+    doc="/docs"  # Swagger UI endpoint
 )
 
-# Load pre-trained models
 gender_model = load_model("gender_classification_model.h5")
 age_model = load_model("age_classification_model.h5")
 
 IMG_SIZE = (224, 224)  # Replace with your model's expected input size
+
+# Define Swagger models for response structures
+face_result_model = api.model(
+    "FaceResult",
+    {
+        "age": fields.String(description="Predicted age category (Under 21 or Over 21)"),
+        "gender": fields.String(description="Predicted gender (Male or Female)"),
+        "face_image": fields.String(description="Base64-encoded cropped face image"),
+    },
+)
+
+predict_response_model = api.model(
+    "PredictResponse",
+    {
+        "results": fields.List(fields.Nested(face_result_model)),
+    },
+)
+
+count_people_response_model = api.model(
+    "CountPeopleResponse",
+    {
+        "people_count": fields.Integer(description="Number of people detected in the image"),
+    },
+)
+
+first_face_response_model = api.model(
+    "FirstFaceResponse",
+    {
+        "age": fields.String(description="Predicted age category (Under 21 or Over 21)"),
+        "gender": fields.String(description="Predicted gender (Male or Female)"),
+        "face_image": fields.String(description="Base64-encoded cropped face image"),
+    },
+)
 
 # Define request parser for file upload
 upload_parser = reqparse.RequestParser()
@@ -39,10 +71,12 @@ upload_parser.add_argument(
 @api.route("/predict")
 class Predict(Resource):
     @api.expect(upload_parser)
+    @api.response(200, "Success", predict_response_model)
+    @api.response(400, "No file uploaded or no faces detected")
+    @api.response(500, "Internal server error")
     def post(self):
         """
-        Predict the age category ('under 21' or 'over 21') from an uploaded image
-        and return cropped face images with predictions.
+        Predict the age category ('under 21' or 'over 21') and gender from an uploaded image.
         """
         try:
             uploaded_file = request.files.get("file")  # Access the uploaded file
@@ -94,6 +128,9 @@ class Predict(Resource):
 @api.route("/count_people")
 class CountPeople(Resource):
     @api.expect(upload_parser)
+    @api.response(200, "Success", count_people_response_model)
+    @api.response(400, "No file uploaded")
+    @api.response(500, "Internal server error")
     def post(self):
         """
         Count the number of people detected in the uploaded image.
@@ -119,6 +156,9 @@ class CountPeople(Resource):
 @api.route("/first_face")
 class FirstFace(Resource):
     @api.expect(upload_parser)
+    @api.response(200, "Success", first_face_response_model)
+    @api.response(400, "No file uploaded or no faces detected")
+    @api.response(500, "Internal server error")
     def post(self):
         """
         Return the first detected face along with age and gender predictions.
