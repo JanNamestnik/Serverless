@@ -103,7 +103,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
         pinRegion = gameplayAtlas.findRegion(RegionNames.PIN);
 
-        BitmapFont uiFont = assetManager.get(AssetDescriptors.UI_FONT); // Load the UI_FONT
+        BitmapFont uiFont = assetManager.get(AssetDescriptors.MAP_FONT); // Load the UI_FONT
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = uiFont; // Set the font to the label style
@@ -180,6 +180,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
         Request request = new Request.Builder()
             .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/events")
+            .addHeader("Accept-Charset", "UTF-8")
             .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -201,6 +202,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
 
     // Parse events from JSON, extract latitude and longitude
+    // Update the parseEventsFromJson method to parse the event name
     private List<Geolocation> parseEventsFromJson(String jsonResponse) {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Event>>() {}.getType();
@@ -210,11 +212,15 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         for (Event event : events) {
             double lat = event.location.coordinates.get(1);
             double lng = event.location.coordinates.get(0);
-            geolocations.add(new Geolocation(lat, lng));
+            Geolocation geolocation = new Geolocation(lat, lng);
+            geolocation.setName(event.name); // Set the event name
+            geolocations.add(geolocation);
         }
         return geolocations;
     }
     class Event {
+
+        String name;
         Location location;
 
         class Location {
@@ -258,10 +264,10 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
         spriteBatch.end();
     }
-
-    private void drawHoverText(Vector2 marker) {
+    private void drawHoverText(Vector2 marker, String eventName) {
         spriteBatch.begin();
         // Draw label
+        clickMeLabel.setText(eventName); // Set the event name as the label text
         clickMeLabel.setPosition(marker.x - clickMeLabel.getWidth() / 2, marker.y + 20);
         clickMeLabel.draw(spriteBatch, 1);
         spriteBatch.end();
@@ -306,7 +312,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
                 if (isMouseOverMarker(marker)) {
-                    drawHoverText(marker);
+                    drawHoverText(marker, location.getName()); // Pass the event name
                     break;
                 }
             }

@@ -44,7 +44,7 @@ public class IntroScreen extends ScreenAdapter {
         stage = new Stage(viewport, game.getBatch());
 
         TextureAtlas gameplayAtlas = assetManager.getGameplayAtlas();
-        uiFont = assetManager.get(AssetDescriptors.UI_FONT_INTRO); // Load the UI_FONT
+        uiFont = assetManager.get(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT); // Load the UI_FONT
 
         // Load the images
         bomb = new Image(gameplayAtlas.findRegion(RegionNames.BOMB));

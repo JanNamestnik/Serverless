@@ -5,6 +5,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -73,8 +75,10 @@ public class GameScreen extends ScreenAdapter {
         skin_alternative = assetManager.getAlternativeSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
 
+        // Load saved grid size
+        int savedGridSize = (int) Math.sqrt(GameManager.getInstance().getGridSize());
 
-        Table gameTable = createUI();
+        Table gameTable = createUI(savedGridSize);
         stage.addActor(gameTable);
 
         Table hudTable = createHud();
@@ -87,14 +91,14 @@ public class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private Table createUI() {
+    private Table createUI(int gridSize) {
         Table table = new Table();
         table.setFillParent(true);
-        table.center();
+        table.center().padTop(50);
 
         List<int[]> positions = new ArrayList<>();
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 5; col++) {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
                 positions.add(new int[]{row, col});
             }
         }
@@ -104,8 +108,8 @@ public class GameScreen extends ScreenAdapter {
         int[] bombPosition = positions.remove(0);
         int[] diamondPosition = positions.remove(0);
 
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 5; col++) {
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
                 final Image image;
                 final Image hiddenImage;
                 if (row == bombPosition[0] && col == bombPosition[1]) {
@@ -139,7 +143,7 @@ public class GameScreen extends ScreenAdapter {
                                     if (hiddenImage != null) {
                                         hiddenImage.setPosition(image.getX(), image.getY()); // Ensure position matches
                                         hiddenImage.setVisible(true);
-                                        hiddenImage.addAction(Actions.fadeIn(0.5f)); // Fade in over 0.3 seconds
+                                        hiddenImage.addAction(Actions.fadeIn(0.3f)); // Fade in over 0.3 seconds
                                     }
                                     image.remove();
                                 }
@@ -184,24 +188,44 @@ public class GameScreen extends ScreenAdapter {
 
         Label.LabelStyle mainTitle = new Label.LabelStyle();
         mainTitle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
-        mainTitle.font.getData().setScale(0.5f);
-        Label titleLabel = new Label("Configurations", mainTitle);
+        mainTitle.font.getData().setScale(1f);
+        Label titleLabel = new Label("Challenge", mainTitle);
 
         Label.LabelStyle bombNumberLabelStyle = new Label.LabelStyle();
         bombNumberLabelStyle.font = assetManager.get(AssetDescriptors.UI_FONT);
-        bombNumberLabelStyle.font.getData().setScale(0.5f);
-        Label bombNumberLabel = new Label("Bombs:", bombNumberLabelStyle);
+        bombNumberLabelStyle.font.getData().setScale(0.7f);
+        Label bombNumberLabel = new Label("Discount:", bombNumberLabelStyle);
 
-        SelectBox<Integer> bombSelectBox = new SelectBox<>(skin_alternative);
-        bombSelectBox.setItems(1, 2, 3, 4, 5);
+        SelectBox<String> bombSelectBox = new SelectBox<>(skin_alternative);
+        bombSelectBox.setItems("5%", "10%", "25%", "50%", "100%");
 
         Label.LabelStyle tileNumberStyle = new Label.LabelStyle();
         tileNumberStyle.font = assetManager.get(AssetDescriptors.UI_FONT);
-        tileNumberStyle.font.getData().setScale(0.5f);
+        tileNumberStyle.font.getData().setScale(0.8f);
         Label tileNumberLabel = new Label("Grid size:", tileNumberStyle);
 
-        SelectBox<Integer> tileSelectBox = new SelectBox<>(skin_alternative);
-        tileSelectBox.setItems(25, 36, 49, 64);
+        SelectBox<String> tileSelectBox = new SelectBox<>(skin_alternative);
+        tileSelectBox.setItems("25 tiles", "36 tiles", "49 tiles");
+
+        // Load saved grid size and set it in the SelectBox
+        int savedGridSize = GameManager.getInstance().getGridSize();
+        tileSelectBox.setSelected(savedGridSize + " tiles");
+
+        tileSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String selected = tileSelectBox.getSelected();
+                int gridSize = (int) Math.sqrt(Integer.parseInt(selected.split(" ")[0]));
+                GameManager.getInstance().setGridSize(gridSize * gridSize); // Save the selected grid size
+                updateBoard(gridSize);
+            }
+        });
+
+        TextureRegion hudBackgroundRegion = gameplayAtlas.findRegion(RegionNames.HUD_MENU);
+        TextureRegionDrawable menuBackgroundDrawable = new TextureRegionDrawable(hudBackgroundRegion);
+        menuBackgroundDrawable.setMinWidth(hudBackgroundRegion.getRegionWidth()); // Scale width
+        menuBackgroundDrawable.setMinHeight(hudBackgroundRegion.getRegionHeight()); // Scale height
+        settingsTable.setBackground(menuBackgroundDrawable);
 
         settingsTable.add(titleLabel).center().padBottom(20).colspan(2).row();
         settingsTable.add(bombNumberLabel).left().padBottom(5).padRight(5);
@@ -209,10 +233,25 @@ public class GameScreen extends ScreenAdapter {
         settingsTable.add(tileNumberLabel).left().padBottom(5).padRight(5);
         settingsTable.add(tileSelectBox).left().padBottom(5).row();
 
-        settingsTable.top().left().padTop(70).padLeft(40);
+        settingsTable.top().left().padTop(60).padLeft(40);
 
         return settingsTable;
     }
+
+    private void updateBoard(int gridSize) {
+        stage.clear(); // Clear the stage to remove the old board
+
+        Table gameTable = createUI(gridSize);
+        stage.addActor(gameTable);
+
+        Table hudTable = createHud();
+        stage.addActor(hudTable);
+
+        Table settingsTable = gameplaySettings();
+        settingsTable.setPosition(20, GameConfig.HEIGHT - settingsTable.getHeight() - 20);
+        stage.addActor(settingsTable);
+    }
+
 
     @Override
     public void render(float delta) {

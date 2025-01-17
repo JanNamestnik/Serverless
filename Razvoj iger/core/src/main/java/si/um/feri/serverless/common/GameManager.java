@@ -2,11 +2,6 @@ package si.um.feri.serverless.common;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameManager {
 
@@ -14,14 +9,18 @@ public class GameManager {
 
     private static final String SOUND_EFFECTS_ENABLED_KEY = "sound_effects_enabled";
     private static final String MUSIC_ENABLED_KEY = "music_enabled";
+    private static final String GRID_SIZE_KEY = "grid_size";
+    private static final String DISCOUNT_KEY = "discount";
+    private static final int DEFAULT_GRID_SIZE = 25;
+    private static final int DEFAULT_DISCOUNT = 5;
 
     private static final GameManager INSTANCE = new GameManager();
     private final Preferences preferences;
 
-    public GameManager() {
+    private GameManager() {
         preferences = Gdx.app.getPreferences(PREFERENCES_NAME);
-
     }
+
     public static GameManager getInstance() {
         return INSTANCE;
     }
@@ -44,4 +43,21 @@ public class GameManager {
         return preferences.getBoolean(SOUND_EFFECTS_ENABLED_KEY, true); // Privzeto omogočeno
     }
 
+    public void setGridSize(int gridSize) {
+        preferences.putInteger(GRID_SIZE_KEY, gridSize);
+        preferences.flush();
+    }
+
+    public int getGridSize() {
+        return preferences.getInteger(GRID_SIZE_KEY, DEFAULT_GRID_SIZE);
+    }
+
+    public void setDiscount(int discount) {
+        preferences.putInteger(DISCOUNT_KEY, discount);
+        preferences.flush();
+    }
+
+    public int getDiscount() {
+        return preferences.getInteger(DISCOUNT_KEY, DEFAULT_DISCOUNT);
+    }
 }

@@ -152,7 +152,7 @@ public class MenuScreen extends ScreenAdapter {
 
         // Create title
         Label.LabelStyle titleStyle = new Label.LabelStyle();
-        titleStyle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
+        titleStyle.font = assetManager.get(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT);
         titleStyle.font.getData().setScale(1.3f); // Increase font size
 
         Label titleLabel = new Label("Deal hunter", titleStyle);

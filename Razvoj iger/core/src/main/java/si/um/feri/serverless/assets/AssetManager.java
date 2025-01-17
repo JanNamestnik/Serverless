@@ -18,7 +18,10 @@ public class AssetManager {
     public void loadAllAssets(){
         assetManager.load(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
         assetManager.load(AssetDescriptors.UI_FONT);
+        assetManager.load(AssetDescriptors.MAP_FONT);
         assetManager.load(AssetDescriptors.UI_FONT_INTRO);
+        assetManager.load(AssetDescriptors.CONTINUE_FONT);
+        assetManager.load(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT);
         assetManager.load(AssetPaths.UI_SKIN, Skin.class);
         assetManager.load(AssetPaths.UI_SKIN_ALTERNATIVE, Skin.class);
         assetManager.load(AssetPaths.DIAMOND_SOUND, Sound.class);
@@ -36,10 +39,22 @@ public class AssetManager {
         return assetManager.get(uiFont);
     }
 
+    public BitmapFont getMapFont(AssetDescriptor<BitmapFont> mapFont) {
+        return assetManager.get(mapFont);
+    }
+
     public BitmapFont getIntroFont(AssetDescriptor<BitmapFont> uiFontIntro) {
         return assetManager.get(uiFontIntro);
     }
 
+
+    public BitmapFont getContinueFont(AssetDescriptor<BitmapFont> continueFont) {
+        return assetManager.get(continueFont);
+    }
+
+    public BitmapFont getContinueIntroTitleFont(AssetDescriptor<BitmapFont> continueIntroTitleFont) {
+        return assetManager.get(continueIntroTitleFont);
+    }
     public Skin getSkin(AssetDescriptor<Skin> uiSkin) {
         return assetManager.get(uiSkin);
     }

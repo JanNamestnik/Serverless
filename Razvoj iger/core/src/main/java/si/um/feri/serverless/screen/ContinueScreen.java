@@ -71,15 +71,14 @@ public class ContinueScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
     }
 
-
     private Table createUi() {
         Table table = new Table(skin);
         table.defaults().pad(10);
         table.setFillParent(true);
 
         // Load the custom font
-        BitmapFont customFont = assetManager.get(AssetDescriptors.UI_FONT);
-        BitmapFont customFontTitle = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
+        BitmapFont customFont = assetManager.get(AssetDescriptors.CONTINUE_FONT);
+        BitmapFont customFontTitle = assetManager.get(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT);
 
         // Create a LabelStyle with the custom font
         Label.LabelStyle titleStyle = new Label.LabelStyle();
@@ -155,7 +154,7 @@ public class ContinueScreen extends ScreenAdapter {
 
         for (int i = 0; i < title.length(); i++) {
             char letter = title.charAt(i);
-            Label label = new Label(String.valueOf(letter), new Label.LabelStyle(assetManager.get(AssetDescriptors.UI_FONT_INTRO), null));
+            Label label = new Label(String.valueOf(letter), new Label.LabelStyle(assetManager.get(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT), null));
             label.setPosition(startX + i * 20, startY);
             label.getColor().a = 0; // Začetno nevidno
 
