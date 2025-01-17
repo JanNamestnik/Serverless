@@ -44,6 +44,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.simulationButton.setOnClickListener {
+            val intent = Intent(this, SimulationActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.exitBtn.setOnClickListener {
             finishAffinity()
         }

@@ -27,9 +27,8 @@
         android:text="@string/dataBtn"
         app:layout_constraintBottom_toTopOf="@+id/exitBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pictureBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/simulationButton" />
 
     <Button
         android:id="@+id/pictureBtn"
@@ -41,9 +40,8 @@
         android:insetLeft="@dimen/inset_right"
         android:insetRight="@dimen/inset_right"
         android:text="@string/pictureBtn"
-        app:layout_constraintBottom_toTopOf="@+id/sensorBtn"
+        app:layout_constraintBottom_toTopOf="@+id/simulationButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageBtn" />
 
@@ -59,24 +57,21 @@
         android:text="@string/messageBtn"
         app:layout_constraintBottom_toTopOf="@+id/pictureBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline3" />
 
     <Button
         android:id="@+id/exitBtn"
         style="@style/CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="24dp"
         android:drawableEnd="@drawable/baseline_logout_24"
         android:fontFamily="@font/roboto_bold"
         android:insetRight="@dimen/inset_right"
         android:text="@string/exitBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sensorBtn" />
 
@@ -85,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.52" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -98,5 +93,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/serverless_logo" />
+
+    <Button
+        android:id="@+id/simulationButton"
+        style="@style/CustomButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/baseline_format_list_bulleted_24"
+        android:fontFamily="@font/roboto_bold"
+        android:insetLeft="@dimen/inset_right"
+        android:insetRight="@dimen/inset_right"
+        android:text="Simulation"
+        app:layout_constraintBottom_toTopOf="@+id/sensorBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pictureBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
