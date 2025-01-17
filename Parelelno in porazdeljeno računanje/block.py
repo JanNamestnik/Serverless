@@ -3,11 +3,6 @@ import time
 import logging
 
 
-
-
-
-
-
 class Block:
     def __init__(self, index, data, prev_hash, difficulty):
         self.index = index
