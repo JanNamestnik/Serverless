@@ -1,61 +1,75 @@
 
 gameplay.png
-size: 1024, 512
+size: 1024, 1024
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 HUD
   rotate: false
-  xy: 269, 168
+  xy: 408, 676
   size: 239, 339
   orig: 239, 339
   offset: 0, 0
   index: -1
 HUD_alternative
   rotate: false
-  xy: 2, 2
+  xy: 2, 54
   size: 265, 505
   orig: 265, 505
   offset: 0, 0
   index: -1
 bomb
   rotate: false
-  xy: 510, 258
-  size: 121, 119
-  orig: 121, 119
+  xy: 649, 760
+  size: 128, 125
+  orig: 128, 125
   offset: 0, 0
   index: -1
 coin
   rotate: false
-  xy: 269, 6
+  xy: 779, 985
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
   index: -1
 diamond
   rotate: false
-  xy: 269, 38
+  xy: 269, 431
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+gameplayHUD
+  rotate: false
+  xy: 2, 561
+  size: 404, 454
+  orig: 404, 454
+  offset: 0, 0
+  index: -1
 leafClover
   rotate: false
-  xy: 640, 457
+  xy: 2, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 pin
   rotate: false
-  xy: 399, 102
+  xy: 408, 610
   size: 49, 64
   orig: 49, 64
   offset: 0, 0
   index: -1
+scratchCoin
+  rotate: false
+  xy: 649, 887
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 skull
   rotate: false
-  xy: 510, 379
+  xy: 269, 301
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

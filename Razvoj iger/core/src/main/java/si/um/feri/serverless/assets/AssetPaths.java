@@ -8,6 +8,7 @@ public class AssetPaths {
     public static final String UI_SKIN_ALTERNATIVE = "ui_alternative/cloud-form-ui.json";
     public static final String DIAMOND_SOUND = "core/assets/sounds/diamondSound.wav";
     public static final String MENU_PICK = "core/assets/sounds/menu_pick.wav";
+    public static final String MENU_MUSIC = "core/assets/sounds/menu_music.mp3";
     public static final String MOUSE_CLICK = "core/assets/sounds/mouse_click.wav";
     public static final String BOMB_SOUND = "core/assets/sounds/bombSound.wav";
 }

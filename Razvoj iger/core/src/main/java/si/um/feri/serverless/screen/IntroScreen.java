@@ -143,7 +143,7 @@ public class IntroScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(34 / 255f, 100 / 255f, 57 / 255f, 1);
+        ScreenUtils.clear(0, 0 , 0, 0);
 
 
         stage.act(delta);

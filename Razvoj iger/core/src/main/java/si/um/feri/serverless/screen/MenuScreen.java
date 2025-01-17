@@ -2,8 +2,10 @@ package si.um.feri.serverless.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -42,6 +45,10 @@ public class MenuScreen extends ScreenAdapter {
     private Pool<FallingCoin> coinPool;
     private Sound menuPick;
 
+    private Music menuMusic;
+
+    private TextureAtlas gameplayAtlas;
+
     private static final int MAX_COINS = 4;
 
     public MenuScreen(DiscountGame game) {
@@ -56,8 +63,11 @@ public class MenuScreen extends ScreenAdapter {
 
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
         skin_alternative = assetManager.getSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
+        gameplayAtlas = assetManager.getGameplayAtlas();
 
         menuPick = assetManager.getPickSound(AssetDescriptors.MENU_PICK);
+
+        menuMusic = assetManager.getMenuMusic(AssetDescriptors.MENU_MUSIC);
 
         backgroundTexture = new Texture(Gdx.files.internal("assets/backgroundMenu.png"));
 
@@ -69,6 +79,12 @@ public class MenuScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         spawnCoins();
+
+        if(GameManager.getInstance().isMusicEnabled()) {
+            menuMusic.setVolume(0.1f);
+            menuMusic.setLooping(true);
+            menuMusic.play();
+        }
 
         menuTable = createUi();
         stage.addActor(menuTable);
@@ -105,6 +121,7 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
+        menuMusic.stop();
         stage.dispose();
     }
 
@@ -136,7 +153,7 @@ public class MenuScreen extends ScreenAdapter {
         // Create title
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
-        titleStyle.font.getData().setScale(1.5f); // Povečajte velikost pisave
+        titleStyle.font.getData().setScale(1.3f); // Increase font size
 
         Label titleLabel = new Label("Deal hunter", titleStyle);
 
@@ -144,7 +161,7 @@ public class MenuScreen extends ScreenAdapter {
 
         // Create buttons
         TextButton.TextButtonStyle buttonStyle = skin.get(TextButton.TextButtonStyle.class);
-        buttonStyle.font.getData().setScale(1.5f); // Povečajte velikost pisave za gumbe
+        buttonStyle.font.getData().setScale(1.3f); // Increase font size for buttons
 
         TextButton playButton = new TextButton("Play", buttonStyle);
         playButton.addListener(new ClickListener() {
@@ -195,6 +212,12 @@ public class MenuScreen extends ScreenAdapter {
         Table buttonTable = new Table();
         buttonTable.defaults().padLeft(30).padRight(30);
 
+        TextureRegion menuBackgroundRegion = gameplayAtlas.findRegion(RegionNames.HUD_MENU);
+        TextureRegionDrawable menuBackgroundDrawable = new TextureRegionDrawable(menuBackgroundRegion);
+        menuBackgroundDrawable.setMinWidth(menuBackgroundRegion.getRegionWidth() * 1.3f); // Scale width
+        menuBackgroundDrawable.setMinHeight(menuBackgroundRegion.getRegionHeight() * 1.3f); // Scale height
+        buttonTable.setBackground(menuBackgroundDrawable);
+
         buttonTable.add(playButton).padBottom(25).expandX().fill().row();
         buttonTable.add(collectionButton).padBottom(25).fillX().row();
         buttonTable.add(settingsButton).padBottom(25).fillX().row();
@@ -211,7 +234,6 @@ public class MenuScreen extends ScreenAdapter {
 
         return table;
     }
-
     private void playButtonSound() {
         if (GameManager.getInstance().isSoundEffectsEnabled()) {
             menuPick.play(0.3f); // Nastavite glasnost, če je potrebno

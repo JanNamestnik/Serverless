@@ -155,13 +155,13 @@ public class SettingsScreen extends ScreenAdapter {
 
     private void playButtonSound() {
         if (GameManager.getInstance().isSoundEffectsEnabled()) {
-            settingsPick.play(0.3f); // Nastavite glasnost, če je potrebno
+            settingsPick.play(0.3f);
         }
     }
 
     private void playSelectSound() {
         if (GameManager.getInstance().isSoundEffectsEnabled()) {
-            mouseClick.play(0.3f); // Nastavite glasnost, če je potrebno
+            mouseClick.play(0.3f);
         }
     }
 }

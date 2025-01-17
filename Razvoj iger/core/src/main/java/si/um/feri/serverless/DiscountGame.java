@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.screen.ContinueScreen;
+import si.um.feri.serverless.screen.GameScreen;
 
 public class DiscountGame extends Game {
 
@@ -25,7 +26,7 @@ public class DiscountGame extends Game {
         batch = new SpriteBatch();
 
         // Namesto MenuScreen kot začetni zaslon, začni z IntroScreen (ali pozneje preklopi nanj)
-        setScreen(new ContinueScreen(this));
+        setScreen(new GameScreen(this));
     }
 
     @Override

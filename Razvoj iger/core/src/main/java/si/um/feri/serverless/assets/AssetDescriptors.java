@@ -27,6 +27,9 @@ public class AssetDescriptors {
     public static final AssetDescriptor<Sound> MENU_PICK =
         new AssetDescriptor<>(AssetPaths.MENU_PICK, Sound.class);
 
+    public static final AssetDescriptor<Music> MENU_MUSIC =
+        new AssetDescriptor<>(AssetPaths.MENU_MUSIC, Music.class);
+
     public static final AssetDescriptor<Sound> MOUSE_CLICK =
         new AssetDescriptor<>(AssetPaths.MOUSE_CLICK, Sound.class);
 
