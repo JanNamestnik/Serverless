@@ -60,4 +60,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation(project(":PersonLibrary"))
+    implementation(project(":SensorLibrary"))
 }

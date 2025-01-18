@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Serverless"
 include(":app")
 include(":PersonLibrary")
+include(":SensorLibrary")
