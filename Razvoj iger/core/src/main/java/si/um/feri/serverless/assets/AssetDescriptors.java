@@ -32,6 +32,12 @@ public class AssetDescriptors {
     public static final AssetDescriptor<Sound> DIAMOND_SOUND =
         new AssetDescriptor<>(AssetPaths.DIAMOND_SOUND, Sound.class);
 
+    public static final AssetDescriptor<Sound> NOTIFICATION_SOUND =
+        new AssetDescriptor<>(AssetPaths.NOTIFICATION_SOUND, Sound.class);
+
+    public static final AssetDescriptor<Sound> WIN_SOUND =
+        new AssetDescriptor<>(AssetPaths.WIN_SOUND, Sound.class);
+
     public static final AssetDescriptor<Sound> MENU_PICK =
         new AssetDescriptor<>(AssetPaths.MENU_PICK, Sound.class);
 

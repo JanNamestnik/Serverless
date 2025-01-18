@@ -161,13 +161,14 @@ public class MenuScreen extends ScreenAdapter {
 
         // Create buttons
         TextButton.TextButtonStyle buttonStyle = skin.get(TextButton.TextButtonStyle.class);
-        buttonStyle.font.getData().setScale(1.3f); // Increase font size for buttons
+        buttonStyle.font.getData().setScale(1.1f); // Increase font size for buttons
 
         TextButton playButton = new TextButton("Play", buttonStyle);
+        // In MenuScreen.java
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                playButtonSound();
+                GameManager.getInstance().setRulesShown(false); // Reset the rulesShown flag
                 game.setScreen(new GameScreen(game));
             }
         });

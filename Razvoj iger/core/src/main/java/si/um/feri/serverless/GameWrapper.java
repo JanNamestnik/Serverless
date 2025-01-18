@@ -3,7 +3,6 @@ package si.um.feri.serverless;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 
 public class GameWrapper implements ApplicationListener {
 

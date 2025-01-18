@@ -14,4 +14,6 @@ public class AssetPaths {
     public static final String MENU_MUSIC = "core/assets/sounds/menu_music.mp3";
     public static final String MOUSE_CLICK = "core/assets/sounds/mouse_click.wav";
     public static final String BOMB_SOUND = "core/assets/sounds/bombSound.wav";
+    public static final String WIN_SOUND = "core/assets/sounds/winSound.wav";
+    public static final String NOTIFICATION_SOUND = "core/assets/sounds/notification.wav";
 }

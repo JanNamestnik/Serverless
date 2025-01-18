@@ -19,6 +19,8 @@ public class GameManager {
     private static final GameManager INSTANCE = new GameManager();
     private final Preferences preferences;
 
+    private boolean rulesShown = false;
+
     private GameManager() {
         preferences = Gdx.app.getPreferences(PREFERENCES_NAME);
     }
@@ -63,12 +65,12 @@ public class GameManager {
         return preferences.getInteger(DISCOUNT_KEY, DEFAULT_DISCOUNT);
     }
 
+
     public boolean areRulesShown() {
-        return preferences.getBoolean(RULES_SHOWN_KEY, false);
+        return rulesShown;
     }
 
-    public void setRulesShown(boolean shown) {
-        preferences.putBoolean(RULES_SHOWN_KEY, shown);
-        preferences.flush();
+    public void setRulesShown(boolean rulesShown) {
+        this.rulesShown = rulesShown;
     }
 }
