@@ -62,7 +62,7 @@ public class AssetManager {
     public Skin getAlternativeSkin(AssetDescriptor<Skin> uiSkinAlternative) {
         return assetManager.get(uiSkinAlternative);
     }
-    public Sound getDiamondSound() {
+    public Sound getDiamondSound(AssetDescriptor<Sound> diamondSound) {
         return assetManager.get(AssetPaths.DIAMOND_SOUND);
     }
 
@@ -82,7 +82,7 @@ public class AssetManager {
         return assetManager.get(menuMusic);
     }
 
-    public Sound getBombSound() {
+    public Sound getBombSound(AssetDescriptor<Sound> bombSound) {
         return assetManager.get(AssetPaths.BOMB_SOUND);
     }
 

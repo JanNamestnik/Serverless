@@ -8,6 +8,8 @@ public class GameManager {
     private static final String PREFERENCES_NAME = "game_settings";
 
     private static final String SOUND_EFFECTS_ENABLED_KEY = "sound_effects_enabled";
+
+    private static final String RULES_SHOWN_KEY = "rules_shown";
     private static final String MUSIC_ENABLED_KEY = "music_enabled";
     private static final String GRID_SIZE_KEY = "grid_size";
     private static final String DISCOUNT_KEY = "discount";
@@ -59,5 +61,14 @@ public class GameManager {
 
     public int getDiscount() {
         return preferences.getInteger(DISCOUNT_KEY, DEFAULT_DISCOUNT);
+    }
+
+    public boolean areRulesShown() {
+        return preferences.getBoolean(RULES_SHOWN_KEY, false);
+    }
+
+    public void setRulesShown(boolean shown) {
+        preferences.putBoolean(RULES_SHOWN_KEY, shown);
+        preferences.flush();
     }
 }
