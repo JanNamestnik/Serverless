@@ -44,6 +44,24 @@ class AddSensorActivity : AppCompatActivity(), OnMapReadyCallback {
         setupSwitchListener()
 
         initializeMap()
+
+        // Check if we're editing an existing sensor
+        val sensorToEdit = intent.getSerializableExtra("editing_sensor") as? Sensor
+        if (sensorToEdit != null) {
+            prefillFields(sensorToEdit)
+        }
+    }
+
+    private fun prefillFields(sensor: Sensor) {
+        binding.dataTypeSpinner.setSelection((binding.dataTypeSpinner.adapter as ArrayAdapter<String>).getPosition(sensor.type))
+        binding.rangeFromInput.setText(sensor.rangeFrom.toString())
+        binding.rangeToInput.setText(sensor.rangeTo.toString())
+        val frequencyParts = sensor.frequency.split("h:", "m:", "s")
+        binding.hourPicker.value = frequencyParts[0].toIntOrNull() ?: 0
+        binding.minutePicker.value = frequencyParts[1].toIntOrNull() ?: 0
+        binding.secondPicker.value = frequencyParts[2].toIntOrNull() ?: 0
+        binding.locationInput.setText(sensor.location)
+        binding.addSensorSwitch.isChecked = sensor.enabled
     }
 
     private fun initializeButtons() {

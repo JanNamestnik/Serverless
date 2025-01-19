@@ -19,12 +19,14 @@ class SimulationActivity : AppCompatActivity() {
 
     companion object {
         private const val ADD_SENSOR_REQUEST_CODE = 1001
+        private const val EDIT_SENSOR_REQUEST_CODE = 1002
         private const val SENSOR_PREFS_KEY = "sensor_records"
     }
 
     private lateinit var binding: ActivitySimulationBinding
     private lateinit var adapter: SensorRecordAdapter
     private val sensorRecords = mutableListOf<SensorRecord>()
+    private var editingPosition: Int? = null // Keep track of which sensor is being edited
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,9 @@ class SimulationActivity : AppCompatActivity() {
             },
             onSensorLongPressed = { position ->
                 deleteSensor(position)
+            },
+            onSensorShortPressed = { position ->
+                editSensor(position)
             }
         )
         binding.recyclerViewSensors.layoutManager = LinearLayoutManager(this)
@@ -135,18 +140,39 @@ class SimulationActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun editSensor(position: Int) {
+        val sensorToEdit = sensorRecords[position]
+        editingPosition = position
+
+        val intent = Intent(this, AddSensorActivity::class.java)
+        intent.putExtra("editing_sensor", sensorToEdit.sensor)
+        startActivityForResult(intent, EDIT_SENSOR_REQUEST_CODE)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_SENSOR_REQUEST_CODE && resultCode == RESULT_OK) {
-            val newSensor = data?.getSerializableExtra("new_sensor") as? Sensor
-            if (newSensor != null) {
-                sensorRecords.add(SensorRecord(sensor = newSensor))
-                adapter.notifyDataSetChanged()
-
+        if (resultCode == RESULT_OK) {
+            val updatedSensor = data?.getSerializableExtra("new_sensor") as? Sensor
+            if (updatedSensor != null) {
+                when (requestCode) {
+                    ADD_SENSOR_REQUEST_CODE -> {
+                        // Add a new sensor
+                        sensorRecords.add(SensorRecord(sensor = updatedSensor))
+                        adapter.notifyDataSetChanged()
+                        Toast.makeText(this, "${updatedSensor.type} added to the list.", Toast.LENGTH_SHORT).show()
+                    }
+                    EDIT_SENSOR_REQUEST_CODE -> {
+                        // Update an existing sensor
+                        val position = editingPosition
+                        if (position != null) {
+                            sensorRecords[position].sensor = updatedSensor
+                            adapter.notifyItemChanged(position)
+                            Toast.makeText(this, "${updatedSensor.type} updated.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
                 // Save the updated list
                 savePreferences()
-
-                Toast.makeText(this, "${newSensor.type} added to the list.", Toast.LENGTH_SHORT).show()
             }
         }
     }
