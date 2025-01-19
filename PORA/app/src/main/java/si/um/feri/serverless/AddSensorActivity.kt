@@ -1,5 +1,6 @@
 package si.um.feri.serverless
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
@@ -52,6 +53,7 @@ class AddSensorActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun prefillFields(sensor: Sensor) {
         binding.dataTypeSpinner.setSelection((binding.dataTypeSpinner.adapter as ArrayAdapter<String>).getPosition(sensor.type))
         binding.rangeFromInput.setText(sensor.rangeFrom.toString())
@@ -135,7 +137,7 @@ class AddSensorActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // Set an initial location (e.g., Slovenia)
+        // Set an initial location
         val initialLocation = LatLng(46.1512, 14.9955)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 7f))
 
@@ -179,7 +181,7 @@ class AddSensorActivity : AppCompatActivity(), OnMapReadyCallback {
             val addresses: MutableList<Address>? = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (addresses?.isNotEmpty() == true) {
                 val address = addresses[0]
-                // Return a human-readable address (e.g., city or locality)
+                // Return a human-readable address
                 address.locality ?: address.getAddressLine(0) ?: "Unknown Location"
             } else {
                 "Unknown Location"

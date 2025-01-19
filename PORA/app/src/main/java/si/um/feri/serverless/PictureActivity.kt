@@ -2,9 +2,7 @@ package si.um.feri.serverless
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Base64
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -21,7 +18,6 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import si.um.feri.serverless.databinding.ActivityPictureBinding
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -53,18 +49,15 @@ class PictureActivity : AppCompatActivity() {
         binding = ActivityPictureBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         setupRecyclerView()
         loadAndDisplayPersons()
         initializeButtons()
     }
 
-
     private fun initializeButtons() {
         binding.takePictureBtn.setOnClickListener {
             // Check if the camera permission is granted
             if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted; launch the camera
                 openCamera()
             } else {
                 // Request the camera permission
@@ -171,7 +164,6 @@ class PictureActivity : AppCompatActivity() {
         })
     }
 
-
     private fun saveJsonResponse(response: String?) {
         if (response == null) return
 
@@ -206,6 +198,4 @@ class PictureActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

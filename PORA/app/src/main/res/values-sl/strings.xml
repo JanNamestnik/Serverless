@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Serverless</string>
+    <!--Main activity-->
+    <string name="dataBtn">Senzorji</string>
+    <string name="exitBtn">Izhod</string>
+    <string name="messageBtn">Pošlji sporočilo</string>
+    <string name="pictureBtn">API za napoved</string>
+    <string name="image">Serverless logo</string>
+    <string name="simulationBtn">Simulacija</string>
+
+    <!--Picture activity-->
+    <string name="takePictureBtn">Posnemi sliko</string>
+    <string name="textView4">Seznam ljudi</string>
+
+    <!--Person record-->
+    <string name="nameTxt">Oseba 1</string>
+    <string name="genderTxt">Spol:</string>
+    <string name="ageTxt">Starost:</string>
+    <string name="gender">moški</string>
+    <string name="age">nad 21</string>
+    <string name="personLogo">logo osebe</string>
+    <string name="back_button_description">nazaj</string>
+
+    <!--Message activity-->
+    <string name="messageTxt">Sporočilo</string>
+    <string name="eventNameTxt">Ime dogodka</string>
+    <string name="messageTypeTxt">Vrsta sporočila</string>
+    <string name="sendBtn">Pošlji</string>
+    <string name="alert_text_view">Pošlji sporočilo pri ekstremni temp.:</string>
+    <string name="temperatureInputHint">°C</string>
+    <string name="saveBtn">Shrani</string>
+    <string name="alert_text">Opozorilo</string>
+
+    <!--Sensors activity-->
+    <string name="sesorsTxt">Senzorji</string>
+    <string name="humidityLabel">Vlažnost (%)</string>
+    <string name="humidityFrequencyLabel">Pogostost posodobitev (HH:MM:SS)</string>
+    <string name="humidityEnabledSwitch">Omogočeno</string>
+    <string name="lightLabel">Svetloba (lux)</string>
+    <string name="lightFrequencyLabel">Pogostost posodobitev (HH:MM:SS)</string>
+
+    <!--Simulation activity-->
+    <string name="simulationTxt">Simulacija</string>
+    <string name="addSensorBtn">Dodaj senzor</string>
+
+    <!--Sensor record-->
+    <string name="typeTxt">Vrsta</string>
+    <string name="rangeTxt">Obseg</string>
+    <string name="frequencyTxt">Pogostost</string>
+    <string name="locationTxt">Lokacija</string>
+
+    <!--Add sensor activity-->
+    <string name="addSesorsTxt">Dodaj senzor</string>
+    <string name="sensorTypeTxt">Vrsta podatkov</string>
+    <string name="dataRangeLabel">Naključni obseg generacije podatkov</string>
+    <string name="rangeFromInput">Od</string>
+    <string name="rangeToInput">Do</string>
+    <string name="frequencyLabel">Pogostost posodobitev (HH:MM:SS)</string>
+    <string name="locationInput">Lokacija</string>
+    <string name="mapSearchButton">gumb za iskanje</string>
+    <string name="mapFragment">zemljevid</string>
+    <string name="addSensorSwitch">Izklopljeno</string>
+</resources>

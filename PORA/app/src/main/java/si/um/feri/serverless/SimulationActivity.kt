@@ -35,8 +35,8 @@ class SimulationActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySimulationBinding
     private lateinit var adapter: SensorRecordAdapter
     private val sensorRecords = mutableListOf<SensorRecord>()
-    private var editingPosition: Int? = null // Keep track of which sensor is being edited
-    private val handlers = mutableMapOf<String, Handler>() // Handlers for each sensor to manage API calls
+    private var editingPosition: Int? = null
+    private val handlers = mutableMapOf<String, Handler>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class SimulationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
-        loadPreferences() // Load saved states
+        loadPreferences()
         initializeButtons()
     }
 
@@ -176,7 +176,7 @@ class SimulationActivity : AppCompatActivity() {
             put("type", sensor.type.lowercase(Locale.getDefault()))
             put("value", randomValue)
             put("current_time", SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
-            put("simulated", true) // New field to indicate simulation
+            put("simulated", true)
             put("location", JSONObject().apply {
                 put("latitude", latitude)
                 put("longitude", longitude)
@@ -294,16 +294,12 @@ class SimulationActivity : AppCompatActivity() {
         // Stop all sensors and set them to off
         sensorRecords.forEach { sensorRecord ->
             if (sensorRecord.sensor.enabled) {
-                stopSendingData(sensorRecord) // Stop the handler for API calls
-                sensorRecord.sensor.enabled = false // Set the sensor to off
+                stopSendingData(sensorRecord)
+                sensorRecord.sensor.enabled = false
             }
         }
 
-        // Save the updated state to preferences
         savePreferences()
-
-        // Notify the user or log the event
         android.util.Log.d("SimulationActivity", "All sensors turned off when leaving the activity.")
     }
-
 }

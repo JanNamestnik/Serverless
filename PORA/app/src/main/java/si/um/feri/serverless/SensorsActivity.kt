@@ -248,11 +248,6 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
         humiditySensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL) }
     }
 
-    override fun onPause() {
-        super.onPause()
-        sensorManager.unregisterListener(this)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         executor.shutdownNow()
@@ -271,7 +266,7 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
 
         val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
             com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
-            1000 // Request location every 1 second
+            3000 // Request location every 1 second
         ).build()
 
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
@@ -296,4 +291,44 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
+        turnOffSensorsAndStopTasks() // Disable switches and stop tasks
+    }
+
+    override fun onStop() {
+        super.onStop()
+        turnOffSensorsAndStopTasks() // Ensure switches are off and tasks are stopped
+    }
+
+    private fun turnOffSensorsAndStopTasks() {
+        // Turn off light and humidity switches
+        binding.lightEnabledSwitch.isChecked = false
+        binding.humidityEnabledSwitch.isChecked = false
+
+        // Update preferences to ensure sensors are disabled
+        val sharedPreferences = getSharedPreferences("SensorsPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("lightEnabled", false)
+            putBoolean("humidityEnabled", false)
+            apply()
+        }
+
+        // Stop running tasks
+        if (lightTask != null) {
+            lightTask?.cancel(true)
+            lightTask = null
+        }
+        if (humidityTask != null) {
+            humidityTask?.cancel(true)
+            humidityTask = null
+        }
+
+        // Reset the state variables
+        isLightEnabled = false
+        isHumidityEnabled = false
+    }
+
 }

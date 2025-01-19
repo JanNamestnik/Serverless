@@ -23,7 +23,7 @@ class SensorRecordAdapter(
         val sensorRecord = sensorRecords[position]
         holder.bind(sensorRecord)
         holder.itemView.setOnClickListener {
-            onSensorShortPressed(position) // Trigger short press for editing
+            onSensorShortPressed(position)
         }
         holder.itemView.setOnLongClickListener {
             onSensorLongPressed(position)
@@ -35,6 +35,7 @@ class SensorRecordAdapter(
 
     inner class SensorRecordViewHolder(private val binding: SensorRecordBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun bind(sensorRecord: SensorRecord) {
             val sensor = sensorRecord.sensor
 

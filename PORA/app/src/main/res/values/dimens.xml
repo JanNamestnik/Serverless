@@ -1,13 +1,16 @@
 <resources>
     <!-- Margins and Padding -->
+    <dimen name="margin_extra_small">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_medium">24dp</dimen>
     <dimen name="margin_large">40dp</dimen>
     <dimen name="margin_top_small">16dp</dimen>
+    <dimen name="margin_top_big">32dp</dimen>
 
     <!-- Other dimensions -->
     <dimen name="inset_right">10dp</dimen>
     <dimen name="layout_constraintHorizontal_bias">0.5</dimen>
+    <dimen name="layout_constraintVertical_bias">0.0</dimen>
     <dimen name="zero_dp">0dp</dimen>
 
     <!-- EditText dimensions with variations -->
@@ -32,6 +35,26 @@
 
     <dimen name="image_height">300dp</dimen>
     <dimen name="image_layout">50dp</dimen>
+
+    <!--picture dimens-->
+    <dimen name="image_dimen">70dp</dimen>
+
+    <!--edit text dimen-->
+    <dimen name="edit_width">250dp</dimen>
+    <dimen name="edit_width_half">125dp</dimen>
+    <dimen name="edit_height">50dp</dimen>
+
+    <dimen name="sp_text_size">20sp</dimen>
+    <dimen name="sp_text_size_small">16sp</dimen>
+
+    <dimen name="coroner_radius_small">10dp</dimen>
+    <dimen name="card_height">100dp</dimen>
+
+    <dimen name="map_height">200dp</dimen>
+
+
+
+
 
 
 </resources>

@@ -2,7 +2,6 @@ package si.um.feri.serverless
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Base64
 import org.json.JSONArray
 import org.json.JSONObject
 import si.um.feri.personlibrary.Person

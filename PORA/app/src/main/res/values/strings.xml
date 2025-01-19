@@ -6,6 +6,7 @@
     <string name="messageBtn">Post a message</string>
     <string name="pictureBtn">Prediction API</string>
     <string name="image">Serverless logo</string>
+    <string name="simulationBtn">Simulation</string>
 
     <!--Picture activity-->
     <string name="takePictureBtn">Take a picture</string>
@@ -20,5 +21,43 @@
     <string name="personLogo">personLogo</string>
     <string name="back_button_description">backButton</string>
 
+    <!--Message activity-->
+    <string name="messageTxt">Message</string>
+    <string name="eventNameTxt">Event name</string>
+    <string name="messageTypeTxt">Message type</string>
+    <string name="sendBtn">Send</string>
+    <string name="alert_text_view">Send message if extreme temp:</string>
+    <string name="temperatureInputHint">°C</string>
+    <string name="saveBtn">Save</string>
+    <string name="alert_text">Alert</string>
 
+    <!--Sensors activity-->
+    <string name="sesorsTxt">Sensors</string>
+    <string name="humidityLabel">Humidity (%)</string>
+    <string name="humidityFrequencyLabel">Update frequency (HH:MM:SS)</string>
+    <string name="humidityEnabledSwitch">Enabled</string>
+    <string name="lightLabel">Light (lux)</string>
+    <string name="lightFrequencyLabel">Update frequency (HH:MM:SS)</string>
+
+    <!--Simulation activity-->
+    <string name="simulationTxt">Simulation</string>
+    <string name="addSensorBtn">Add sensor</string>
+
+    <!--Sensor record-->
+    <string name="typeTxt">Type</string>
+    <string name="rangeTxt">Range</string>
+    <string name="frequencyTxt">Frequency</string>
+    <string name="locationTxt">Location</string>
+
+    <!--Add sensor activity-->
+    <string name="addSesorsTxt">Add sensor</string>
+    <string name="sensorTypeTxt">Data type</string>
+    <string name="dataRangeLabel">Random data generation range</string>
+    <string name="rangeFromInput">From</string>
+    <string name="rangeToInput">To</string>
+    <string name="frequencyLabel">Update frequency (HH:MM:SS)</string>
+    <string name="locationInput">Location</string>
+    <string name="mapSearchButton">search button</string>
+    <string name="mapFragment">map fragment</string>
+    <string name="addSensorSwitch">Off</string>
 </resources>
