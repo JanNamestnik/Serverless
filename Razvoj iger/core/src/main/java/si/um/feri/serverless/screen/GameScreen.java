@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -41,7 +40,6 @@ public class GameScreen extends ScreenAdapter {
     private Stage stage;
     private Viewport viewport;
     private Sound mouseClick;
-    private Sound menuPick;
 
     private Sound diamondSound;
 
@@ -54,18 +52,16 @@ public class GameScreen extends ScreenAdapter {
     private Skin skin_alternative;
 
     private Skin skin;
-    private TextureAtlas gameplayAtlas;
 
     private TextureRegion scratchCoin;
     private TextureRegion bombTexture;
     private TextureRegion diamondTexture;
 
-    private TextureRegion hudBackground;
-
     private SelectBox<String> bombSelectBox;
 
     private int foundDiamonds;
     private int totalDiamonds;
+
 
     public GameScreen(DiscountGame game) {
         this.game = game;
@@ -77,9 +73,8 @@ public class GameScreen extends ScreenAdapter {
         viewport = new FitViewport(GameConfig.WIDTH, GameConfig.HEIGHT);
         stage = new Stage(viewport, game.getBatch());
 
-        gameplayAtlas = assetManager.getGameplayAtlas();
+        TextureAtlas gameplayAtlas = assetManager.getGameplayAtlas();
         mouseClick = assetManager.getMouseClickSound(AssetDescriptors.MOUSE_CLICK);
-        menuPick = assetManager.getPickSound(AssetDescriptors.MENU_PICK);
         diamondSound = assetManager.getDiamondSound(AssetDescriptors.DIAMOND_SOUND);
         bombSound = assetManager.getBombSound(AssetDescriptors.BOMB_SOUND);
         notificationSound = assetManager.getNotificationSound(AssetDescriptors.NOTIFICATION_SOUND);
@@ -88,7 +83,6 @@ public class GameScreen extends ScreenAdapter {
         scratchCoin = gameplayAtlas.findRegion(RegionNames.SCRATCH_COIN);
         bombTexture = gameplayAtlas.findRegion(RegionNames.BOMB);
         diamondTexture = gameplayAtlas.findRegion(RegionNames.DIAMOND);
-        hudBackground = gameplayAtlas.findRegion(RegionNames.GAMEPLAY_HUD);
 
         skin_alternative = assetManager.getAlternativeSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
@@ -112,13 +106,15 @@ public class GameScreen extends ScreenAdapter {
 
         if (!GameManager.getInstance().areRulesShown()) {
             playNotificationSound();
-            showWelcomeDialog();
+            showWelcomeDialog(""); // Pass an empty string or appropriate discount value
             GameManager.getInstance().setRulesShown(true);
         }
 
         Gdx.input.setInputProcessor(stage);
     }
-    private void showWelcomeDialog() {
+    private void showWelcomeDialog(String discount) {
+        GameManager.getInstance().addCollectedDiscount(discount);
+
         // Create a LabelStyle for the dialog title
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
@@ -129,13 +125,13 @@ public class GameScreen extends ScreenAdapter {
         // Create the content table
         Table contentTable = new Table();
         contentTable.add(titleLabel).center().padBottom(5).row();
-        contentTable.add(new Label("Rules: \n\n - Try to find all the diamonds on the board to win \n\n - Finding a mine means u lose your discount \n \n - Bigger discount = more mines  ", skin)).center();
+        contentTable.add(new Label("Rules: \n\n - Try to find all the diamonds on the board to win \n\n - Finding a mine means you lose your discount \n \n - Bigger discount = more mines", skin)).center();
 
         // Create and show the dialog
         Dialog dialog = new Dialog("", skin) {
             @Override
             protected void result(Object object) {
-
+                // Handle dialog result if needed
             }
         };
         dialog.getContentTable().add(contentTable).center();
@@ -194,6 +190,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void showWinDialog(String discount) {
+        if (discount == null || discount.isEmpty()) {
+            return; // Do not show dialog for empty discount types
+        }
+        GameManager.getInstance().addCollectedDiscount(discount);
 
         // Create a LabelStyle for the dialog title
         Label.LabelStyle titleStyle = new Label.LabelStyle();
@@ -220,8 +220,8 @@ public class GameScreen extends ScreenAdapter {
         dialog.show(stage);
         dialog.setSize(800, 300); // Adjust the size as needed
         dialog.setPosition((GameConfig.WIDTH - dialog.getWidth()) / 2, (GameConfig.HEIGHT - dialog.getHeight()) / 2); // Center the dialog
-
     }
+
     private void showLoseDialog() {
         // Create a LabelStyle for the dialog title
         Label.LabelStyle titleStyle = new Label.LabelStyle();
@@ -257,11 +257,11 @@ public class GameScreen extends ScreenAdapter {
             case "10%":
                 return 3;
             case "25%":
-                return 6;
+                return 4;
             case "50%":
-                return 9;
+                return 1;
             case "100%":
-                return 10;
+                return 1;
             default:
                 return 0;
         }
@@ -318,26 +318,23 @@ public class GameScreen extends ScreenAdapter {
                     public void clicked(InputEvent event, float x, float y) {
                         image.addAction(Actions.sequence(
                             Actions.fadeOut(0.3f), // Fade out over 0.3 seconds
-                            Actions.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    hiddenImage.setPosition(image.getX(), image.getY()); // Ensure position matches
-                                    hiddenImage.setVisible(true);
-                                    hiddenImage.addAction(Actions.fadeIn(0.3f)); // Fade in over 0.3 seconds
-                                    image.remove();
+                            Actions.run(() -> {
+                                hiddenImage.setPosition(image.getX(), image.getY()); // Ensure position matches
+                                hiddenImage.setVisible(true);
+                                hiddenImage.addAction(Actions.fadeIn(0.3f)); // Fade in over 0.3 seconds
+                                image.remove();
 
-                                    // Check if the hidden image is a diamond or a bomb
-                                    if ("diamond".equals(hiddenImage.getName())) {
-                                        playDiamondSound();
-                                        foundDiamonds++;
-                                        if (foundDiamonds == totalDiamonds) {
-                                            showWinDialog(bombSelectBox.getSelected());
-                                            playWinSound();
-                                        }
-                                    } else if ("bomb".equals(hiddenImage.getName())) {
-                                        playBombSound();
-                                        showLoseDialog();
+                                // Check if the hidden image is a diamond or a bomb
+                                if ("diamond".equals(hiddenImage.getName())) {
+                                    playDiamondSound();
+                                    foundDiamonds++;
+                                    if (foundDiamonds == totalDiamonds) {
+                                        showWinDialog(bombSelectBox.getSelected());
+                                        playWinSound();
                                     }
+                                } else if ("bomb".equals(hiddenImage.getName())) {
+                                    playBombSound();
+                                    showLoseDialog();
                                 }
                             })
                         ));
@@ -348,7 +345,7 @@ public class GameScreen extends ScreenAdapter {
             boardTable.row();
         }
 
-        table.add(boardTable).center().padLeft(25);
+        table.add(boardTable).center().padRight(20);
         return table;
     }
     // Create a table with buttons for the HUD
@@ -356,8 +353,12 @@ public class GameScreen extends ScreenAdapter {
         Table hudTable = new Table();
         hudTable.setFillParent(true);
 
+        // Ustvarite nov slog za gumb z uporabo HUD_FONT
+        TextButton.TextButtonStyle endGameButtonStyle = new TextButton.TextButtonStyle();
+        endGameButtonStyle.font = assetManager.get(AssetDescriptors.HUD_FONT);
+
         // Gumb za vrnitev na MenuScreen
-        TextButton endGameButton = new TextButton("End Game", assetManager.getSkin(AssetDescriptors.UI_SKIN));
+        TextButton endGameButton = new TextButton("End Game", endGameButtonStyle);
         endGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -374,14 +375,13 @@ public class GameScreen extends ScreenAdapter {
 
         return hudTable;
     }
-
     private Table rulesHud() {
         Table rulesTable = new Table();
 
         Label.LabelStyle mainTitle = new Label.LabelStyle();
-        mainTitle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
+        mainTitle.font = assetManager.get(AssetDescriptors.HUD_FONT);
         mainTitle.font.getData().setScale(1f);
-        Label titleLabel = new Label("Risks", mainTitle);
+        Label titleLabel = new Label("Risks:", mainTitle);
 
         Label.LabelStyle percentageLabelStyle = new Label.LabelStyle();
         percentageLabelStyle.font = assetManager.get(AssetDescriptors.UI_FONT);
@@ -426,9 +426,9 @@ public class GameScreen extends ScreenAdapter {
         Table settingsTable = new Table();
 
         Label.LabelStyle mainTitle = new Label.LabelStyle();
-        mainTitle.font = assetManager.get(AssetDescriptors.UI_FONT_INTRO);
+        mainTitle.font = assetManager.get(AssetDescriptors.HUD_FONT);
         mainTitle.font.getData().setScale(1f);
-        Label titleLabel = new Label("Settings", mainTitle);
+        Label titleLabel = new Label("Settings:", mainTitle);
 
         Label.LabelStyle bombNumberLabelStyle = new Label.LabelStyle();
         bombNumberLabelStyle.font = assetManager.get(AssetDescriptors.UI_FONT);

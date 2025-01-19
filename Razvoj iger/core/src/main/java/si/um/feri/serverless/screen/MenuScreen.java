@@ -38,7 +38,6 @@ public class MenuScreen extends ScreenAdapter {
     private Viewport viewport;
     private Stage stage;
     private Skin skin;
-    private Skin skin_alternative;
     Table menuTable;
     private Texture backgroundTexture;
     private Array<FallingCoin> coins;
@@ -62,7 +61,7 @@ public class MenuScreen extends ScreenAdapter {
         stage = new Stage(viewport, game.getBatch());
 
         skin = assetManager.getSkin(AssetDescriptors.UI_SKIN);
-        skin_alternative = assetManager.getSkin(AssetDescriptors.UI_SKIN_ALTERNATIVE);
+
         gameplayAtlas = assetManager.getGameplayAtlas();
 
         menuPick = assetManager.getPickSound(AssetDescriptors.MENU_PICK);
@@ -213,11 +212,7 @@ public class MenuScreen extends ScreenAdapter {
         Table buttonTable = new Table();
         buttonTable.defaults().padLeft(30).padRight(30);
 
-        TextureRegion menuBackgroundRegion = gameplayAtlas.findRegion(RegionNames.HUD_MENU);
-        TextureRegionDrawable menuBackgroundDrawable = new TextureRegionDrawable(menuBackgroundRegion);
-        menuBackgroundDrawable.setMinWidth(menuBackgroundRegion.getRegionWidth() * 1.3f); // Scale width
-        menuBackgroundDrawable.setMinHeight(menuBackgroundRegion.getRegionHeight() * 1.3f); // Scale height
-        buttonTable.setBackground(menuBackgroundDrawable);
+
 
         buttonTable.add(playButton).padBottom(25).expandX().fill().row();
         buttonTable.add(collectionButton).padBottom(25).fillX().row();
