@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.CAMERA"
         tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
@@ -20,6 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Serverless"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCGDIbbdjbnVr-K-N1doPCfsBHNSgMydK4" />
+
+        <activity
+            android:name=".AddSensorActivity"
+            android:exported="false" />
         <activity
             android:name=".SimulationActivity"
             android:exported="false" />

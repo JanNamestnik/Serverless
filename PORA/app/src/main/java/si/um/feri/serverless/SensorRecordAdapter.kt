@@ -9,7 +9,8 @@ import si.um.feri.serverless.databinding.SensorRecordBinding
 
 class SensorRecordAdapter(
     private val sensorRecords: List<SensorRecord>,
-    private val onSwitchToggle: (SensorRecord, Boolean) -> Unit
+    private val onSwitchToggle: (SensorRecord, Boolean) -> Unit,
+    private val onSensorLongPressed: (Int) -> Unit
 ) : RecyclerView.Adapter<SensorRecordAdapter.SensorRecordViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SensorRecordViewHolder {
@@ -20,6 +21,11 @@ class SensorRecordAdapter(
     override fun onBindViewHolder(holder: SensorRecordViewHolder, position: Int) {
         val sensorRecord = sensorRecords[position]
         holder.bind(sensorRecord)
+        // Long press listener for deletion
+        holder.itemView.setOnLongClickListener {
+            onSensorLongPressed(position)
+            true
+        }
     }
 
     override fun getItemCount(): Int = sensorRecords.size
