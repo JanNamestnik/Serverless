@@ -19,6 +19,9 @@ public class AssetManager {
         assetManager.load(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
         assetManager.load(AssetDescriptors.UI_FONT);
         assetManager.load(AssetDescriptors.MAP_FONT);
+        assetManager.load(AssetDescriptors.HUD_FONT);
+        assetManager.load(AssetDescriptors.MAP_HUD_FONT);
+        assetManager.load(AssetDescriptors.MAP_HUD_BLANK_FONT);
         assetManager.load(AssetDescriptors.UI_FONT_INTRO);
         assetManager.load(AssetDescriptors.CONTINUE_FONT);
         assetManager.load(AssetDescriptors.CONTINUE_INTRO_TITLE_FONT);
@@ -41,14 +44,26 @@ public class AssetManager {
         return assetManager.get(uiFont);
     }
 
+    public BitmapFont getHUDFont(AssetDescriptor<BitmapFont> hudFont) {
+        return assetManager.get(hudFont);
+    }
+
     public BitmapFont getMapFont(AssetDescriptor<BitmapFont> mapFont) {
         return assetManager.get(mapFont);
     }
 
+    public BitmapFont getMapHudFont(AssetDescriptor<BitmapFont> mapHudFont) {
+        return assetManager.get(mapHudFont);
+    }
+
+    public BitmapFont getMapHudBlankFont(AssetDescriptor<BitmapFont> mapHudBlankFont) {
+        return assetManager.get(mapHudBlankFont);
+    }
+
+
     public BitmapFont getIntroFont(AssetDescriptor<BitmapFont> uiFontIntro) {
         return assetManager.get(uiFontIntro);
     }
-
 
     public BitmapFont getContinueFont(AssetDescriptor<BitmapFont> continueFont) {
         return assetManager.get(continueFont);
@@ -71,7 +86,6 @@ public class AssetManager {
     public Sound getWinSound(AssetDescriptor<Sound> winSound) {
         return assetManager.get(AssetPaths.WIN_SOUND);
     }
-
 
     public Logger getLogger() {
         return assetManager.getLogger();

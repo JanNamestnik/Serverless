@@ -3,6 +3,7 @@ package si.um.feri.serverless;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,16 +21,22 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import si.um.feri.serverless.assets.AssetDescriptors;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
+import si.um.feri.serverless.config.GameConfig;
 import si.um.feri.serverless.screen.ContinueScreen;
 import si.um.feri.serverless.utils.Constants;
 import si.um.feri.serverless.utils.Geolocation;
@@ -87,12 +94,15 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
     private Label playLabel;
 
+    private Stage stage;
+
 
     // center geolocation
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
 
     @Override
     public void create() {
+        stage = new Stage();
         shapeRenderer = new ShapeRenderer();
         spriteBatch = new SpriteBatch();
 
@@ -164,6 +174,8 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         fetchEvents(events -> {
             eventLocations = events;
         });
+
+        showDetailsWindow("Event Name", "Event Details", "Address", "Start Time", "Contact", "Date Start");
     }
 
     private void addHoverAnimation(Label label) {
@@ -201,8 +213,6 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
     }
 
 
-    // Parse events from JSON, extract latitude and longitude
-    // Update the parseEventsFromJson method to parse the event name
     private List<Geolocation> parseEventsFromJson(String jsonResponse) {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Event>>() {}.getType();
@@ -214,13 +224,20 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
             double lng = event.location.coordinates.get(0);
             Geolocation geolocation = new Geolocation(lat, lng);
             geolocation.setName(event.name); // Set the event name
+            geolocation.setAddress(event.address); // Set the event address
+            geolocation.setStartTime(event.startTime); // Set the event start time
+            geolocation.setContact(event.contact); // Set the event contact
+            geolocation.setDateStart(event.date_start); // Set the event start date
             geolocations.add(geolocation);
         }
         return geolocations;
     }
     class Event {
-
         String name;
+        String address;
+        String startTime;
+        String contact;
+        String date_start;
         Location location;
 
         class Location {
@@ -233,31 +250,34 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         spriteBatch.begin();
 
         // Update rotation angle once per frame
-        rotationAngle += 3f; // Hitrost vrtenja
+        rotationAngle += 3f; // Rotation speed
 
         if (eventLocations != null) {
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
 
-                if (isMouseOverMarker(marker)) {
-                    float bounceOffset = MathUtils.sinDeg(rotationAngle * 2) * 10; // Poskakovanje gor in dol
+                // Check if marker is within camera's view
+                if (camera.frustum.pointInFrustum(marker.x, marker.y, 0)) {
+                    if (isMouseOverMarker(marker)) {
+                        float bounceOffset = MathUtils.sinDeg(rotationAngle * 2) * 10; // Bouncing effect
 
-                    // Prikaz pina z rotacijo okoli lastnega središča
-                    spriteBatch.draw(pinRegion,
-                        marker.x - pinRegion.getRegionWidth() / 2, // X začetne pozicije
-                        marker.y - pinRegion.getRegionHeight() / 2 + bounceOffset, // Y z dodatkom za poskakovanje
-                        pinRegion.getRegionWidth() / 2, // X središča rotacije
-                        pinRegion.getRegionHeight() / 2, // Y središča rotacije
-                        pinRegion.getRegionWidth(), // Širina slike
-                        pinRegion.getRegionHeight(), // Višina slike
-                        1f, // Merilo po X
-                        1f, // Merilo po Y
-                        rotationAngle // Kot rotacije
-                    );
-                } else {
-                    spriteBatch.draw(pinRegion,
-                        marker.x - pinRegion.getRegionWidth() / 2,
-                        marker.y - pinRegion.getRegionHeight() / 2);
+                        // Draw pin with rotation around its center
+                        spriteBatch.draw(pinRegion,
+                            marker.x - (float) pinRegion.getRegionWidth() / 2, // X start position
+                            marker.y - (float) pinRegion.getRegionHeight() / 2 + bounceOffset, // Y with bounce offset
+                            (float) pinRegion.getRegionWidth() / 2, // X center of rotation
+                            (float) pinRegion.getRegionHeight() / 2, // Y center of rotation
+                            pinRegion.getRegionWidth(), // Image width
+                            pinRegion.getRegionHeight(), // Image height
+                            1f, // Scale X
+                            1f, // Scale Y
+                            rotationAngle // Rotation angle
+                        );
+                    } else {
+                        spriteBatch.draw(pinRegion,
+                            marker.x - (float) pinRegion.getRegionWidth() / 2,
+                            marker.y - (float) pinRegion.getRegionHeight() / 2);
+                    }
                 }
             }
         }
@@ -278,6 +298,66 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         float markerHeight = pinRegion.getRegionHeight();
         return x >= marker.x - markerWidth / 2 && x <= marker.x + markerWidth / 2 &&
             y >= marker.y - markerHeight / 2 && y <= marker.y + markerHeight / 2;
+    }
+
+    private void removeDetailsWindow() {
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof Window && "DetailsWindow".equals(actor.getName())) {
+                actor.remove();
+                break;
+            }
+        }
+    }
+
+    private void showDetailsWindow(String eventName, String eventDetails, String address, String startTime, String contact, String dateStart) {
+        // Retrieve the fonts from the asset manager
+        BitmapFont fontTitle = assetManager.get(AssetDescriptors.MAP_FONT);
+        BitmapFont fontText = assetManager.get(AssetDescriptors.MAP_HUD_BLANK_FONT);
+
+        // Apply scaling to the title font
+        fontTitle.getData().setScale(0.7f); // Scale down to 60% of the original size
+        fontText.getData().setScale(0.5f); // Scale down to 60% of the original size
+
+        // Create a new window style
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = fontTitle; // Use the scaled title font
+
+        // Ensure the region exists in the atlas
+        TextureRegion region = assetManager.getGameplayAtlas().findRegion(RegionNames.GAMEPLAY_HUD);
+
+        windowStyle.background = new TextureRegionDrawable(region);
+
+        Window detailsWindow = new Window("", windowStyle);
+        detailsWindow.setName("DetailsWindow"); // Set the name for the window
+        detailsWindow.setSize(400, 300);
+        detailsWindow.setPosition(30, GameConfig.HEIGHT - detailsWindow.getHeight() - 40);
+
+        // Create labels for the event details
+        Label titleLabel = new Label(eventName, new Label.LabelStyle(fontTitle, Color.WHITE));
+        titleLabel.setPosition(20, detailsWindow.getHeight() - 40); // Adjust the Y position as needed
+
+        Label addressLabel = new Label("Address: " + address, new Label.LabelStyle(fontText, Color.WHITE));
+        addressLabel.setPosition(20, detailsWindow.getHeight() - 70);
+
+        String startTimeText = (startTime != null) ? startTime : "start time was not defined";
+        Label startTimeLabel = new Label("Start Time: " + startTimeText, new Label.LabelStyle(fontText, Color.WHITE));
+        startTimeLabel.setPosition(20, detailsWindow.getHeight() - 100);
+
+        Label contactLabel = new Label("Contact: " + contact, new Label.LabelStyle(fontText, Color.WHITE));
+        contactLabel.setPosition(20, detailsWindow.getHeight() - 130);
+
+        Label dateStartLabel = new Label("Date Start: " + dateStart, new Label.LabelStyle(fontText, Color.WHITE));
+        dateStartLabel.setPosition(20, detailsWindow.getHeight() - 160);
+
+        // Add the labels to the window
+        detailsWindow.addActor(titleLabel);
+        detailsWindow.addActor(addressLabel);
+        detailsWindow.addActor(startTimeLabel);
+        detailsWindow.addActor(contactLabel);
+        detailsWindow.addActor(dateStartLabel);
+
+        // Add the window to the stage
+        stage.addActor(detailsWindow);
     }
 
 
@@ -307,23 +387,36 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         updateMousePosition();
         drawMarkers();
 
+        boolean isHovering = false;
+
         // Only execute hover functions if the white field is not visible
         if (!isFieldVisible && eventLocations != null) {
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
                 if (isMouseOverMarker(marker)) {
                     drawHoverText(marker, location.getName()); // Pass the event name
+                    removeDetailsWindow(); // Remove the previous window
+                    showDetailsWindow(location.getName(), location.getName(), location.getAddress(), location.getStartTime(), location.getContact(), location.getStartDate());
+                    isHovering = true;
                     break;
                 }
             }
         }
-    }
 
+        if (!isHovering) {
+            removeDetailsWindow(); // Remove the window if not hovering over any marker
+        }
+
+        // Update and draw the stage
+        stage.act();
+        stage.draw();
+    }
     @Override
     public void dispose() {
         shapeRenderer.dispose();
         spriteBatch.dispose();
         assetManager.dispose();
+        stage.dispose();
     }
 
     @Override
@@ -353,7 +446,6 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
         return false;
     }
-
 
     @Override
     public boolean longPress(float x, float y) {

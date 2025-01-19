@@ -11,4 +11,5 @@ public class CollectionScreen extends ScreenAdapter {
     public CollectionScreen(DiscountGame game) {
         this.game = game;
     }
+
 }

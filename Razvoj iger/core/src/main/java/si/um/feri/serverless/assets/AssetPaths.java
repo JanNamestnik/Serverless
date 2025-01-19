@@ -4,6 +4,9 @@ public class AssetPaths {
     public static final String GAMEPLAY_ATLAS = "core/assets/gameplay/gameplay.atlas";
     public static final String UI_SKIN = "ui/terra-mother-ui.json";
     public static final String UI_FONT = "core/assets/fonts/my_font.fnt";
+    public static final String HUD_FONT = "core/assets/fonts/hudFont.fnt";
+    public static final String MAP_HUD_FONT = "core/assets/fonts/mapHud.fnt";
+    public static final String MAP_HUD_BLANK_FONT = "core/assets/fonts/hudBlankFont.fnt";
     public static final String CONTINUE_FONT = "core/assets/fonts/continueScreenRed.fnt";
     public static final String CONTINUE_INTRO_TITLE_FONT = "core/assets/fonts/continueIntroTitle.fnt";
     public static final String MAP_FONT = "core/assets/fonts/map_font.fnt";

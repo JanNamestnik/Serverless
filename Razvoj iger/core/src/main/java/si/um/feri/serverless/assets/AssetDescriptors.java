@@ -23,6 +23,14 @@ public class AssetDescriptors {
 
     public static final AssetDescriptor<BitmapFont> MAP_FONT =
         new AssetDescriptor<>(AssetPaths.MAP_FONT, BitmapFont.class);
+
+    public static final AssetDescriptor<BitmapFont> MAP_HUD_FONT =
+        new AssetDescriptor<>(AssetPaths.MAP_HUD_FONT, BitmapFont.class);
+
+    public static final AssetDescriptor<BitmapFont> MAP_HUD_BLANK_FONT =
+        new AssetDescriptor<>(AssetPaths.MAP_HUD_BLANK_FONT, BitmapFont.class);
+    public static final AssetDescriptor<BitmapFont> HUD_FONT =
+        new AssetDescriptor<>(AssetPaths.HUD_FONT, BitmapFont.class);
     public static final AssetDescriptor<TextureAtlas> GAMEPLAY_ATLAS =
         new AssetDescriptor<>(AssetPaths.GAMEPLAY_ATLAS, TextureAtlas.class);
     public static final AssetDescriptor<Skin> UI_SKIN =
