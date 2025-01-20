@@ -62,7 +62,6 @@ public class GameScreen extends ScreenAdapter {
     private int foundDiamonds;
     private int totalDiamonds;
 
-
     public GameScreen(DiscountGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
@@ -251,22 +250,35 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private int calculateNumberOfMines(String discount) {
+        int baseMines;
         switch (discount) {
             case "5%":
-                return 1;
+                baseMines = 1;
+                break;
             case "10%":
-                return 3;
+                baseMines = 2;
+                break;
             case "25%":
-                return 4;
+                baseMines = 3;
+                break;
             case "50%":
-                return 1;
+                baseMines = 4;
+                break;
             case "100%":
-                return 1;
+                baseMines = 5;
+                break;
             default:
-                return 0;
+                baseMines = 0;
         }
-    }
 
+        if (GameManager.getInstance().getGridSize() == 36) {
+            baseMines *= 2;
+        }
+
+        System.out.println("Number of mines: " + baseMines); // Add this line to print the number of mines
+
+        return baseMines;
+    }
     private Table createUI(int gridSize, int numberOfMines) {
         Table table = new Table();
         table.setFillParent(true);
@@ -282,6 +294,8 @@ public class GameScreen extends ScreenAdapter {
 
         Table boardTable = new Table();
         List<int[]> minePositions = positions.subList(0, numberOfMines);
+
+        System.out.println("Mine positions: " + minePositions); // Add this line to print the mine positions
 
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
@@ -394,16 +408,16 @@ public class GameScreen extends ScreenAdapter {
         Label fivePercentMines = new Label("1 mine", mineLabelStyle);
 
         Label tenPercentLabel = new Label("10%: ", percentageLabelStyle);
-        Label tenPercentMines = new Label("3 mines", mineLabelStyle);
+        Label tenPercentMines = new Label("2 mines", mineLabelStyle);
 
         Label twentyFivePercentLabel = new Label("25%: ", percentageLabelStyle);
-        Label twentyFivePercentMines = new Label("5 mines", mineLabelStyle);
+        Label twentyFivePercentMines = new Label("3 mines", mineLabelStyle);
 
         Label fiftyPercentLabel = new Label("50%: ", percentageLabelStyle);
-        Label fiftyPercentMines = new Label("10 mines", mineLabelStyle);
+        Label fiftyPercentMines = new Label("4 mines", mineLabelStyle);
 
         Label hundredPercentLabel = new Label("100%: ", percentageLabelStyle);
-        Label hundredPercentMines = new Label("20 mines", mineLabelStyle);
+        Label hundredPercentMines = new Label("5 mines", mineLabelStyle);
 
         // Add the labels to the table with proper alignment
         rulesTable.add(titleLabel).center().padBottom(20).padRight(10).colspan(2).row();
@@ -444,7 +458,7 @@ public class GameScreen extends ScreenAdapter {
         Label tileNumberLabel = new Label("Grid size:", tileNumberStyle);
 
         SelectBox<String> tileSelectBox = new SelectBox<>(skin_alternative);
-        tileSelectBox.setItems("25 tiles", "36 tiles", "49 tiles");
+        tileSelectBox.setItems("25 tiles", "36 tiles"); // Removed "49 tiles" option
 
         // Load saved grid size and set it in the SelectBox
         int savedGridSize = GameManager.getInstance().getGridSize();
@@ -457,16 +471,24 @@ public class GameScreen extends ScreenAdapter {
         tileSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                playSelectSound();
                 String selected = tileSelectBox.getSelected();
                 int gridSize = (int) Math.sqrt(Integer.parseInt(selected.split(" ")[0]));
                 GameManager.getInstance().setGridSize(gridSize * gridSize); // Save the selected grid size
                 updateBoard(gridSize, calculateNumberOfMines(bombSelectBox.getSelected()));
+
+                // Show the bomb doubled dialog if the grid size is 6x6
+                if (gridSize == 6) {
+                    showBombsDoubledDialog();
+                    playNotificationSound();
+                }
             }
         });
 
         bombSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                playSelectSound();
                 String selected = bombSelectBox.getSelected();
                 int discount = Integer.parseInt(selected.replace("%", ""));
                 GameManager.getInstance().setDiscount(discount); // Save the selected discount
@@ -505,7 +527,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 0);
+        ScreenUtils.clear(0.5f, 0.7f, 0.9f, 1);
 
         stage.act(delta);
         stage.draw();

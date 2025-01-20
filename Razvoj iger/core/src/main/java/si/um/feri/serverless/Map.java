@@ -26,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -36,7 +35,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import si.um.feri.serverless.assets.AssetDescriptors;
 import si.um.feri.serverless.assets.AssetManager;
 import si.um.feri.serverless.assets.RegionNames;
-import si.um.feri.serverless.config.GameConfig;
 import si.um.feri.serverless.screen.ContinueScreen;
 import si.um.feri.serverless.utils.Constants;
 import si.um.feri.serverless.utils.Geolocation;
@@ -175,7 +173,7 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
             eventLocations = events;
         });
 
-        showDetailsWindow("Event Name", "Event Details", "Address", "Start Time", "Contact", "Date Start");
+        showDetailsWindow("Event Name", "Event Details", "Address", "Start Time", "Contact", "Date Start" , 0, 0);
     }
 
     private void addHoverAnimation(Label label) {
@@ -309,32 +307,28 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         }
     }
 
-    private void showDetailsWindow(String eventName, String eventDetails, String address, String startTime, String contact, String dateStart) {
-        // Retrieve the fonts from the asset manager
+    private void showDetailsWindow(String eventName, String eventDetails, String address, String startTime, String contact, String dateStart, double latitude, double longitude) {
+
         BitmapFont fontTitle = assetManager.get(AssetDescriptors.MAP_FONT);
         BitmapFont fontText = assetManager.get(AssetDescriptors.MAP_HUD_BLANK_FONT);
 
-        // Apply scaling to the title font
-        fontTitle.getData().setScale(0.7f); // Scale down to 60% of the original size
-        fontText.getData().setScale(0.5f); // Scale down to 60% of the original size
+        fontTitle.getData().setScale(0.7f);
+        fontText.getData().setScale(0.5f);
 
-        // Create a new window style
         Window.WindowStyle windowStyle = new Window.WindowStyle();
-        windowStyle.titleFont = fontTitle; // Use the scaled title font
+        windowStyle.titleFont = fontTitle;
 
-        // Ensure the region exists in the atlas
         TextureRegion region = assetManager.getGameplayAtlas().findRegion(RegionNames.GAMEPLAY_HUD);
-
         windowStyle.background = new TextureRegionDrawable(region);
 
         Window detailsWindow = new Window("", windowStyle);
-        detailsWindow.setName("DetailsWindow"); // Set the name for the window
+        detailsWindow.setName("DetailsWindow");
         detailsWindow.setSize(400, 300);
-        detailsWindow.setPosition(30, GameConfig.HEIGHT - detailsWindow.getHeight() - 40);
 
-        // Create labels for the event details
+        detailsWindow.setPosition(30, stage.getViewport().getWorldHeight() - detailsWindow.getHeight() - 40);
+
         Label titleLabel = new Label(eventName, new Label.LabelStyle(fontTitle, Color.WHITE));
-        titleLabel.setPosition(20, detailsWindow.getHeight() - 40); // Adjust the Y position as needed
+        titleLabel.setPosition(20, detailsWindow.getHeight() - 40);
 
         Label addressLabel = new Label("Address: " + address, new Label.LabelStyle(fontText, Color.WHITE));
         addressLabel.setPosition(20, detailsWindow.getHeight() - 70);
@@ -349,18 +343,22 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         Label dateStartLabel = new Label("Date Start: " + dateStart, new Label.LabelStyle(fontText, Color.WHITE));
         dateStartLabel.setPosition(20, detailsWindow.getHeight() - 160);
 
-        // Add the labels to the window
+        Label latitudeLabel = new Label("Latitude: " + latitude, new Label.LabelStyle(fontText, Color.WHITE));
+        latitudeLabel.setPosition(20, detailsWindow.getHeight() - 190);
+
+        Label longitudeLabel = new Label("Longitude: " + longitude, new Label.LabelStyle(fontText, Color.WHITE));
+        longitudeLabel.setPosition(20, detailsWindow.getHeight() - 220);
+
         detailsWindow.addActor(titleLabel);
         detailsWindow.addActor(addressLabel);
         detailsWindow.addActor(startTimeLabel);
         detailsWindow.addActor(contactLabel);
         detailsWindow.addActor(dateStartLabel);
+        detailsWindow.addActor(latitudeLabel);
+        detailsWindow.addActor(longitudeLabel);
 
-        // Add the window to the stage
         stage.addActor(detailsWindow);
     }
-
-
     private void updateMousePosition() {
         mousePosition.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePosition);
@@ -389,14 +387,12 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
 
         boolean isHovering = false;
 
-        // Only execute hover functions if the white field is not visible
         if (!isFieldVisible && eventLocations != null) {
             for (Geolocation location : eventLocations) {
                 Vector2 marker = MapRasterTiles.getPixelPosition(location.lat, location.lng, beginTile.x, beginTile.y);
                 if (isMouseOverMarker(marker)) {
-                    drawHoverText(marker, location.getName()); // Pass the event name
-                    removeDetailsWindow(); // Remove the previous window
-                    showDetailsWindow(location.getName(), location.getName(), location.getAddress(), location.getStartTime(), location.getContact(), location.getStartDate());
+                    removeDetailsWindow();
+                    showDetailsWindow(location.getName(), location.getName(), location.getAddress(), location.getStartTime(), location.getContact(), location.getStartDate(), location.lat, location.lng);
                     isHovering = true;
                     break;
                 }
@@ -404,10 +400,9 @@ public class Map extends ApplicationAdapter implements GestureDetector.GestureLi
         }
 
         if (!isHovering) {
-            removeDetailsWindow(); // Remove the window if not hovering over any marker
+            removeDetailsWindow();
         }
 
-        // Update and draw the stage
         stage.act();
         stage.draw();
     }

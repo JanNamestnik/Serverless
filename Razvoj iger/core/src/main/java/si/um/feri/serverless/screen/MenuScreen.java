@@ -156,7 +156,7 @@ public class MenuScreen extends ScreenAdapter {
 
         Label titleLabel = new Label("Deal hunter", titleStyle);
 
-        table.add(titleLabel).padBottom(30).colspan(1).center().row();
+        table.add(titleLabel).padBottom(60).colspan(1).center().row();
 
         // Create buttons
         TextButton.TextButtonStyle buttonStyle = skin.get(TextButton.TextButtonStyle.class);
