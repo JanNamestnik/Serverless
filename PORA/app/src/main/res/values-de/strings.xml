@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Serverless</string>
+    <!--Main activity-->
+    <string name="dataBtn">Sensoren</string>
+    <string name="exitBtn">Beenden</string>
+    <string name="messageBtn">Nachricht senden</string>
+    <string name="pictureBtn">Vorhersage-API</string>
+    <string name="image">Serverless-Logo</string>
+    <string name="simulationBtn">Simulation</string>
+
+    <!--Picture activity-->
+    <string name="takePictureBtn">Foto aufnehmen</string>
+    <string name="textView4">Liste der Personen</string>
+
+    <!--Person record-->
+    <string name="nameTxt">Person 1</string>
+    <string name="genderTxt">Geschlecht:</string>
+    <string name="ageTxt">Alter:</string>
+    <string name="gender">männlich</string>
+    <string name="age">über 21</string>
+    <string name="personLogo">Personenlogo</string>
+    <string name="back_button_description">zurück</string>
+
+    <!--Message activity-->
+    <string name="messageTxt">Nachricht</string>
+    <string name="eventNameTxt">Ereignisname</string>
+    <string name="messageTypeTxt">Nachrichtentyp</string>
+    <string name="sendBtn">Senden</string>
+    <string name="alert_text_view">Nachricht bei extremer Temperatur senden:</string>
+    <string name="temperatureInputHint">°C</string>
+    <string name="saveBtn">Speichern</string>
+    <string name="alert_text">Alarm</string>
+
+    <!--Sensors activity-->
+    <string name="sesorsTxt">Sensoren</string>
+    <string name="humidityLabel">Feuchtigkeit (%)</string>
+    <string name="humidityFrequencyLabel">Aktualisierungshäufigkeit (HH:MM:SS)</string>
+    <string name="humidityEnabledSwitch">Aktiviert</string>
+    <string name="lightLabel">Licht (lux)</string>
+    <string name="lightFrequencyLabel">Aktualisierungshäufigkeit (HH:MM:SS)</string>
+
+    <!--Simulation activity-->
+    <string name="simulationTxt">Simulation</string>
+    <string name="addSensorBtn">Sensor hinzufügen</string>
+
+    <!--Sensor record-->
+    <string name="typeTxt">Typ</string>
+    <string name="rangeTxt">Bereich</string>
+    <string name="frequencyTxt">Frequenz</string>
+    <string name="locationTxt">Standort</string>
+
+    <!--Add sensor activity-->
+    <string name="addSesorsTxt">Sensor hinzufügen</string>
+    <string name="sensorTypeTxt">Datentyp</string>
+    <string name="dataRangeLabel">Zufälliger Bereich der Datengenerierung</string>
+    <string name="rangeFromInput">Von</string>
+    <string name="rangeToInput">Bis</string>
+    <string name="frequencyLabel">Aktualisierungshäufigkeit (HH:MM:SS)</string>
+    <string name="locationInput">Standort</string>
+    <string name="mapSearchButton">Suchknopf</string>
+    <string name="mapFragment">Kartenfragment</string>
+    <string name="addSensorSwitch">Aus</string>
+</resources>

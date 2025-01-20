@@ -10,16 +10,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="@dimen/layout_constraintHorizontal_bias" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/margin_top_small"
         android:layout_marginTop="@dimen/margin_top_small"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/margin_top_small"
         app:cardBackgroundColor="@color/blue"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/coroner_radius_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,16 +27,16 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="@dimen/card_height">
 
             <TextView
                 android:id="@+id/typeTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Type"
+                android:layout_marginStart="@dimen/margin_top_small"
+                android:text="@string/typeTxt"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="@dimen/sp_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/rangeTxt"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,24 +46,24 @@
                 android:id="@+id/rangeTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:drawableStart="@drawable/baseline_timeline_24"
-                android:text="range"
+                android:layout_marginStart="@dimen/margin_top_small"
+                android:layout_marginTop="@dimen/margin_extra_small"
+                android:text="@string/rangeTxt"
                 android:textColor="@color/white"
+                app:drawableStartCompat="@drawable/baseline_timeline_24"
                 app:layout_constraintBottom_toTopOf="@+id/frequencyTxt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/typeTxt"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="@dimen/layout_constraintVertical_bias" />
 
             <TextView
                 android:id="@+id/frequencyTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:drawableStart="@drawable/baseline_access_time_24"
-                android:text="frequency"
+                android:layout_marginStart="@dimen/margin_top_small"
+                android:text="@string/frequencyTxt"
                 android:textColor="@color/white"
+                app:drawableStartCompat="@drawable/baseline_access_time_24"
                 app:layout_constraintBottom_toTopOf="@+id/locationTxt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rangeTxt" />
@@ -72,23 +72,24 @@
                 android:id="@+id/locationTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="4dp"
-                android:drawableStart="@drawable/baseline_location_pin_24"
-                android:text="location"
+                android:layout_marginStart="@dimen/margin_top_small"
+                android:layout_marginBottom="@dimen/margin_extra_small"
+                android:text="@string/locationTxt"
                 android:textColor="@color/white"
+                app:drawableStartCompat="@drawable/baseline_location_pin_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frequencyTxt" />
 
             <Switch
                 android:id="@+id/enableSensorSwitch"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="@dimen/edit_height"
+                android:layout_height="@dimen/edit_height"
+                android:layout_marginEnd="@dimen/margin_small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

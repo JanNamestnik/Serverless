@@ -13,7 +13,7 @@
         style="@style/CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="@dimen/margin_large"
         android:drawableEnd="@drawable/baseline_add_a_photo_24"
         android:fontFamily="@font/roboto_bold"
         android:insetLeft="@dimen/inset_right"
@@ -21,7 +21,7 @@
         android:text="@string/takePictureBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="@dimen/layout_constraintHorizontal_bias"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -29,13 +29,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="@dimen/layout_constraintHorizontal_bias" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="@dimen/zero_dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="@dimen/margin_extra_small"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:foregroundTint="@color/white"
@@ -48,7 +48,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/margin_top_big"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/textView4"
         android:textColor="@color/blue"
@@ -60,9 +60,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:layout_marginBottom="@dimen/margin_top_small"
         android:background="@color/lightgray"
         app:layout_constraintBottom_toTopOf="@+id/takePictureBtn"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
     <View
         android:id="@+id/divider2"
         android:layout_width="@dimen/zero_dp"
-        android:layout_height="4dp"
+        android:layout_height="@dimen/margin_extra_small"
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:foregroundTint="@color/white"
@@ -86,8 +86,8 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/margin_top_small"
+        android:layout_marginTop="@dimen/margin_medium"
         android:background="@android:color/transparent"
         android:contentDescription="@string/back_button_description"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"

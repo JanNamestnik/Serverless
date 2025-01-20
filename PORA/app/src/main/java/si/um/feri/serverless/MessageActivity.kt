@@ -7,7 +7,6 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -50,7 +49,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
     // For alert message
     private lateinit var sensorManager: SensorManager
     private var temperatureSensor: Sensor? = null
-    var desiredTemperature: Float? = null // User-defined threshold
+    var desiredTemperature: Float? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +193,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
 
         val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
             com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
-            1000 // Request location every 1 second
+            3000 // Request location every 1 second
         ).build()
 
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
@@ -250,7 +249,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
             messageJson.toString()
         )
         val request = Request.Builder()
-            .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createMessage") // Replace with your API URL
+            .url("https://eu-central-1.aws.data.mongodb-api.com/app/serverlessapi-uvgsfoc/endpoint/createMessage")
             .post(body)
             .build()
 
@@ -275,7 +274,6 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
     }
 
     // for Alert temperature
-
     override fun onResume() {
         super.onResume()
         if (desiredTemperature != null) {
@@ -344,7 +342,7 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
                         Toast.makeText(this@MessageActivity, "Temperature alert sent", Toast.LENGTH_SHORT).show()
                         // Clear the threshold to prevent further alerts
                         desiredTemperature = null
-                        saveDesiredTemperature(Float.MIN_VALUE) // Save a placeholder to indicate no threshold
+                        saveDesiredTemperature(Float.MIN_VALUE)
                     } else {
                         Toast.makeText(this@MessageActivity, "Failed to send alert", Toast.LENGTH_SHORT).show()
                     }
@@ -352,8 +350,6 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
             }
         })
     }
-
-
 
     private fun saveDesiredTemperature(temp: Float) {
         val sharedPreferences = getSharedPreferences("TemperaturePrefs", MODE_PRIVATE)
@@ -369,7 +365,4 @@ class MessageActivity : AppCompatActivity(), SensorEventListener {
             sharedPreferences.getFloat("desiredTemperature", Float.MIN_VALUE)
         } else null
     }
-
-
-
 }

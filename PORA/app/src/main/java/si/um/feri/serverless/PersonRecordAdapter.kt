@@ -51,7 +51,6 @@ class PersonRecordAdapter(
                 binding.imageView.setImageResource(R.drawable.baseline_person_24)
             }
 
-            // Handle item click
             binding.root.setOnClickListener {
                 onItemClick(personRecord)
             }

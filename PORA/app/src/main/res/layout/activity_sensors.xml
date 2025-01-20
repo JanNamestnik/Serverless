@@ -12,8 +12,8 @@
     <View
         android:id="@+id/dividerSensors"
         android:layout_width="@dimen/zero_dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="@dimen/margin_extra_small"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:foregroundTint="@color/white"
@@ -26,9 +26,9 @@
         android:id="@+id/sesorsTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/margin_top_big"
         android:fontFamily="@font/roboto_bold"
-        android:text="Sensors"
+        android:text="@string/sesorsTxt"
         android:textColor="@color/blue"
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold"
@@ -40,7 +40,7 @@
         android:id="@+id/sensorsBackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/margin_top_small"
         android:layout_marginTop="37dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/back_button_description"
@@ -55,10 +55,10 @@
         android:id="@+id/humidityLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Humidity (%)"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/humidityLabel"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp_text_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,8 +68,8 @@
         android:id="@+id/humidityFrequencyLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update frequency (HH:MM:SS)"
-        android:textColor="#FFFFFF"
+        android:text="@string/humidityFrequencyLabel"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,14 +89,14 @@
             android:theme="@style/AppTheme.Picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="@dimen/margin_small" />
 
         <NumberPicker
             android:id="@+id/humidityMinutesPicker"
             android:theme="@style/AppTheme.Picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="@dimen/margin_small" />
 
         <NumberPicker
             android:id="@+id/humiditySecondsPicker"
@@ -108,9 +108,9 @@
     <Switch
         android:id="@+id/humidityEnabledSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="Enabled"
-        android:textColor="#FFFFFF"
+        android:layout_height="@dimen/edit_height"
+        android:text="@string/humidityEnabledSwitch"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/humidityPickerContainer"
@@ -122,10 +122,10 @@
         android:id="@+id/lightLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Light (lux)"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/lightLabel"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp_text_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -135,8 +135,8 @@
         android:id="@+id/lightFrequencyLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update frequency (HH:MM:SS)"
-        android:textColor="#FFFFFF"
+        android:text="@string/lightFrequencyLabel"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -156,14 +156,14 @@
             android:theme="@style/AppTheme.Picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="@dimen/margin_small" />
 
         <NumberPicker
             android:id="@+id/lightMinutesPicker"
             android:theme="@style/AppTheme.Picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="@dimen/margin_small" />
 
         <NumberPicker
             android:id="@+id/lightSecondsPicker"
@@ -175,9 +175,9 @@
     <Switch
         android:id="@+id/lightEnabledSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="Enabled"
-        android:textColor="#FFFFFF"
+        android:layout_height="@dimen/edit_height"
+        android:text="@string/humidityEnabledSwitch"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lightPickerContainer" />
@@ -187,12 +187,12 @@
         style="@style/CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/margin_top_big"
         android:drawableEnd="@drawable/baseline_save_24"
         android:fontFamily="@font/roboto_bold"
         android:insetLeft="@dimen/inset_right"
         android:insetRight="@dimen/inset_right"
-        android:text="Save"
+        android:text="@string/saveBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lightEnabledSwitch" />
@@ -201,14 +201,14 @@
     <View
         android:id="@+id/divider5"
         android:layout_width="@dimen/zero_dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="@dimen/margin_extra_small"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:foregroundTint="@color/white"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="@dimen/layout_constraintVertical_bias"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/humidityEnabledSwitch" />
 
