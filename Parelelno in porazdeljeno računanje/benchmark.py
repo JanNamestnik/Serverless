@@ -5,21 +5,10 @@ import time
 import os
 import logging
 from threading import Event
-import threading 
+
 from block import Block, Blockchain
-from mining import mine_block
-from flask import Flask, jsonify, request
-from flask_swagger_ui import get_swaggerui_blueprint
 from mining import parallel_mine_block_threading
 
-# Initialize Flask app
-app = Flask(__name__)
-
-# Swagger configuration
-SWAGGER_URL = '/swagger'
-API_URL = '/static/swagger.json'
-swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 def setup_logger(rank):
     log_filename = f"process_{rank}.log"
@@ -31,27 +20,41 @@ def setup_logger(rank):
     return logging.getLogger()
  
 difficulty = 5
-data_queue = queue.Queue()
-for i in range(8080, 8090):
-    data_queue.put(f"Data {i}")
+block_queue = queue.Queue()
+block_queue.put(Block(index=0, data="Benchmark Data 0", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=1, data="Benchmark Data 1", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=2, data="Benchmark Data 2", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=3, data="Benchmark Data 3", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=4, data="Benchmark Data 4", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=5, data="Benchmark Data 5", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=6, data="Benchmark Data 6", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=7, data="Benchmark Data 7", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=8, data="Benchmark Data 8", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=9, data="Benchmark Data 9", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=10, data="Benchmark Data 10", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=11, data="Benchmark Data 11", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=12, data="Benchmark Data 12", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=13, data="Benchmark Data 13", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=14, data="Benchmark Data 14", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=15, data="Benchmark Data 15", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=16, data="Benchmark Data 16", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=17, data="Benchmark Data 17", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=18, data="Benchmark Data 18", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=19, data="Benchmark Data 19", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=20, data="Benchmark Data 20", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=21, data="Benchmark Data 21", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=22, data="Benchmark Data 22", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=23, data="Benchmark Data 23", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=24, data="Benchmark Data 24", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=25, data="Benchmark Data 25", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=26, data="Benchmark Data 26", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=27, data="Benchmark Data 27", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=28, data="Benchmark Data 28", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=29, data="Benchmark Data 29", prev_hash="0", difficulty=5))
+block_queue.put(Block(index=30, data="Benchmark Data 30", prev_hash="0", difficulty=5))
 
 blockchain = Blockchain(difficulty)
 
-@app.route('/add_to_queue', methods=['POST'])
-def add_to_queue():
-    data = request.json.get('data')
-    if data:
-        data_queue.put(data)
-        return jsonify({"message": "Data added to queue"}), 201
-    return jsonify({"error": "No data provided"}), 400
-
-@app.route('/get_blockchain', methods=['GET'])
-def get_blockchain():
-    chain = [vars(block) for block in blockchain.chain]
-    return jsonify({"blockchain": chain}), 200
-
-def run_flask_app():
-    app.run(host='0.0.0.0', port=5000, debug=False)
 
 
 def main(threads):
@@ -65,9 +68,6 @@ def main(threads):
     BLOCK_CREATION_TIME = 10
 
     log_filename = f"process_{rank}.log"
-    if rank == 0:
-        flask_thread = threading.Thread(target=run_flask_app, daemon=True)
-        flask_thread.start()
 
     with open(log_filename, "w") as log_file:
         os.dup2(log_file.fileno(), 1)  # Redirect stdout to the log file
@@ -78,28 +78,15 @@ def main(threads):
 
         while True:
             if rank == 0:
-                if data_queue.empty():
+                if block_queue.empty():
                     logger.info("Data queue is empty")
                     time.sleep(1)
                     elapsed_time = time.time() - start_time
                     logger.info(f"Time elapsed since start: {elapsed_time:.2f} seconds")
                 else:
-                    new_difficulty = blockchain.difficulty
-                    if len(blockchain.chain) % ADJUSTMENT_INTERVAL == 0 and len(blockchain.chain) >= ADJUSTMENT_INTERVAL:
-                        new_difficulty = blockchain.adjust_difficulty(BLOCK_CREATION_TIME, ADJUSTMENT_INTERVAL)
-                    if new_difficulty != blockchain.difficulty:
-                        logger.info(f"Difficulty adjusted: {blockchain.difficulty} -> {new_difficulty}")
-                    blockchain.difficulty = new_difficulty
 
                     last_block = blockchain.get_last_block()
-                    new_block = Block(
-                        len(blockchain.chain),
-                        "New Block Data",
-                        last_block.hash,
-                        blockchain.difficulty,
-                    )
-                    if not data_queue.empty():
-                        new_block.data = data_queue.get()   
+                    new_block = block_queue.get() 
                     logger.info("Block sent to workers:")
                     logger.info(vars(new_block))
 
@@ -114,12 +101,12 @@ def main(threads):
                         logger.info("Mined block found:")
                         logger.info(vars(mined_block))                    
 
-                    if mined_block:
-                        blockchain.add_block(block=mined_block, logger=logger)
-                        logger.info("Block added to blockchain")
-                        logger.info(len(blockchain.chain))
-                        if blockchain.validate_chain():
-                            logger.info("Blockchain valid")
+                    # if mined_block:
+                    #     blockchain.add_block(block=mined_block, logger=logger)
+                    #     logger.info("Block added to blockchain")
+                    #     logger.info(len(blockchain.chain))
+                    #     if blockchain.validate_chain():
+                    #         logger.info("Blockchain valid")
                    
             else:
                 while True:

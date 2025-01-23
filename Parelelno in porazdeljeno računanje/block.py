@@ -4,14 +4,19 @@ import logging
 
 
 class Block:
-    def __init__(self, index, data, prev_hash, difficulty):
+    def __init__(self, index, data, prev_hash, difficulty,timeIn =False):
         self.index = index
         self.data = data
-        self.timestamp = time.time()
+        if(timeIn == False):
+            self.timestamp = 0
+        else:   
+            self.timestamp = time.time()
         self.prev_hash = prev_hash
         self.difficulty = difficulty
         self.nonce = 0
         self.hash = self.calculate_hash()
+
+
 
     def calculate_hash(self):
         hash_data = f"{self.index}{self.data}{self.timestamp}{self.prev_hash}{self.difficulty}{self.nonce}"
@@ -32,14 +37,12 @@ def setup_logger(rank):
 
 
 class Blockchain:
-    def __init__(self, difficulty, logger):
-        self.chain = [self.create_genesis_block(difficulty, logger)]
+    def __init__(self, difficulty):
+        self.chain = [self.create_genesis_block(difficulty )]
         self.difficulty = difficulty
 
-    def create_genesis_block(self, difficulty, logger):
-        block = Block(0, "Genesis Block", "0", difficulty)
-        logger.info("Genesis block created")
-        logger.info(vars(block))
+    def create_genesis_block(self, difficulty):
+        block = Block(0, "Genesis Block", "0", difficulty)    
         return block
 
     def get_last_block(self):

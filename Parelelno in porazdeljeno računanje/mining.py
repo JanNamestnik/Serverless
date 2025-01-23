@@ -1,58 +1,61 @@
+from block import Block
 import threading
-import concurrent.futures
+import time
 
-def mine_block(block, start_nonce, end_nonce, stop_event, comm, logger, num_threads=2):
-    """Mine a block within the given nonce range, listening for a stop signal."""
-    
+def mine_block(block, start_nonce,  stop_event , step = 1, comm = None, logger = None):
+    """Mine a block within the given nonce range."""
+    mining_block = block.copy()
+    nonce = start_nonce
+    logger.info(f"Start nonce: {start_nonce}")
+    logger.info(f"Step: {step}")
+    while(not stop_event.is_set()):
+        nonce += step
+        mining_block.nonce = nonce
+        mining_block.hash = mining_block.calculate_hash()
+        if mining_block.is_valid():
+            stop_event.set()
+            logger.info("Block found")
+            logger.info(vars(mining_block))
+            return mining_block  
+    return None
+
+
+
+def parallel_mine_block_threading(block, start_nonce, num_threads , comm, logger, number_of_miners ,stop_event):
     def listen_for_stop():
         """Listen for the stop signal and set the event."""
         signal = comm.bcast(None, root=0)  # Receive broadcast
         if signal == "stop":
-            logger.info("Mining stopped")
             stop_event.set()
 
     # Create a thread to listen for the stop signal
     listener_thread = threading.Thread(target=listen_for_stop, daemon=True)
     listener_thread.start()
-    
-    def mine_range(start, end):
-        mine_range_block= block.copy()
-        logger.info("block copyid in thread")
-        logger.info(vars(mine_range_block))
-        """Mine a block within the given nonce range."""
-        for nonce in range(start, end):
-            if stop_event.is_set():
-                return None
-            
-            mine_range_block.nonce = nonce
-            mine_range_block.hash = mine_range_block.calculate_hash()
-            if mine_range_block.is_valid():
-                stop_event.set()  # Notify others that mining is done
-                logger.info("Block mined")
-                logger.info(vars(mine_range_block)) 
-                return mine_range_block
-        return None
 
-    # Divide the nonce range among the threads
-    nonce_range = end_nonce - start_nonce
-    range_per_thread = nonce_range // num_threads
+    def mine_in_range(start, stop_event, result):
+        mined_block = mine_block(block, start,stop_event,num_threads * number_of_miners , comm, logger)
+        if mined_block:
+            result.append(mined_block)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = []
-        for i in range(num_threads):
-            thread_start_nonce = start_nonce + i * range_per_thread
-            thread_end_nonce = start_nonce + (i + 1) * range_per_thread if i != num_threads - 1 else end_nonce
-            futures.append(executor.submit(mine_range, thread_start_nonce, thread_end_nonce))
+    threads = []
+    result = []
+    for i in range(num_threads):
+        thread_start = start_nonce + i
+        thread = threading.Thread(target=mine_in_range, args=(thread_start, stop_event,result))
+        threads.append(thread)
+        thread.start()
+    logger.info("All threads started")
+    for thread in threads:
+        thread.join()
+    logger.info("All threads finished")
+    return result[0] if result else None
 
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            if result is not None and result.is_valid():
-                logger.info("Block mined:")
-                logger.info(vars(result))
-                return result
-            if result is not None:
-                logger.info("Block not valid:")
-                logger.info(vars(result))
-            
-    logger.info("Exiting mining")
-    return None
+if __name__ == "__main__":
+    starttime= time.time()
+    block = Block(0, "Genesis Block", "0", 5)
+    mined_block = parallel_mine_block_threading(block, 0, 2**32,2 )
+    if mined_block:
+        print(vars(mined_block))
+    else:
+        print("Block not found")
+    print("Time taken: ", time.time()-starttime)

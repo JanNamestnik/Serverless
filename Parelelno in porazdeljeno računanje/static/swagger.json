@@ -1,0 +1,58 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Blockchain API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/add_to_queue": {
+      "post": {
+        "summary": "Add data to the queue",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Data added successfully"
+          },
+          "400": {
+            "description": "Invalid data"
+          }
+        }
+      }
+    },
+    "/get_blockchain": {
+      "get": {
+        "summary": "Retrieve the blockchain",
+        "responses": {
+          "200": {
+            "description": "Blockchain retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "blockchain": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
